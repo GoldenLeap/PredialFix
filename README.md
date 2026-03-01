@@ -17,7 +17,15 @@
     <br />
 </div>
 
+## Sumário
 
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Protótipo](#protótipo)
+  - [Interface de Usuário (Figma)](#1-interface-de-usuário-figma)
+  - [Arquitetura de Dados (DER)](#2-arquitetura-de-dados-der)
+  - [Mapa de Endpoints](#3-mapa-de-endpoints)
+  
 
 <!-- ABOUT THE PROJECT -->
 ## Sobre o Projeto
@@ -39,8 +47,26 @@ O "PredialFix" será uma plataforma para gerenciar solicitações de manutençã
 
 ## Protótipo
 
-Acesse o protótipo da interface no Figma: [Link para o Figma](https://www.figma.com/site/7rBeSDg6EBjocLUKzxxonh/PredialFix?node-id=0-1&t=87o2HwW8FBtxYwml-1)
+O desenvolvimento do PredialFix seguiu uma abordagem de prototipagem em três níveis: Interface (UX/UI), Dados (Banco de dados) e Comunicação (API).
 
+### 1. Interface de Usuário (Figma)
+ * [Acesse o protótipo no Figma](https://www.figma.com/site/7rBeSDg6EBjocLUKzxxonh/PredialFix?node-id=0-1&t=87o2HwW8FBtxYwml-1)
+   
+### 2. Arquitetura de Dados (DER)
+  Planejado para garantir a **transparência total** exigida, o banco de dados conta com tabelas de histórico para auditoria de cada mudança de status e gestão de orçamentos.
+
+  ![Diagrama de Entidade Relacionamento](images/DER.png)
+
+## 3. Mapa de Endpoints 
+  Abaixo estão as principais rotas planejadas:
+  | Método | Rota | Descrição |
+  | :--- | :--- | :---|
+  | `POST` | `/api/login`| Autenticação e geração de Token de acesso |
+  | `POST` | `/api/chamados`| Registro de nova solicitação |
+  | `GET` | `/api/chamados` | Listagem geral com filtro de status |
+  | `PATCH` | `/api/chamados/{id}/status` | Atualização do status do chamado |
+  | `POST` | `/api/orcamentos` | Registro de custos para aprovação |
+  
 <p align="right">(<a href="#readme-top">voltar para o topo</a>)</p>
 
 
