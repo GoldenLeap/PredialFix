@@ -21,8 +21,10 @@
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Protótipo](#protótipo)
   - [Interface de Usuário (Figma)](#1-interface-de-usuário-figma)
-  - [Arquitetura de Dados (DER)](#2-arquitetura-de-dados-der)
-  - [Mapa de Endpoints](#3-mapa-de-endpoints)
+  - [Metodologia Agil (Kanban)](#2-metodologia-agil-kanban)
+  - [Arquitetura de Dados (DER)](#3-arquitetura-de-dados-der)
+  - [Mapa de Endpoints](#4-mapa-de-endpoints)
+  
 
 ## Sobre o Projeto
 
@@ -43,13 +45,34 @@ O desenvolvimento do PredialFix seguiu uma abordagem de prototipagem em três n�
 
 ### 1. Interface de Usuário (Figma)
  * [Acesse o protótipo no Figma](https://www.figma.com/site/7rBeSDg6EBjocLUKzxxonh/PredialFix?node-id=0-1&t=87o2HwW8FBtxYwml-1)
-   
-### 2. Arquitetura de Dados (DER)
+
+### 2. Metodologia Agil (Kanban)
+Para garantir a eficiência no desenvolvimento e a organização das entregas, o projeto utiliza a metodologia Kanban. Esta abordagem permite a visualização clara do fluxo de trabalho, auxiliando na identificação de gargalos e na priorização de tarefas críticas.
+
+As atividades são divididas em tres estados principais, que refletem o ciclo de vida de cada funcionalidade da API:
+- A Fazer: Tarefas priorizadas e prontas para o início do desenvolvimento.
+- Em Andamento: Funcionalidades que estão sendo codificadas e testadas no ambiente de desenvolvimento.
+- Concluido: Requisitos finalizados, documentados e com o merge realizado na branch principal.
+
+* [Acesse o quadro kanban do projeto aqui](https://trello.com/b/LMRbT3a9/predialfix)
+### 3. Arquitetura de Dados (DER)
  Planejado para garantir a **transparência total** exigida, o banco de dados conta com tabelas de histórico para auditoria de cada mudança de status e gestão de orçamentos.
 
- ![Diagrama de Entidade Relacionamento](images/DER.png)
+O diagrama foi desenvolvido utilizando a ferramenta dbdiagram.io e ilustra como as tabelas se conectam:
 
-## 3. Mapa de Endpoints 
+- usuarios: Armazena os dados dos colaboradores, diferenciando-os por cargos (solicitante ou responsavel).
+- chamados: A tabela central que registra o tipo de manutenção (Elétrica, Hidráulica, etc.), local, descrição e o status atual da tarefa.
+- historico_chamados: Garante a rastreabilidade do sistema, armazenando cada mudança de status, a data da alteração e quem a realizou.
+- orcamentos: Permite o registro de custos e fornecedores vinculados a um chamado específico, com um fluxo de aprovação próprio.
+
+⛓️ Relacionamentos Principais
+Usuário -> Chamados: Um usuário pode abrir múltiplos chamados (1:N).
+
+Chamado -> Histórico: Cada chamado possui um rastro de eventos cronológicos para fins de auditoria (1:N).
+
+Chamado -> Orçamentos: Um chamado pode ter um ou mais orçamentos vinculados para comparação de valores e peças (1:N).
+
+## 4. Mapa de Endpoints 
  Abaixo estão as principais rotas planejadas:
  | Método | Rota | Descrição |
  | :--- | :--- | :---|
