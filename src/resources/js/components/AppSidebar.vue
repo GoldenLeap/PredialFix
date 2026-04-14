@@ -23,6 +23,11 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: 'Chamados',
+        href: '/chamados',
+        icon: BookOpen, // Reusing an existing icon imported
+    },
 ];
 
 const footerNavItems: NavItem[] = [
