@@ -1,0 +1,12 @@
+.fi-auth-login-page {
+    background-color: #ff0000 !important;
+}
+
+.fi-auth-card {
+    background-color: white !important;
+    border-radius: 1rem !important;
+}
+
+.fi-auth-logo img {
+    height: 8rem !important;
+}

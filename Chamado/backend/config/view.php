@@ -14,6 +14,7 @@ return [
     */
 
     'paths' => [
+        resource_path('views'),
         base_path('../frontend/resources/views'),
     ],
 
