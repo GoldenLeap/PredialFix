@@ -10,9 +10,12 @@ class Chamado extends Model
         'usuario_id',
         'tipo',
         'local',
+        'assunto',
         'descricao',
         'prioridade',
         'status',
+        'tipo_servico',
+        'imagem_path',
     ];
 
     public function user()

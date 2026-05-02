@@ -11,9 +11,16 @@ use Inertia\Inertia;
 
 class ChamadoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $chamados = Chamado::with('user')->latest()->get();
+        $user = $request->user();
+        
+        if ($user->cargo === 'solicitante') {
+            $chamados = Chamado::with('user')->where('usuario_id', $user->id)->latest()->get();
+        } else {
+            $chamados = Chamado::with('user')->latest()->get();
+        }
+
         return Inertia::render('Chamados/Index', [
             'chamados' => $chamados
         ]);
@@ -26,7 +33,14 @@ class ChamadoController extends Controller
 
     public function store(StoreChamadoRequest $request)
     {
-        $request->user()->chamados()->create($request->validated());
+        $validated = $request->validated();
+
+        if ($request->hasFile('imagem')) {
+            $path = $request->file('imagem')->store('chamados', 'public');
+            $validated['imagem_path'] = $path;
+        }
+
+        $request->user()->chamados()->create($validated);
 
         return redirect()->route('chamados.index')
             ->with('success', 'Chamado criado com sucesso.');

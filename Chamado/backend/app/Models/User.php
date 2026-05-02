@@ -51,4 +51,12 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+    /**
+     * Relacionamento com os chamados abertos pelo usuário.
+     */
+    public function chamados()
+    {
+        return $this->hasMany(Chamado::class, 'usuario_id');
+    }
 }

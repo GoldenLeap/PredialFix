@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
- * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-a283ac62/upload-file'
- */
+* @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
+* @route '/livewire-774a6b4f/upload-file'
+*/
 export const handle = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: handle.url(options),
     method: 'post',
@@ -11,49 +11,50 @@ export const handle = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
 handle.definition = {
     methods: ["post"],
-    url: '/livewire-a283ac62/upload-file',
+    url: '/livewire-774a6b4f/upload-file',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
- * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-a283ac62/upload-file'
- */
+* @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
+* @route '/livewire-774a6b4f/upload-file'
+*/
 handle.url = (options?: RouteQueryOptions) => {
     return handle.definition.url + queryParams(options)
 }
 
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
- * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-a283ac62/upload-file'
- */
+* @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
+* @route '/livewire-774a6b4f/upload-file'
+*/
 handle.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: handle.url(options),
     method: 'post',
 })
 
-    /**
+/**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
- * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-a283ac62/upload-file'
- */
-    const handleForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: handle.url(options),
-        method: 'post',
-    })
+* @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
+* @route '/livewire-774a6b4f/upload-file'
+*/
+const handleForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: handle.url(options),
+    method: 'post',
+})
 
-            /**
+/**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
- * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-a283ac62/upload-file'
- */
-        handleForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: handle.url(options),
-            method: 'post',
-        })
-    
-    handle.form = handleForm
+* @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
+* @route '/livewire-774a6b4f/upload-file'
+*/
+handleForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: handle.url(options),
+    method: 'post',
+})
+
+handle.form = handleForm
+
 const FileUploadController = { handle }
 
 export default FileUploadController

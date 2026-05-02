@@ -12,6 +12,20 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $user = $request->user();
+
+        if ($user->cargo === 'solicitante') {
+            $recentChamados = Chamado::where('usuario_id', $user->id)
+                ->whereIn('status', ['Aberto', 'Em Análise', 'Em Execução'])
+                ->latest()
+                ->take(5)
+                ->get();
+
+            return Inertia::render('HomeDocente', [
+                'recentChamados' => $recentChamados,
+            ]);
+        }
+
         $stats = [
             'total' => Chamado::count(),
             'abertos' => Chamado::where('status', 'Aberto')->count(),
