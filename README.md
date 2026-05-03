@@ -11,55 +11,90 @@
 <h3 align="center">PredialFix</h3>
 
   <p align="center">
-    O "PredialFix" será uma plataforma para gerenciar solicitações de manutenção predial no Senai. O sistema visa resolver problemas como a falta de transparência e a demora no atendimento de chamados, centralizando as solicitações e permitindo o acompanhamento de cada etapa até a resolução. O foco inicial é o desenvolvimento do Back-End, que fornecerá uma API RESTful para futuras integrações com interfaces de usuário (Front-End).
+    Plataforma para gerenciar solicitações de manutenção predial no Senai.
     <br />
 </div>
 
-## Sumário
+---
 
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Protótipo](#protótipo)
-  - [Interface de Usuário (Figma)](#1-interface-de-usuário-figma)
-  - [Metodologia Agil (Kanban)](#2-metodologia-agil-kanban)
+## 🔗 Links do Projeto
 
-## Sobre o Projeto
+📌 [Figma](https://www.figma.com/site/7rBeSDg6EBjocLUKzxxonh/PredialFix?node-id=0-1&t=87o2HwW8FBtxYwml-1)
 
-O "PredialFix" será uma plataforma para gerenciar solicitações de manutenção predial no Senai. O sistema visa resolver problemas como a falta de transparência e a demora no atendimento de chamados, centralizando as solicitações e permitindo o acompanhamento de cada etapa até a resolução. O foco inicial é o desenvolvimento do Back-End, que fornecerá uma API RESTful para futuras integrações com interfaces de usuário (Front-End).
+📌 [Trello](https://trello.com/b/LMRbT3a9/predialfix)
 
-<p align="right">(<a href="#readme-top">voltar para o topo</a>)</p>
+---
 
-### Tecnologias Utilizadas
+**Situação Problema**
 
-* **Back-End:** [![Laravel][Laravel.com]][Laravel-url] com [![MySQL][MySQL.com]][MySQL-url]
-* **Front-End:** [![Vue.js][Vue.js]][Vue-url] com [![Tailwind CSS][Tailwind.com]][Tailwind-url]
+O SENAI enfrenta desafios no gerenciamento de solicitações de manutenção predial. A ausência de um sistema estruturado gera falta de transparência, demora no atendimento dos chamados e dificuldade no controle das solicitações. 
 
-<p align="right">(<a href="#readme-top">voltar para o topo</a>)</p>
+Diante desse cenário, surge o **PredialFix**, uma plataforma para centralizar as solicitações e permitir o acompanhamento de cada etapa até a resolução. O projeto utiliza uma arquitetura híbrida:
+- **Web**: Interface rica utilizando **Inertia.js** com **Vue.js** para uma experiência fluida no desktop.
+- **Mobile**: Disponibilização de uma **API RESTful** robusta para integração com dispositivos móveis.
 
-## Protótipo
+---
 
-O desenvolvimento do PredialFix seguiu uma abordagem de prototipagem em três níveis: Interface (UX/UI), Dados (Banco de dados) e Comunicação (API).
+ **Objetivo do Projeto**
 
-### 1. Interface de Usuário (Figma)
- * [Acesse o protótipo no Figma](https://www.figma.com/site/7rBeSDg6EBjocLUKzxxonh/PredialFix?node-id=0-1&t=87o2HwW8FBtxYwml-1)
+O objetivo principal do PredialFix é centralizar as demandas de manutenção predial. O projeto foca em:
 
-### 2. Metodologia Agil (Kanban)
-Para garantir a eficiência no desenvolvimento e a organização das entregas, o projeto utiliza a metodologia Kanban. Esta abordagem permite a visualização clara do fluxo de trabalho, auxiliando na identificação de gargalos e na priorização de tarefas críticas.
+- Desenvolver uma aplicação robusta, organizada e escalável para Web e Mobile
+- Prover uma **API RESTful** segura para consumo de aplicativos móveis
+- Gerenciar o fluxo de chamados para dar mais transparência
+- Permitir o acompanhamento das etapas até a resolução do problema através de um painel administrativo
+- Integrar tecnologias modernas para o gerenciamento dos dados e interface rica
 
-As atividades são divididas em tres estados principais, que refletem o ciclo de vida de cada funcionalidade da API:
-- A Fazer: Tarefas priorizadas e prontas para o início do desenvolvimento.
-- Em Andamento: Funcionalidades que estão sendo codificadas e testadas no ambiente de desenvolvimento.
-- Concluido: Requisitos finalizados, documentados e com o merge realizado na branch principal.
+---
 
-* [Acesse o quadro kanban do projeto aqui](https://trello.com/b/LMRbT3a9/predialfix)
+ **Tecnologias Utilizadas**
 
-<p align="right">(<a href="#readme-top">voltar para o topo</a>)</p>
+* **Back-End:** [![Laravel][Laravel.com]][Laravel-url] [![SQLite][SQLite.com]][SQLite-url] [![Filament][Filament.com]][Filament-url]
+* **Front-End:** [![Vue.js][Vue.js]][Vue-url] [![Inertia.js][Inertia.com]][Inertia-url] [![Tailwind CSS][Tailwind.com]][Tailwind-url] [![TypeScript][TypeScript.com]][TypeScript-url]
+
+---
+
+ **Levantamento de Requisitos**
+
+O sistema foi estruturado para atender às necessidades de controle de chamados no SENAI, considerando aspectos como funcionalidade, desempenho e segurança:
+
+- Cadastro e gerenciamento centralizado de chamados de manutenção.
+- Interface administrativa completa via Filament PHP.
+- Experiência Single Page Application (SPA) utilizando Inertia.js.
+- Notificações em tempo real (em desenvolvimento).
+
+---
+
+ **Prototipagem**
+
+O desenvolvimento do PredialFix seguiu uma abordagem de prototipagem em três níveis: Interface (UX/UI), Dados (Banco de dados) e Comunicação (API). A interface foi desenhada no Figma para alinhar expectativas e melhorar a usabilidade.
+
+- **Acesse o protótipo no** [Figma](https://www.figma.com/site/7rBeSDg6EBjocLUKzxxonh/PredialFix?node-id=0-1&t=87o2HwW8FBtxYwml-1)
+
+---
+
+**Metodologias Ágeis**
+
+Para garantir a eficiência no desenvolvimento e a organização das entregas, o projeto utiliza a metodologia Kanban. O fluxo de trabalho é dividido em três estados principais:
+- **A Fazer**: Tarefas priorizadas e prontas para o início do desenvolvimento.
+- **Em Andamento**: Funcionalidades que estão sendo codificadas e testadas.
+- **Concluído**: Requisitos finalizados, documentados e com o merge realizado.
+
+- **Acesse o quadro no** [Trello](https://trello.com/b/LMRbT3a9/predialfix)
+
+
 
 [Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
 [Vue-url]: https://vuejs.org/
 [Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
 [Laravel-url]: https://laravel.com
-[MySQL.com]: https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white
-[MySQL-url]: https://www.mysql.com/
+[SQLite.com]: https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white
+[SQLite-url]: https://www.sqlite.org/
 [Tailwind.com]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
 [Tailwind-url]: https://tailwindcss.com/
+[Inertia.com]: https://img.shields.io/badge/Inertia.js-9553E9?style=for-the-badge&logo=inertia&logoColor=white
+[Inertia-url]: https://inertiajs.com/
+[TypeScript.com]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
+[TypeScript-url]: https://www.typescriptlang.org/
+[Filament.com]: https://img.shields.io/badge/Filament-FFB200?style=for-the-badge&logo=filament&logoColor=black
+[Filament-url]: https://filamentphp.com/
