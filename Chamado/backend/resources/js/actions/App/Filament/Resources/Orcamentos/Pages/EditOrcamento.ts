@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../../wayfinder'
 /**
 * @see \App\Filament\Resources\Orcamentos\Pages\EditOrcamento::__invoke
-* @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
-* @route '/admin/orcamentos/{record}/edit'
-*/
+ * @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
+ * @route '/admin/orcamentos/{record}/edit'
+ */
 const EditOrcamento = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: EditOrcamento.url(args, options),
     method: 'get',
@@ -16,25 +16,26 @@ EditOrcamento.definition = {
 
 /**
 * @see \App\Filament\Resources\Orcamentos\Pages\EditOrcamento::__invoke
-* @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
-* @route '/admin/orcamentos/{record}/edit'
-*/
+ * @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
+ * @route '/admin/orcamentos/{record}/edit'
+ */
 EditOrcamento.url = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { record: args }
     }
 
+    
     if (Array.isArray(args)) {
         args = {
-            record: args[0],
-        }
+                    record: args[0],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        record: args.record,
-    }
+                        record: args.record,
+                }
 
     return EditOrcamento.definition.url
             .replace('{record}', parsedArgs.record.toString())
@@ -43,59 +44,56 @@ EditOrcamento.url = (args: { record: string | number } | [record: string | numbe
 
 /**
 * @see \App\Filament\Resources\Orcamentos\Pages\EditOrcamento::__invoke
-* @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
-* @route '/admin/orcamentos/{record}/edit'
-*/
+ * @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
+ * @route '/admin/orcamentos/{record}/edit'
+ */
 EditOrcamento.get = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: EditOrcamento.url(args, options),
     method: 'get',
 })
-
 /**
 * @see \App\Filament\Resources\Orcamentos\Pages\EditOrcamento::__invoke
-* @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
-* @route '/admin/orcamentos/{record}/edit'
-*/
+ * @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
+ * @route '/admin/orcamentos/{record}/edit'
+ */
 EditOrcamento.head = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: EditOrcamento.url(args, options),
     method: 'head',
 })
 
-/**
+    /**
 * @see \App\Filament\Resources\Orcamentos\Pages\EditOrcamento::__invoke
-* @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
-* @route '/admin/orcamentos/{record}/edit'
-*/
-const EditOrcamentoForm = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: EditOrcamento.url(args, options),
-    method: 'get',
-})
+ * @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
+ * @route '/admin/orcamentos/{record}/edit'
+ */
+    const EditOrcamentoForm = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: EditOrcamento.url(args, options),
+        method: 'get',
+    })
 
-/**
+            /**
 * @see \App\Filament\Resources\Orcamentos\Pages\EditOrcamento::__invoke
-* @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
-* @route '/admin/orcamentos/{record}/edit'
-*/
-EditOrcamentoForm.get = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: EditOrcamento.url(args, options),
-    method: 'get',
-})
-
-/**
+ * @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
+ * @route '/admin/orcamentos/{record}/edit'
+ */
+        EditOrcamentoForm.get = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: EditOrcamento.url(args, options),
+            method: 'get',
+        })
+            /**
 * @see \App\Filament\Resources\Orcamentos\Pages\EditOrcamento::__invoke
-* @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
-* @route '/admin/orcamentos/{record}/edit'
-*/
-EditOrcamentoForm.head = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: EditOrcamento.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-EditOrcamento.form = EditOrcamentoForm
-
+ * @see app/Filament/Resources/Orcamentos/Pages/EditOrcamento.php:7
+ * @route '/admin/orcamentos/{record}/edit'
+ */
+        EditOrcamentoForm.head = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: EditOrcamento.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    EditOrcamento.form = EditOrcamentoForm
 export default EditOrcamento

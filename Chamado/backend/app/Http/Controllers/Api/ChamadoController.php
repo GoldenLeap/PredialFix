@@ -23,4 +23,20 @@ class ChamadoController extends Controller
         ], 201);
     }
 
+
+    public function update(Request $request, Chamado $chamado)
+    {
+        $validated = $request->validate([
+            'status' => 'in:Aberto, Em Análise, Em Execução, Concluido'
+        ]);
+
+        $chamado->update($validated);
+
+        return response()->json([
+            'message' => "Atualizado via mobile",
+            'data' => $chamado
+
+        ], 200);
+    }
 }
+

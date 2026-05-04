@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../../wayfinder'
 /**
 * @see \App\Filament\Resources\Materials\Pages\EditMaterial::__invoke
-* @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
-* @route '/admin/materials/{record}/edit'
-*/
+ * @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
+ * @route '/admin/materials/{record}/edit'
+ */
 const EditMaterial = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: EditMaterial.url(args, options),
     method: 'get',
@@ -16,25 +16,26 @@ EditMaterial.definition = {
 
 /**
 * @see \App\Filament\Resources\Materials\Pages\EditMaterial::__invoke
-* @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
-* @route '/admin/materials/{record}/edit'
-*/
+ * @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
+ * @route '/admin/materials/{record}/edit'
+ */
 EditMaterial.url = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { record: args }
     }
 
+    
     if (Array.isArray(args)) {
         args = {
-            record: args[0],
-        }
+                    record: args[0],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        record: args.record,
-    }
+                        record: args.record,
+                }
 
     return EditMaterial.definition.url
             .replace('{record}', parsedArgs.record.toString())
@@ -43,59 +44,56 @@ EditMaterial.url = (args: { record: string | number } | [record: string | number
 
 /**
 * @see \App\Filament\Resources\Materials\Pages\EditMaterial::__invoke
-* @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
-* @route '/admin/materials/{record}/edit'
-*/
+ * @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
+ * @route '/admin/materials/{record}/edit'
+ */
 EditMaterial.get = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: EditMaterial.url(args, options),
     method: 'get',
 })
-
 /**
 * @see \App\Filament\Resources\Materials\Pages\EditMaterial::__invoke
-* @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
-* @route '/admin/materials/{record}/edit'
-*/
+ * @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
+ * @route '/admin/materials/{record}/edit'
+ */
 EditMaterial.head = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: EditMaterial.url(args, options),
     method: 'head',
 })
 
-/**
+    /**
 * @see \App\Filament\Resources\Materials\Pages\EditMaterial::__invoke
-* @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
-* @route '/admin/materials/{record}/edit'
-*/
-const EditMaterialForm = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: EditMaterial.url(args, options),
-    method: 'get',
-})
+ * @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
+ * @route '/admin/materials/{record}/edit'
+ */
+    const EditMaterialForm = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: EditMaterial.url(args, options),
+        method: 'get',
+    })
 
-/**
+            /**
 * @see \App\Filament\Resources\Materials\Pages\EditMaterial::__invoke
-* @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
-* @route '/admin/materials/{record}/edit'
-*/
-EditMaterialForm.get = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: EditMaterial.url(args, options),
-    method: 'get',
-})
-
-/**
+ * @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
+ * @route '/admin/materials/{record}/edit'
+ */
+        EditMaterialForm.get = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: EditMaterial.url(args, options),
+            method: 'get',
+        })
+            /**
 * @see \App\Filament\Resources\Materials\Pages\EditMaterial::__invoke
-* @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
-* @route '/admin/materials/{record}/edit'
-*/
-EditMaterialForm.head = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: EditMaterial.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-EditMaterial.form = EditMaterialForm
-
+ * @see app/Filament/Resources/Materials/Pages/EditMaterial.php:7
+ * @route '/admin/materials/{record}/edit'
+ */
+        EditMaterialForm.head = (args: { record: string | number } | [record: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: EditMaterial.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    EditMaterial.form = EditMaterialForm
 export default EditMaterial
