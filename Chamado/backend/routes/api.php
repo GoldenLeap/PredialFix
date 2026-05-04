@@ -17,6 +17,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/chamados', [ChamadoController::class, 'index']);
-    Route::post('/chamados', ~[ChamadoController::class, 'store']);
+    Route::post('/chamados', [ChamadoController::class, 'store']);
     Route::put('/chamados/{id}', [ChamadoController::class, 'update']);
 });
