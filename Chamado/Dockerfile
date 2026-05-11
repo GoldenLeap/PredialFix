@@ -1,10 +1,16 @@
 # --- Estágio 1: Build do Frontend ---
 FROM node:20-alpine AS frontend-builder
 
+# Instala o PHP necessário para o plugin Wayfinder do Laravel
+RUN apk add --no-cache php82 php82-phar php82-mbstring php82-openssl php82-xml php82-tokenizer php82-dom php82-session
+RUN ln -s /usr/bin/php82 /usr/bin/php
+
 WORKDIR /app
-COPY frontend/package*.json ./
+# O Wayfinder precisa acessar o backend para gerar as rotas
+COPY backend /backend
+COPY frontend /app
+
 RUN npm install
-COPY frontend/ .
 RUN npm run build
 
 # --- Estágio 2: PHP & Nginx ---
