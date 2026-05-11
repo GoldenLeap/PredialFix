@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-vue-next';
+import { BookOpen, DollarSign, FileText, FolderGit2, LayoutGrid, Package } from 'lucide-vue-next';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -26,7 +26,22 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Chamados',
         href: '/chamados',
-        icon: BookOpen, // Reusing an existing icon imported
+        icon: BookOpen,
+    },
+    {
+        title: 'Orçamento',
+        href: '/orcamento',
+        icon: DollarSign,
+    },
+    {
+        title: 'Materiais',
+        href: '/materiais',
+        icon: Package,
+    },
+    {
+        title: 'Relatórios',
+        href: '/relatorios',
+        icon: FileText,
     },
 ];
 

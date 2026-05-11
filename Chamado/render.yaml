@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: predialfix-web
+    env: docker
+    plan: free
+    region: ohio # Ou a região de sua preferência
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        sync: false # O usuário deve preencher com a URL do Render depois
+      - key: APP_KEY
+        generateValue: true # Gera uma chave aleatória se não existir
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        sync: false # O usuário deve colar a URL do Supabase/Neon aqui
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: CACHE_STORE
+        value: file
+      - key: FILESYSTEM_DISK
+        value: public
