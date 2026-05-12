@@ -12,6 +12,8 @@ const form = useForm({
     descricao: props.chamado.descricao,
     prioridade: props.chamado.prioridade,
     status: props.chamado.status,
+    assunto: props.chamado.assunto,
+    tipo_servico: props.chamado.tipo_servico,
 });
 
 const submit = () => {
@@ -67,6 +69,15 @@ const submit = () => {
                 </div>
 
                 <div>
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Assunto</label>
+                    <input 
+                        type="text" 
+                        v-model="form.assunto" 
+                        class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm text-gray-600 focus:outline-none focus:border-gray-300 transition-all outline-none"
+                    />
+                </div>
+
+                <div>
                     <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Local/Ambiente</label>
                     <input 
                         type="text" 
@@ -82,6 +93,23 @@ const submit = () => {
                         rows="4"
                         class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm text-gray-600 focus:outline-none focus:border-gray-300 transition-all outline-none resize-none"
                     ></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Tipo de Serviço</label>
+                    <div class="flex gap-4">
+                        <label v-for="t in ['Interno', 'Externo']" :key="t" class="flex-1">
+                            <input 
+                                type="radio" 
+                                v-model="form.tipo_servico" 
+                                :value="t" 
+                                class="sr-only peer"
+                            />
+                            <div class="px-4 py-4 text-center rounded-2xl border-2 border-gray-50 bg-gray-50 cursor-pointer peer-checked:border-[#ED1C24] peer-checked:bg-white transition-all shadow-sm active:scale-95">
+                                <span class="text-xs font-black uppercase tracking-tight text-gray-400 peer-checked:text-[#ED1C24]">{{ t }}</span>
+                            </div>
+                        </label>
+                    </div>
                 </div>
 
                 <div>

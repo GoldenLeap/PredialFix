@@ -89,13 +89,13 @@ const getStepDate = (stepIndex: number) => {
                                 {{ chamado.descricao }}
                             </p>
                         </div>
-                        <div class="flex flex-col items-center">
+                        <div v-if="chamado.imagem_url" class="flex flex-col items-center">
                             <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2 block w-full text-left">
                                 Evidência do Problema
                             </span>
                            <div class="w-full max-w-sm bg-gray-50 rounded-2xl p-2 border border-gray-100 shadow-sm">
                                 <img 
-                                    :src="`/storage/${chamado.imagem_path}`" 
+                                    :src="chamado.imagem_url" 
                                     alt="Imagem do problema" 
                                     class="w-full h-64 object-cover rounded-xl border border-gray-200/50 shadow-inner"
                                 />

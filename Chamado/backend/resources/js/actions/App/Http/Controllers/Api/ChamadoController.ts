@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:30
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:30
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:30
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:30
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:30
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -134,7 +134,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:59
+ * @see app/Http/Controllers/Api/ChamadoController.php:55
  * @route '/api/chamados/{id}'
  */
 export const update = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -149,7 +149,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:59
+ * @see app/Http/Controllers/Api/ChamadoController.php:55
  * @route '/api/chamados/{id}'
  */
 update.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -177,7 +177,7 @@ update.url = (args: { id: string | number } | [id: string | number ] | string | 
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:59
+ * @see app/Http/Controllers/Api/ChamadoController.php:55
  * @route '/api/chamados/{id}'
  */
 update.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -187,7 +187,7 @@ update.put = (args: { id: string | number } | [id: string | number ] | string | 
 
     /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:59
+ * @see app/Http/Controllers/Api/ChamadoController.php:55
  * @route '/api/chamados/{id}'
  */
     const updateForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -202,7 +202,7 @@ update.put = (args: { id: string | number } | [id: string | number ] | string | 
 
             /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:59
+ * @see app/Http/Controllers/Api/ChamadoController.php:55
  * @route '/api/chamados/{id}'
  */
         updateForm.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

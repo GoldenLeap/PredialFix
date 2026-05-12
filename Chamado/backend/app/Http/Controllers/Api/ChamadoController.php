@@ -16,13 +16,7 @@ class ChamadoController extends Controller
     {
         $chamados = auth()->user()->chamados()
             ->latest()
-            ->get()
-            ->map(function ($chamado) {
-                if ($chamado->imagem_path) {
-                    $chamado->imagem_url = asset('storage/' . $chamado->imagem_path);
-                }
-                return $chamado;
-            });
+            ->get();
 
         return response()->json($chamados);
     }
@@ -48,6 +42,8 @@ class ChamadoController extends Controller
             $data['imagem_path'] = $path;
         }
 
+        unset($data['imagem']);
+
         $chamado = Chamado::create($data);
 
         return response()->json([
@@ -60,7 +56,8 @@ class ChamadoController extends Controller
     {
         $chamado = Chamado::findOrFail($id);
 
-        if ($chamado->usuario_id !== auth()->id()) {
+        // Au do chamado ou Responsável
+        if ($chamado->usuario_id !== auth()->id() && auth()->user()->cargo !== 'responsavel') {
             return response()->json(['message' => 'Não autorizado'], 403);
         }
 
@@ -68,7 +65,17 @@ class ChamadoController extends Controller
             'status' => 'required|in:Aberto,Em Análise,Em Execução,Concluído'
         ]);
 
+        $oldStatus = $chamado->status;
         $chamado->update($validated);
+
+        if ($request->status !== $oldStatus) {
+            $chamado->historicos()->create([
+                'status_anterior' => $oldStatus,
+                'status_novo' => $request->status,
+                'alterado_por' => auth()->id(),
+                'data_alteracao' => now(),
+            ]);
+        }
 
         return response()->json([
             'message' => "Chamado atualizado com sucesso!",

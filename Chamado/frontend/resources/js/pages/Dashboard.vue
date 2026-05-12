@@ -75,9 +75,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-2">
                                         <div class="h-6 w-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold">
-                                            {{ chamado.user.name.charAt(0) }}
+                                            {{ chamado.user?.name ? chamado.user.name.charAt(0) : '?' }}
                                         </div>
-                                        <span class="text-zinc-700 dark:text-zinc-300 font-medium">{{ chamado.user.name }}</span>
+                                        <span class="text-zinc-700 dark:text-zinc-300 font-medium">{{ chamado.user?.name || 'Usuário Deletado' }}</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">

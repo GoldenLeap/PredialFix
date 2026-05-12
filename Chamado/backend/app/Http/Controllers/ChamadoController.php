@@ -42,12 +42,13 @@ class ChamadoController extends Controller
 
         $request->user()->chamados()->create($validated);
 
-        return redirect()->route('chamados.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Chamado criado com sucesso.');
     }
 
     public function show(Chamado $chamado)
     {
+        \Illuminate\Support\Facades\Gate::authorize('view', $chamado);
         $chamado->load(['user', 'historicos.user', 'orcamentos']);
         return Inertia::render('Chamados/Show', [
             'chamado' => $chamado
@@ -56,6 +57,7 @@ class ChamadoController extends Controller
 
     public function edit(Chamado $chamado)
     {
+        \Illuminate\Support\Facades\Gate::authorize('update', $chamado);
         return Inertia::render('Chamados/Edit', [
             'chamado' => $chamado
         ]);
@@ -63,6 +65,7 @@ class ChamadoController extends Controller
 
     public function update(UpdateChamadoRequest $request, Chamado $chamado)
     {
+        \Illuminate\Support\Facades\Gate::authorize('update', $chamado);
         $oldStatus = $chamado->status;
         $chamado->update($request->validated());
 
@@ -75,14 +78,15 @@ class ChamadoController extends Controller
             ]);
         }
 
-        return redirect()->route('chamados.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Chamado atualizado com sucesso.');
     }
 
     public function destroy(Chamado $chamado)
     {
+        \Illuminate\Support\Facades\Gate::authorize('delete', $chamado);
         $chamado->delete();
-        return redirect()->route('chamados.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Chamado excluído com sucesso.');
     }
 }

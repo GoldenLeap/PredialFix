@@ -18,6 +18,13 @@ class Chamado extends Model
         'imagem_path',
     ];
 
+    protected $appends = ['imagem_url'];
+
+    public function getImagemUrlAttribute()
+    {
+        return $this->imagem_path ? asset('storage/' . $this->imagem_path) : null;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'usuario_id');

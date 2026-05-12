@@ -20,5 +20,14 @@ class AdminUserSeeder extends Seeder
                 'cargo' => 'responsavel',
             ]
         );
+
+        \App\Models\User::updateOrCreate(
+            ['email' => 'solicitante@predialfix.com'],
+            [
+                'name' => 'Solicitante',
+                'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+                'cargo' => 'solicitante',
+            ]
+        );
     }
 }

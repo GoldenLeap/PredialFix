@@ -34,6 +34,12 @@ const reports = ref(Array(10).fill({
     materials: 'R$ 0',
     total: 'R$ 0'
 }));
+
+const handlePrint = () => {
+    if (typeof window !== 'undefined') {
+        window.print();
+    }
+};
 </script>
 
 <template>
@@ -70,7 +76,7 @@ const reports = ref(Array(10).fill({
                         <Filter class="w-4 h-4 text-gray-400" />
                         Todos os status
                     </button>
-                    <button class="flex items-center gap-2 px-4 py-2 text-gray-500 hover:bg-gray-50 rounded-lg text-xs border border-gray-100">
+                    <button @click="handlePrint" class="flex items-center gap-2 px-4 py-2 text-gray-500 hover:bg-gray-50 rounded-lg text-xs border border-gray-100">
                         <FileDown class="w-4 h-4 text-gray-400" />
                         Exportar PDF
                     </button>

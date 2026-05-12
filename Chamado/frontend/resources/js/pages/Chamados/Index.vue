@@ -68,6 +68,20 @@ const exportCSV = () => {
 const goToDetails = (id: number) => {
     router.visit(`/chamados/${id}`);
 };
+
+const clearFilters = () => {
+    startDate.value = '';
+    endDate.value = '';
+    category.value = '';
+    searchQuery.value = '';
+    currentPage.value = 1;
+};
+
+const handlePrint = () => {
+    if (typeof window !== 'undefined') {
+        window.print();
+    }
+};
 </script>
 
 <template>
@@ -92,7 +106,7 @@ const goToDetails = (id: number) => {
                     <p class="text-gray-500 text-base">Visualize e gerencie todos os chamados registrados no sistema</p>
                 </div>
                 <div class="flex gap-4 no-print">
-                    <button @click="window.print()" class="flex items-center gap-2 px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-bold transition-all cursor-pointer shadow-sm bg-white">
+                    <button @click="handlePrint" class="flex items-center gap-2 px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-bold transition-all cursor-pointer shadow-sm bg-white">
                         <Download class="w-4 h-4" />
                         Salvar como PDF
                     </button>
@@ -127,8 +141,8 @@ const goToDetails = (id: number) => {
                         </div>
                     </div>
                     <div class="flex flex-col justify-end">
-                        <button class="bg-[#ED1C24] hover:bg-red-700 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
-                            Filtrar
+                        <button @click="clearFilters" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
+                            Limpar Filtros
                         </button>
                     </div>
                 </div>
