@@ -52,7 +52,7 @@ handleUpdate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             action: handleUpdate.url(options),
             method: 'post',
         })
-    
+
     handleUpdate.form = handleUpdateForm
 const HandleRequests = { handleUpdate }
 

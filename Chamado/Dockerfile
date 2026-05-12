@@ -27,6 +27,12 @@ COPY --chown=www-data:www-data backend/ .
 # Copia os assets compilados do estágio anterior
 COPY --from=frontend-builder --chown=www-data:www-data /app/public/build ./public/build
 
+# Dependências do sistema (iconv/ext-iconv)
+# Nota: iconv normalmente já está disponível via glibc; aqui garantimos headers/utillibs.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Instala dependências do Composer
 RUN composer install --no-dev --optimize-autoloader
 

@@ -52,7 +52,7 @@ uploadFile.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             action: uploadFile.url(options),
             method: 'post',
         })
-    
+
     uploadFile.form = uploadFileForm
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::previewFile
@@ -79,7 +79,7 @@ previewFile.url = (args: { filename: string | number } | [filename: string | num
         args = { filename: args }
     }
 
-    
+
     if (Array.isArray(args)) {
         args = {
                     filename: args[0],
@@ -149,7 +149,7 @@ previewFile.head = (args: { filename: string | number } | [filename: string | nu
                     }),
             method: 'get',
         })
-    
+
     previewFile.form = previewFileForm
 const livewire = {
     uploadFile: Object.assign(uploadFile, uploadFile),

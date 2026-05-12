@@ -75,7 +75,7 @@ returnJavaScriptAsFile.head = (options?: RouteQueryOptions): RouteDefinition<'he
                     }),
             method: 'get',
         })
-    
+
     returnJavaScriptAsFile.form = returnJavaScriptAsFileForm
 /**
 * @see \Livewire\Mechanisms\FrontendAssets\FrontendAssets::maps
@@ -153,7 +153,7 @@ maps.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-    
+
     maps.form = mapsForm
 /**
 * @see \Livewire\Mechanisms\FrontendAssets\FrontendAssets::cspMaps
@@ -231,7 +231,7 @@ cspMaps.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
                     }),
             method: 'get',
         })
-    
+
     cspMaps.form = cspMapsForm
 const FrontendAssets = { returnJavaScriptAsFile, maps, cspMaps }
 

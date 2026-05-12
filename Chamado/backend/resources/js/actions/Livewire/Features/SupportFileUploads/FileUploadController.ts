@@ -52,7 +52,7 @@ handle.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             action: handle.url(options),
             method: 'post',
         })
-    
+
     handle.form = handleForm
 const FileUploadController = { handle }
 

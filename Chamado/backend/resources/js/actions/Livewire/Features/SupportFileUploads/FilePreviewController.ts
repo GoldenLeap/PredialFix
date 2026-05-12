@@ -24,7 +24,7 @@ handle.url = (args: { filename: string | number } | [filename: string | number ]
         args = { filename: args }
     }
 
-    
+
     if (Array.isArray(args)) {
         args = {
                     filename: args[0],
@@ -94,7 +94,7 @@ handle.head = (args: { filename: string | number } | [filename: string | number 
                     }),
             method: 'get',
         })
-    
+
     handle.form = handleForm
 const FilePreviewController = { handle }
 
