@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
  * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
- * @route '/livewire-8a926147/update'
+ * @route '/livewire-96416411/update'
  */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(options),
@@ -11,13 +11,13 @@ export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
 update.definition = {
     methods: ["post"],
-    url: '/livewire-8a926147/update',
+    url: '/livewire-96416411/update',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
  * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
- * @route '/livewire-8a926147/update'
+ * @route '/livewire-96416411/update'
  */
 update.url = (options?: RouteQueryOptions) => {
     return update.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ update.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
  * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
- * @route '/livewire-8a926147/update'
+ * @route '/livewire-96416411/update'
  */
 update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(options),
@@ -36,7 +36,7 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
  * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
- * @route '/livewire-8a926147/update'
+ * @route '/livewire-96416411/update'
  */
     const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(options),
@@ -46,7 +46,7 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
  * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
- * @route '/livewire-8a926147/update'
+ * @route '/livewire-96416411/update'
  */
         updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(options),
