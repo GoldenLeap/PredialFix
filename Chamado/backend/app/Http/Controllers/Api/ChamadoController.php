@@ -15,6 +15,7 @@ class ChamadoController extends Controller
     public function index()
     {
         $chamados = auth()->user()->chamados()
+            ->with('historicos')
             ->latest()
             ->get();
 
@@ -31,6 +32,7 @@ class ChamadoController extends Controller
             'prioridade' => 'required|in:Baixa,Média,Alta',
             'tipo_servico' => 'required|in:Interno,Externo',
             'imagem' => 'nullable|image|max:10240', // Max 10MB
+            'observacao' => 'nullable|string|max:1000',
         ]);
 
         $data = $validated;
@@ -56,13 +58,14 @@ class ChamadoController extends Controller
     {
         $chamado = Chamado::findOrFail($id);
 
-        // Au do chamado ou Responsável
-        if ($chamado->usuario_id !== auth()->id() && auth()->user()->cargo !== 'responsavel') {
+        // Auth do chamado ou Responsável ou Admin
+        if ($chamado->usuario_id !== auth()->id() && auth()->user()->cargo !== 'responsavel' && auth()->user()->cargo !== 'admin') {
             return response()->json(['message' => 'Não autorizado'], 403);
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:Aberto,Em Análise,Em Execução,Concluído'
+            'status' => 'required|in:Aberto,Em Análise,Em Execução,Concluído',
+            'observacao' => 'nullable|string|max:1000',
         ]);
 
         $oldStatus = $chamado->status;
@@ -73,6 +76,7 @@ class ChamadoController extends Controller
                 'status_anterior' => $oldStatus,
                 'status_novo' => $request->status,
                 'alterado_por' => auth()->id(),
+                'observacao' => $request->input('observacao', null),
                 'data_alteracao' => now(),
             ]);
         }

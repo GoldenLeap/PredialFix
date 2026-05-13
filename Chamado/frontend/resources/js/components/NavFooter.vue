@@ -1,44 +1,31 @@
 <script setup lang="ts">
-import {
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { toUrl } from '@/lib/utils';
+import { Link } from '@inertiajs/vue3';
+import { FileText, BookOpen } from 'lucide-vue-next';
 import type { NavItem } from '@/types';
 
-type Props = {
-    items: NavItem[];
-    class?: string;
-};
-
-defineProps<Props>();
+const footerNavItems: NavItem[] = [
+    {
+        title: 'Documentação PredialFix',
+        href: '#',
+        icon: BookOpen,
+    },
+    {
+        title: 'Suporte Técnico',
+        href: '#',
+        icon: FileText,
+    },
+];
 </script>
 
 <template>
-    <SidebarGroup
-        :class="`group-data-[collapsible=icon]:p-0 ${$props.class || ''}`"
-    >
-        <SidebarGroupContent>
-            <SidebarMenu>
-                <SidebarMenuItem v-for="item in items" :key="item.title">
-                    <SidebarMenuButton
-                        class="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100"
-                        as-child
-                    >
-                        <a
-                            :href="toUrl(item.href)"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <component :is="item.icon" />
-                            <span>{{ item.title }}</span>
-                        </a>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu>
-        </SidebarGroupContent>
-    </SidebarGroup>
+    <SidebarMenu>
+        <SidebarMenuItem v-for="item in footerNavItems" :key="item.title">
+            <SidebarMenuButton as-child :tooltip="item.title">
+                <Link :href="item.href">
+                    <component :is="item.icon" />
+                    <span class="text-xs">{{ item.title }}</span>
+                </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+    </SidebarMenu>
 </template>

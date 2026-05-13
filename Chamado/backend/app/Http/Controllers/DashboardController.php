@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Chamado;
+use App\Models\Material;
 use App\Models\User;
 use Inertia\Inertia;
 
@@ -37,9 +38,18 @@ class DashboardController extends Controller
 
         $recentChamados = Chamado::with(['user', 'historicos'])->latest()->take(5)->get();
 
+        $recentMaterials = Material::latest()->take(5)->get();
+
+        $topUsers = User::withCount('chamados')
+            ->orderByDesc('chamados_count')
+            ->take(5)
+            ->get();
+
         return Inertia::render('Dashboard', [
             'stats' => $stats,
             'recentChamados' => $recentChamados,
+            'recentMaterials' => $recentMaterials,
+            'topUsers' => $topUsers,
         ]);
     }
 }

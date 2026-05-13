@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
  * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-6a892ab8/upload-file'
+ * @route '/livewire-96416411/upload-file'
  */
 export const handle = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: handle.url(options),
@@ -11,13 +11,13 @@ export const handle = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
 handle.definition = {
     methods: ["post"],
-    url: '/livewire-6a892ab8/upload-file',
+    url: '/livewire-96416411/upload-file',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
  * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-6a892ab8/upload-file'
+ * @route '/livewire-96416411/upload-file'
  */
 handle.url = (options?: RouteQueryOptions) => {
     return handle.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ handle.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
  * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-6a892ab8/upload-file'
+ * @route '/livewire-96416411/upload-file'
  */
 handle.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: handle.url(options),
@@ -36,7 +36,7 @@ handle.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
  * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-6a892ab8/upload-file'
+ * @route '/livewire-96416411/upload-file'
  */
     const handleForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: handle.url(options),
@@ -46,13 +46,13 @@ handle.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::handle
  * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
- * @route '/livewire-6a892ab8/upload-file'
+ * @route '/livewire-96416411/upload-file'
  */
         handleForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: handle.url(options),
             method: 'post',
         })
-
+    
     handle.form = handleForm
 const FileUploadController = { handle }
 

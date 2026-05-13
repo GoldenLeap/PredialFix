@@ -30,6 +30,7 @@ class UpdateChamadoRequest extends FormRequest
             'status' => 'sometimes|required|in:Aberto,Em Análise,Em Execução,Concluído',
             'assunto' => 'sometimes|required|string|max:255',
             'tipo_servico' => 'sometimes|required|in:Interno,Externo',
+            'observacao' => 'nullable|string|max:1000',
         ];
     }
 }

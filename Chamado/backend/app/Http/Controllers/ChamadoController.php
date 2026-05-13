@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Chamado;
 use App\Http\Requests\StoreChamadoRequest;
 use App\Http\Requests\UpdateChamadoRequest;
@@ -14,11 +13,11 @@ class ChamadoController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        
+
         if ($user->cargo === 'solicitante') {
-            $chamados = Chamado::with('user')->where('usuario_id', $user->id)->latest()->get();
+            $chamados = Chamado::with('user', 'historicos')->where('usuario_id', $user->id)->latest()->get();
         } else {
-            $chamados = Chamado::with('user')->latest()->get();
+            $chamados = Chamado::with('user', 'historicos')->latest()->get();
         }
 
         return Inertia::render('Chamados/Index', [
@@ -51,13 +50,15 @@ class ChamadoController extends Controller
         \Illuminate\Support\Facades\Gate::authorize('view', $chamado);
         $chamado->load(['user', 'historicos.user', 'orcamentos']);
         return Inertia::render('Chamados/Show', [
-            'chamado' => $chamado
+            'chamado' => $chamado,
+            'historico' => $chamado->historicos()->latest()->get(),
         ]);
     }
 
     public function edit(Chamado $chamado)
     {
         \Illuminate\Support\Facades\Gate::authorize('update', $chamado);
+        $chamado->load('historicos');
         return Inertia::render('Chamados/Edit', [
             'chamado' => $chamado
         ]);
@@ -74,11 +75,12 @@ class ChamadoController extends Controller
                 'status_anterior' => $oldStatus,
                 'status_novo' => $request->status,
                 'alterado_por' => $request->user()->id,
+                'observacao' => $request->input('observacao', null),
                 'data_alteracao' => now(),
             ]);
         }
 
-        return redirect()->route('dashboard')
+        return redirect()->route('chamados.show', $chamado)
             ->with('success', 'Chamado atualizado com sucesso.');
     }
 

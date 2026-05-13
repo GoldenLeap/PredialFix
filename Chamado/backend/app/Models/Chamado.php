@@ -6,17 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chamado extends Model
 {
-    protected $fillable = [
-        'usuario_id',
-        'tipo',
-        'local',
-        'assunto',
-        'descricao',
-        'prioridade',
-        'status',
-        'tipo_servico',
-        'imagem_path',
-    ];
+protected $fillable = [
+         'usuario_id',
+         'tipo',
+         'local',
+         'assunto',
+         'descricao',
+         'prioridade',
+         'status',
+         'tipo_servico',
+         'imagem_path',
+         'observacao',
+     ];
 
     protected $appends = ['imagem_url'];
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import { BookOpen, DollarSign, FileText, Folder, LayoutGrid, Menu, Package, Search, Sun, Moon, Monitor } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -10,6 +10,10 @@ import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -32,15 +36,12 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import UserMenuContent from '@/components/UserMenuContent.vue';
+import { useAppearance } from '@/composables/useAppearance';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
 import { toUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem, NavItem } from '@/types';
-
-type Props = {
-    breadcrumbs?: BreadcrumbItem[];
-};
 
 const props = withDefaults(defineProps<Props>(), {
     breadcrumbs: () => [],
@@ -49,6 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
 const page = usePage();
 const auth = computed(() => page.props.auth);
 const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
+const { appearance, updateAppearance } = useAppearance();
 
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
@@ -59,19 +61,40 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: 'Chamados',
+        href: '/chamados',
+        icon: BookOpen,
+    },
+    {
+        title: 'Orçamento',
+        href: '/orcamento',
+        icon: DollarSign,
+    },
+    {
+        title: 'Materiais',
+        href: '/materiais',
+        icon: Package,
+    },
+    {
+        title: 'Relatórios',
+        href: '/relatorios',
+        icon: FileText,
+    },
 ];
 
 const rightNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
+        title: 'Documentação',
+        href: '#',
         icon: BookOpen,
     },
+];
+
+const themeItems = [
+    { label: 'Claro', icon: Sun, value: 'light' },
+    { label: 'Escuro', icon: Moon, value: 'dark' },
+    { label: 'Sistema', icon: Monitor, value: 'system' },
 ];
 </script>
 
@@ -189,55 +212,47 @@ const rightNavItems: NavItem[] = [
                 </div>
 
                 <div class="ml-auto flex items-center space-x-2">
-                    <div class="relative flex items-center space-x-1">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            class="group h-9 w-9 cursor-pointer"
-                        >
-                            <Search
-                                class="size-5 opacity-80 group-hover:opacity-100"
-                            />
-                        </Button>
-
-                        <div class="hidden space-x-1 lg:flex">
-                            <template
-                                v-for="item in rightNavItems"
-                                :key="item.title"
+                    <!-- Theme Toggle -->
+                    <DropdownMenu>
+                        <DropdownMenuTrigger as-child>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                class="h-9 w-9 cursor-pointer"
                             >
-                                <TooltipProvider :delay-duration="0">
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                as-child
-                                                class="group h-9 w-9 cursor-pointer"
-                                            >
-                                                <a
-                                                    :href="toUrl(item.href)"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    <span class="sr-only">{{
-                                                        item.title
-                                                    }}</span>
-                                                    <component
-                                                        :is="item.icon"
-                                                        class="size-5 opacity-80 group-hover:opacity-100"
-                                                    />
-                                                </a>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>{{ item.title }}</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </template>
-                        </div>
-                    </div>
+                                <Sun
+                                    v-if="appearance === 'light'"
+                                    class="h-4 w-4 rotate-0 scale-100 transition-all"
+                                />
+                                <Moon
+                                    v-else-if="appearance === 'dark'"
+                                    class="h-4 w-4 transition-all"
+                                />
+                                <Monitor
+                                    v-else
+                                    class="h-4 w-4 transition-all"
+                                />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" class="w-36">
+                            <DropdownMenuLabel>Tema</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                v-for="item in themeItems"
+                                :key="item.value"
+                                class="cursor-pointer"
+                                @click="updateAppearance(item.value)"
+                            >
+                                <component
+                                    :is="item.icon"
+                                    class="mr-2 h-4 w-4"
+                                />
+                                <span>{{ item.label }}</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
 
+                    <!-- Profile Dropdown -->
                     <DropdownMenu v-if="auth.user">
                         <DropdownMenuTrigger :as-child="true">
                             <Button

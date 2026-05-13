@@ -230,10 +230,41 @@ const handlePrint = () => {
 .bg-gray-50 { background-color: #f9fafb !important; }
 .text-black { color: #000000 !important; }
 
+.print-only { display: none !important; }
+
 @media print {
     .no-print { display: none !important; }
     .print-container { width: 100%; max-width: none; padding: 0; margin: 0; }
     .bg-\[\#ED1C24\] { background-color: #ED1C24 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .text-white { color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .text-gray-400 { color: #9ca3af !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .border-gray-200 { border-color: #e5e7eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .bg-gray-50 { background-color: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .bg-black { background-color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    @page {
+        size: A3 landscape;
+        margin: 10mm;
+    }
+
+    body {
+        font-size: 10px;
+        color: #000000;
+    }
+
+    .pagination-controls { display: none !important; }
+
+    table {
+        font-size: 10px;
+    }
+
+    th, td {
+        padding: 6px 8px !important;
+        font-size: 10px;
+    }
+
+    .rounded-2xl { border-radius: 0 !important; }
+    .rounded-[2.5rem] { border-radius: 0 !important; }
+    .shadow-sm, .shadow-xl { box-shadow: none !important; }
 }
 </style>
