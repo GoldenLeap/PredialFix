@@ -25,7 +25,9 @@ const themeItems = [
     { label: 'Sistema', icon: Monitor, value: 'system' },
 ];
 
-defineProps<Props>();
+defineProps<{
+    user: User;
+}>();
 </script>
 
 <template>
