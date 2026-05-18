@@ -31,10 +31,23 @@ const statusOptions = ['Aberto', 'Em Análise', 'Em Execução', 'Concluído'];
 
 const statusColor = computed(() => {
     const s = form.status?.toLowerCase();
-    if (s?.includes('aberto')) return 'bg-gray-500';
-    if (s?.includes('análise') || s?.includes('analise')) return 'bg-amber-500';
-    if (s?.includes('execução') || s?.includes('execucao') || s?.includes('progresso')) return 'bg-blue-500';
-    if (s?.includes('concluído') || s?.includes('concluido')) return 'bg-emerald-500';
+
+    if (s?.includes('aberto')) {
+return 'bg-gray-500';
+}
+
+    if (s?.includes('análise') || s?.includes('analise')) {
+return 'bg-amber-500';
+}
+
+    if (s?.includes('execução') || s?.includes('execucao') || s?.includes('progresso')) {
+return 'bg-blue-500';
+}
+
+    if (s?.includes('concluído') || s?.includes('concluido')) {
+return 'bg-emerald-500';
+}
+
     return 'bg-gray-400';
 });
 </script>

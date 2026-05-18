@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ArrowLeft, CheckCircle2, Clock, CheckCircle, MapPin, RefreshCcw, Send } from 'lucide-vue-next';
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
     chamado: any;
@@ -31,10 +31,23 @@ const statusOrder: Record<string, number> = {
 
 const getStatusKey = (status: string): string => {
     const s = status.toLowerCase();
-    if (s.includes('análise') || s.includes('analise')) return 'em_analise';
-    if (s.includes('execução') || s.includes('execucao') || s.includes('progresso')) return 'em_execucao';
-    if (s.includes('concluído') || s.includes('concluido')) return 'concluido';
-    if (s.includes('aberto') || s.includes('criado')) return 'criado';
+
+    if (s.includes('análise') || s.includes('analise')) {
+return 'em_analise';
+}
+
+    if (s.includes('execução') || s.includes('execucao') || s.includes('progresso')) {
+return 'em_execucao';
+}
+
+    if (s.includes('concluído') || s.includes('concluido')) {
+return 'concluido';
+}
+
+    if (s.includes('aberto') || s.includes('criado')) {
+return 'criado';
+}
+
     return 'criado';
 };
 
@@ -43,8 +56,14 @@ const getStepStatus = (stepIndex: number) => {
     const currentKey = getStatusKey(props.chamado.status);
     const currentIndex = statusOrder[currentKey] ?? 0;
 
-    if (stepIndex < currentIndex) return 'completed';
-    if (stepIndex === currentIndex) return 'current';
+    if (stepIndex < currentIndex) {
+return 'completed';
+}
+
+    if (stepIndex === currentIndex) {
+return 'current';
+}
+
     return 'pending';
 };
 
@@ -67,16 +86,20 @@ const getStepDate = (stepIndex: number) => {
     };
 
     let hist = null;
-    for (const [key, label] of Object.entries(statusMap)) {
+
+    for (const key of Object.keys(statusMap)) {
         if (stepKey === key) {
             hist = historicos.find((h: any) => {
                 const sn = (h.status_novo || '').toLowerCase();
+
                 return sn.includes(key);
             });
         }
     }
 
-    if (hist) return new Date(hist.data_alteracao).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+    if (hist) {
+return new Date(hist.data_alteracao).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+}
 
     return 'Aguardando...';
 };
@@ -98,23 +121,9 @@ const canUpdateStatus = computed(() => {
 });
 
 const submitStatusUpdate = () => {
-    if (!canUpdateStatus.value) return;
-    const oldStatus = props.chamado.status;
-    router.post(`/chamados/${props.chamado.id}`, {
-        _method: 'PUT',
-        status: statusForm.status,
-        observacao: statusForm.observacao,
-    }, {
-        preserveScroll: true,
-        onSuccess: () => {
-            statusForm.observacao = '';
-        },
-    });
-};
-</script>
-
-<template>
-    <Head :title="`Solicitação #${chamado.id}`" />
+    if (!canUpdateStatus.value) {
+return;
+}
 
     <div class="min-h-screen bg-gray-50 text-black font-sans pb-20">
 

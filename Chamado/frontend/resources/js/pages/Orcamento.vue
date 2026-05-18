@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { DollarSign, Save, RefreshCcw } from 'lucide-vue-next';
 
@@ -147,7 +147,7 @@ const formattedHistory = computed(() =>
                             <div :class="[cat.color, 'h-3 rounded-full transition-all duration-500']" :style="{ width: Math.min((cat.spent / cat.limit * 100) || 0, 100) + '%' }"></div>
                         </div>
                         <div class="flex justify-between text-[10px] font-medium">
-                            <span class="bg-[#ffebcc] text-orange-800 px-2 py-0.5 rounded">Gasto: R$ {{ cat.spent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} de R$ {{ cat.limit.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</span>
+                            <span class="bg-[#ffebcc] text-orange-800 px-2 py-0.5 rounded">Gasto: R$ {{ cat.spent.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }} de R$ {{ cat.limit.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</span>
                             <span class="text-orange-500">{{ (cat.spent / cat.limit * 100).toFixed(1) || 0 }}%</span>
                         </div>
                     </div>

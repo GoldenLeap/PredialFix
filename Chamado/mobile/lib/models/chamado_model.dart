@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 class Chamado {
   final int id;
   final String tipo;
@@ -13,7 +14,7 @@ class Chamado {
   final String createdAt;
   final List<Historico> historicos;
 
-  Chamado({
+  Chamado({ 
     required this.id,
     required this.tipo,
     required this.local,

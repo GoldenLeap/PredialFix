@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
 import type { BreadcrumbItem } from '@/types';
 
 const props = defineProps<{
@@ -28,6 +28,7 @@ const materialStats = computed(() => {
     const total = props.recentMaterials?.length || 0;
     const critico = props.recentMaterials?.filter((m: any) => (m.quantidade_atual || 0) < (m.quantidade_minima || 0) * 0.3).length || 0;
     const baixo = props.recentMaterials?.filter((m: any) => (m.quantidade_atual || 0) < (m.quantidade_minima || 0) && (m.quantidade_atual || 0) >= (m.quantidade_minima || 0) * 0.3).length || 0;
+
     return { total, critico, baixo, adequado: total - critico - baixo };
 });
 </script>

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
 import {
     Package,
     AlertTriangle,
@@ -12,6 +10,8 @@ import {
     Calendar,
     ArrowUpDown
 } from 'lucide-vue-next';
+import { ref, computed } from 'vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 const breadcrumbs = [
     { title: 'Painel', href: '/dashboard' },
@@ -29,6 +29,7 @@ const categories = computed(() => [...new Set(props.materials?.map((m: any) => m
 
 const filteredMaterials = computed(() => {
     let result = props.materials || [];
+
     if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase();
         result = result.filter((m: any) =>
@@ -37,9 +38,11 @@ const filteredMaterials = computed(() => {
             m.localizacao.toLowerCase().includes(q)
         );
     }
+
     if (selectedCategory.value) {
         result = result.filter((m: any) => m.categoria === selectedCategory.value);
     }
+
     return result;
 });
 
@@ -55,8 +58,15 @@ const getStatusColor = (status: string) => {
 const getStatusClass = (material: any) => {
     const qty = material.quantidade_atual || 0;
     const min = material.quantidade_minima || 0;
-    if (qty < min * 0.3) return { status: 'Crítico', class: 'bg-red-500 text-white' };
-    if (qty < min) return { status: 'Baixo', class: 'bg-orange-500 text-white' };
+
+    if (qty < min * 0.3) {
+return { status: 'Crítico', class: 'bg-red-500 text-white' };
+}
+
+    if (qty < min) {
+return { status: 'Baixo', class: 'bg-orange-500 text-white' };
+}
+
     return { status: 'Adequado', class: 'bg-green-500 text-white' };
 };
 </script>

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\ChamadoController::index
- * @see app/Http/Controllers/ChamadoController.php:14
+ * @see app/Http/Controllers/ChamadoController.php:13
  * @route '/chamados'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::index
- * @see app/Http/Controllers/ChamadoController.php:14
+ * @see app/Http/Controllers/ChamadoController.php:13
  * @route '/chamados'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::index
- * @see app/Http/Controllers/ChamadoController.php:14
+ * @see app/Http/Controllers/ChamadoController.php:13
  * @route '/chamados'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\ChamadoController::index
- * @see app/Http/Controllers/ChamadoController.php:14
+ * @see app/Http/Controllers/ChamadoController.php:13
  * @route '/chamados'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\ChamadoController::index
- * @see app/Http/Controllers/ChamadoController.php:14
+ * @see app/Http/Controllers/ChamadoController.php:13
  * @route '/chamados'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\ChamadoController::index
- * @see app/Http/Controllers/ChamadoController.php:14
+ * @see app/Http/Controllers/ChamadoController.php:13
  * @route '/chamados'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\ChamadoController::index
- * @see app/Http/Controllers/ChamadoController.php:14
+ * @see app/Http/Controllers/ChamadoController.php:13
  * @route '/chamados'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\ChamadoController::create
- * @see app/Http/Controllers/ChamadoController.php:29
+ * @see app/Http/Controllers/ChamadoController.php:28
  * @route '/chamados/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::create
- * @see app/Http/Controllers/ChamadoController.php:29
+ * @see app/Http/Controllers/ChamadoController.php:28
  * @route '/chamados/create'
  */
 create.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::create
- * @see app/Http/Controllers/ChamadoController.php:29
+ * @see app/Http/Controllers/ChamadoController.php:28
  * @route '/chamados/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -112,7 +112,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\ChamadoController::create
- * @see app/Http/Controllers/ChamadoController.php:29
+ * @see app/Http/Controllers/ChamadoController.php:28
  * @route '/chamados/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -122,7 +122,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\ChamadoController::create
- * @see app/Http/Controllers/ChamadoController.php:29
+ * @see app/Http/Controllers/ChamadoController.php:28
  * @route '/chamados/create'
  */
     const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -132,7 +132,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\ChamadoController::create
- * @see app/Http/Controllers/ChamadoController.php:29
+ * @see app/Http/Controllers/ChamadoController.php:28
  * @route '/chamados/create'
  */
         createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -141,7 +141,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\ChamadoController::create
- * @see app/Http/Controllers/ChamadoController.php:29
+ * @see app/Http/Controllers/ChamadoController.php:28
  * @route '/chamados/create'
  */
         createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -157,7 +157,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\ChamadoController::store
- * @see app/Http/Controllers/ChamadoController.php:34
+ * @see app/Http/Controllers/ChamadoController.php:33
  * @route '/chamados'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +172,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::store
- * @see app/Http/Controllers/ChamadoController.php:34
+ * @see app/Http/Controllers/ChamadoController.php:33
  * @route '/chamados'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -181,7 +181,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::store
- * @see app/Http/Controllers/ChamadoController.php:34
+ * @see app/Http/Controllers/ChamadoController.php:33
  * @route '/chamados'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -191,7 +191,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\ChamadoController::store
- * @see app/Http/Controllers/ChamadoController.php:34
+ * @see app/Http/Controllers/ChamadoController.php:33
  * @route '/chamados'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -201,7 +201,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\ChamadoController::store
- * @see app/Http/Controllers/ChamadoController.php:34
+ * @see app/Http/Controllers/ChamadoController.php:33
  * @route '/chamados'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -212,10 +212,10 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\ChamadoController::show
- * @see app/Http/Controllers/ChamadoController.php:49
+ * @see app/Http/Controllers/ChamadoController.php:48
  * @route '/chamados/{chamado}'
  */
-export const show = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -227,10 +227,10 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::show
- * @see app/Http/Controllers/ChamadoController.php:49
+ * @see app/Http/Controllers/ChamadoController.php:48
  * @route '/chamados/{chamado}'
  */
-show.url = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+show.url = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { chamado: args }
     }
@@ -260,48 +260,48 @@ show.url = (args: { chamado: number | { id: number } } | [chamado: number | { id
 
 /**
 * @see \App\Http\Controllers\ChamadoController::show
- * @see app/Http/Controllers/ChamadoController.php:49
+ * @see app/Http/Controllers/ChamadoController.php:48
  * @route '/chamados/{chamado}'
  */
-show.get = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
 /**
 * @see \App\Http\Controllers\ChamadoController::show
- * @see app/Http/Controllers/ChamadoController.php:49
+ * @see app/Http/Controllers/ChamadoController.php:48
  * @route '/chamados/{chamado}'
  */
-show.head = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
 
     /**
 * @see \App\Http\Controllers\ChamadoController::show
- * @see app/Http/Controllers/ChamadoController.php:49
+ * @see app/Http/Controllers/ChamadoController.php:48
  * @route '/chamados/{chamado}'
  */
-    const showForm = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    const showForm = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: show.url(args, options),
         method: 'get',
     })
 
             /**
 * @see \App\Http\Controllers\ChamadoController::show
- * @see app/Http/Controllers/ChamadoController.php:49
+ * @see app/Http/Controllers/ChamadoController.php:48
  * @route '/chamados/{chamado}'
  */
-        showForm.get = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        showForm.get = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: show.url(args, options),
             method: 'get',
         })
             /**
 * @see \App\Http\Controllers\ChamadoController::show
- * @see app/Http/Controllers/ChamadoController.php:49
+ * @see app/Http/Controllers/ChamadoController.php:48
  * @route '/chamados/{chamado}'
  */
-        showForm.head = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        showForm.head = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: show.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
@@ -317,7 +317,7 @@ show.head = (args: { chamado: number | { id: number } } | [chamado: number | { i
  * @see app/Http/Controllers/ChamadoController.php:58
  * @route '/chamados/{chamado}/edit'
  */
-export const edit = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -332,7 +332,7 @@ edit.definition = {
  * @see app/Http/Controllers/ChamadoController.php:58
  * @route '/chamados/{chamado}/edit'
  */
-edit.url = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+edit.url = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { chamado: args }
     }
@@ -365,7 +365,7 @@ edit.url = (args: { chamado: number | { id: number } } | [chamado: number | { id
  * @see app/Http/Controllers/ChamadoController.php:58
  * @route '/chamados/{chamado}/edit'
  */
-edit.get = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -374,7 +374,7 @@ edit.get = (args: { chamado: number | { id: number } } | [chamado: number | { id
  * @see app/Http/Controllers/ChamadoController.php:58
  * @route '/chamados/{chamado}/edit'
  */
-edit.head = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -384,7 +384,7 @@ edit.head = (args: { chamado: number | { id: number } } | [chamado: number | { i
  * @see app/Http/Controllers/ChamadoController.php:58
  * @route '/chamados/{chamado}/edit'
  */
-    const editForm = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    const editForm = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: edit.url(args, options),
         method: 'get',
     })
@@ -394,7 +394,7 @@ edit.head = (args: { chamado: number | { id: number } } | [chamado: number | { i
  * @see app/Http/Controllers/ChamadoController.php:58
  * @route '/chamados/{chamado}/edit'
  */
-        editForm.get = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        editForm.get = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, options),
             method: 'get',
         })
@@ -403,7 +403,7 @@ edit.head = (args: { chamado: number | { id: number } } | [chamado: number | { i
  * @see app/Http/Controllers/ChamadoController.php:58
  * @route '/chamados/{chamado}/edit'
  */
-        editForm.head = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        editForm.head = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
@@ -416,10 +416,10 @@ edit.head = (args: { chamado: number | { id: number } } | [chamado: number | { i
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\ChamadoController::update
- * @see app/Http/Controllers/ChamadoController.php:66
+ * @see app/Http/Controllers/ChamadoController.php:67
  * @route '/chamados/{chamado}'
  */
-export const update = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -431,10 +431,10 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::update
- * @see app/Http/Controllers/ChamadoController.php:66
+ * @see app/Http/Controllers/ChamadoController.php:67
  * @route '/chamados/{chamado}'
  */
-update.url = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+update.url = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { chamado: args }
     }
@@ -464,29 +464,29 @@ update.url = (args: { chamado: number | { id: number } } | [chamado: number | { 
 
 /**
 * @see \App\Http\Controllers\ChamadoController::update
- * @see app/Http/Controllers/ChamadoController.php:66
+ * @see app/Http/Controllers/ChamadoController.php:67
  * @route '/chamados/{chamado}'
  */
-update.put = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
 /**
 * @see \App\Http\Controllers\ChamadoController::update
- * @see app/Http/Controllers/ChamadoController.php:66
+ * @see app/Http/Controllers/ChamadoController.php:67
  * @route '/chamados/{chamado}'
  */
-update.patch = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
 
     /**
 * @see \App\Http\Controllers\ChamadoController::update
- * @see app/Http/Controllers/ChamadoController.php:66
+ * @see app/Http/Controllers/ChamadoController.php:67
  * @route '/chamados/{chamado}'
  */
-    const updateForm = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const updateForm = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PUT',
@@ -498,10 +498,10 @@ update.patch = (args: { chamado: number | { id: number } } | [chamado: number | 
 
             /**
 * @see \App\Http\Controllers\ChamadoController::update
- * @see app/Http/Controllers/ChamadoController.php:66
+ * @see app/Http/Controllers/ChamadoController.php:67
  * @route '/chamados/{chamado}'
  */
-        updateForm.put = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.put = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
@@ -512,10 +512,10 @@ update.patch = (args: { chamado: number | { id: number } } | [chamado: number | 
         })
             /**
 * @see \App\Http\Controllers\ChamadoController::update
- * @see app/Http/Controllers/ChamadoController.php:66
+ * @see app/Http/Controllers/ChamadoController.php:67
  * @route '/chamados/{chamado}'
  */
-        updateForm.patch = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.patch = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
@@ -528,10 +528,10 @@ update.patch = (args: { chamado: number | { id: number } } | [chamado: number | 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\ChamadoController::destroy
- * @see app/Http/Controllers/ChamadoController.php:85
+ * @see app/Http/Controllers/ChamadoController.php:87
  * @route '/chamados/{chamado}'
  */
-export const destroy = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -543,10 +543,10 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::destroy
- * @see app/Http/Controllers/ChamadoController.php:85
+ * @see app/Http/Controllers/ChamadoController.php:87
  * @route '/chamados/{chamado}'
  */
-destroy.url = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { chamado: args }
     }
@@ -576,20 +576,20 @@ destroy.url = (args: { chamado: number | { id: number } } | [chamado: number | {
 
 /**
 * @see \App\Http\Controllers\ChamadoController::destroy
- * @see app/Http/Controllers/ChamadoController.php:85
+ * @see app/Http/Controllers/ChamadoController.php:87
  * @route '/chamados/{chamado}'
  */
-destroy.delete = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
 
     /**
 * @see \App\Http\Controllers\ChamadoController::destroy
- * @see app/Http/Controllers/ChamadoController.php:85
+ * @see app/Http/Controllers/ChamadoController.php:87
  * @route '/chamados/{chamado}'
  */
-    const destroyForm = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const destroyForm = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'DELETE',
@@ -601,10 +601,10 @@ destroy.delete = (args: { chamado: number | { id: number } } | [chamado: number 
 
             /**
 * @see \App\Http\Controllers\ChamadoController::destroy
- * @see app/Http/Controllers/ChamadoController.php:85
+ * @see app/Http/Controllers/ChamadoController.php:87
  * @route '/chamados/{chamado}'
  */
-        destroyForm.delete = (args: { chamado: number | { id: number } } | [chamado: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        destroyForm.delete = (args: { chamado: string | number | { id: string | number } } | [chamado: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',

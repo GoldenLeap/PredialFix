@@ -2,14 +2,8 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-import {
     Search,
-    Filter,
-    FileDown,
-    Download,
-    ChevronLeft,
-    ChevronRight
-} from 'lucide-vue-next';
+    FileDown
 
 const breadcrumbs = [
     { title: 'Painel', href: '/dashboard' },

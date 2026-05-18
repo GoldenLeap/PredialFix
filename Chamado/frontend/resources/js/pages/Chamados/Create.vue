@@ -17,6 +17,7 @@ const previewUrl = ref<string | null>(null);
 
 const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement;
+
     if (target.files && target.files.length > 0) {
         form.imagem = target.files[0];
         previewUrl.value = URL.createObjectURL(target.files[0]);

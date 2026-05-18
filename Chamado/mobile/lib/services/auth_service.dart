@@ -67,25 +67,3 @@ class AuthService {
     return true;
   }
 }
-    }catch(e){
-      print("Erro de conexão $e");
-      return false;
-    }
-  }
-
-  // Pegar o token 
-
-  Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
-  }
-
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-
-  }
-
-
-
-}

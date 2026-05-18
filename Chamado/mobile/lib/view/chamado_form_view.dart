@@ -163,12 +163,13 @@ class _ChamadoFormViewState extends State<ChamadoFormView> {
     required T value,
     required List<T> items,
     required ValueChanged<T?> onChanged,
-    String Function(T?)? validator,
+    String? Function(T?)? validator,
   }) {
     return DropdownButtonFormField<T>(
       value: value,
       items: items.map((item) {
-        return DropdownMenuItem(value: item, child: Text(item));
+        return DropdownMenuItem(value: item, child: Text(item.toString()));
+
       }).toList(),
       onChanged: onChanged,
       validator: validator,

@@ -21,13 +21,21 @@ const itemsPerPage = 10;
 
 const filteredChamados = computed(() => {
     let result = props.chamados;
-    if (startDate.value) result = result.filter(c => new Date(c.created_at) >= new Date(startDate.value));
+
+    if (startDate.value) {
+result = result.filter(c => new Date(c.created_at) >= new Date(startDate.value));
+}
+
     if (endDate.value) {
         const end = new Date(endDate.value);
         end.setDate(end.getDate() + 1);
         result = result.filter(c => new Date(c.created_at) < end);
     }
-    if (category.value) result = result.filter(c => c.tipo === category.value);
+
+    if (category.value) {
+result = result.filter(c => c.tipo === category.value);
+}
+
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
         result = result.filter(c => 
@@ -37,23 +45,30 @@ const filteredChamados = computed(() => {
             (c.assunto && c.assunto.toLowerCase().includes(query))
         );
     }
+
     return result;
 });
 
 const paginatedChamados = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
+
     return filteredChamados.value.slice(start, start + itemsPerPage);
 });
 
 const totalPages = computed(() => Math.ceil(filteredChamados.value.length / itemsPerPage));
 
 const changePage = (page: number) => {
-    if (page >= 1 && page <= totalPages.value) currentPage.value = page;
+    if (page >= 1 && page <= totalPages.value) {
+currentPage.value = page;
+}
 };
 
 // Exportações
 const exportCSV = () => {
-    if (filteredChamados.value.length === 0) return;
+    if (filteredChamados.value.length === 0) {
+return;
+}
+
     const headers = ['ID do chamado', 'Data', 'Categoria', 'Assunto', 'Status'];
     const rows = filteredChamados.value.map(c => [c.id, new Date(c.created_at).toLocaleDateString(), `"${c.tipo}"`, `"${c.assunto || c.descricao || c.local}"`, `"${c.status}"`]);
     const csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + "\n" + rows.map(e => e.join(",")).join("\n");
