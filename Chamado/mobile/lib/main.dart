@@ -1,14 +1,16 @@
+import 'package:mobile/view_models/home_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'view/login_view.dart';
 import 'view_models/login_view_model.dart';
 import 'view/home_view.dart';
-
+import 'services/sound_navigation_oberver.dart';
 
 void main(){
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (_)=>LoginViewModel()),
+      ChangeNotifierProvider(create: (_)=>HomeViewModel())
       // Cria uma instancia das lógicas e deixa guardada no topo para caso alguma página
       // precise usar
     ],
@@ -35,7 +37,10 @@ class PredialFix extends StatelessWidget{
       routes: {
         '/': (context) => const LoginView(),
         '/home': (context) => const HomeView(),
-      }
+      },
+      navigatorObservers: [
+        SoundNavigationOberver(),
+      ],
     );
   }
 }

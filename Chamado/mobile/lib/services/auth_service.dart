@@ -46,8 +46,21 @@ class AuthService{
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    final token = prefs.getString('token');
 
+    if (token != null) {
+      final url = Uri.parse("${ApiConfig.baseUrl}/logout");
+      try {
+        await http.post(
+          url,
+          headers: ApiConfig.headers(token),
+        );
+      } catch (e) {
+        print("Erro ao deslogar no servidor: $e");
+      }
+    }
+
+    await prefs.clear();
   }
 
 
