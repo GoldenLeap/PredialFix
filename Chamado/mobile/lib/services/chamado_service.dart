@@ -50,27 +50,34 @@ class ChamadoService {
     required String prioridade,
     required String tipoServico,
     String? observacao,
+    String? imagemPath,
   }) async {
     final token = await _getToken();
     if (token == null) throw Exception('Token não encontrado');
 
     final url = Uri.parse('${ApiConfig.baseUrl}/chamados');
-    final body = {
-      'tipo': tipo,
-      'local': local,
-      'assunto': assunto,
-      'descricao': descricao,
-      'prioridade': prioridade,
-      'tipo_servico': tipoServico,
-      if (observacao != null && observacao.isNotEmpty)
-        'observacao': observacao,
-    };
+    final headers = ApiConfig.headers(token);
+    headers.remove('Content-Type');
 
-    final response = await http.post(
-      url,
-      headers: ApiConfig.headers(token),
-      body: jsonEncode(body),
-    );
+    final request = http.MultipartRequest('POST', url);
+    request.headers.addAll(headers);
+
+    request.fields['tipo'] = tipo;
+    request.fields['local'] = local;
+    request.fields['assunto'] = assunto;
+    request.fields['descricao'] = descricao;
+    request.fields['prioridade'] = prioridade;
+    request.fields['tipo_servico'] = tipoServico;
+    if (observacao != null && observacao.isNotEmpty) {
+      request.fields['observacao'] = observacao;
+    }
+
+    if (imagemPath != null && imagemPath.isNotEmpty) {
+      request.files.add(await http.MultipartFile.fromPath('imagem', imagemPath));
+    }
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 201 || response.statusCode == 200) {
       final data = jsonDecode(response.body);

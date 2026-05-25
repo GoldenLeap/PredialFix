@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../models/chamado_model.dart';
 import '../view_models/home_view_model.dart';
@@ -20,6 +22,8 @@ class _ChamadoFormViewState extends State<ChamadoFormView> {
   String _prioridade = 'Média';
   String _tipoServico = 'Interno';
   String _observacao = '';
+  String? _selectedImagePath;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +108,11 @@ class _ChamadoFormViewState extends State<ChamadoFormView> {
                 maxLength: 1000,
                 onSaved: (v) => _observacao = v ?? '',
               ),
+              const SizedBox(height: 16),
+
+              _buildSectionTitle('Imagem do Problema (opcional)'),
+              const SizedBox(height: 8),
+              _buildImagePickerContainer(),
               const SizedBox(height: 24),
 
               SizedBox(
@@ -186,6 +195,164 @@ class _ChamadoFormViewState extends State<ChamadoFormView> {
     );
   }
 
+  Future<void> _pickImage() async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: Color(0xFFFF0000)),
+                title: const Text('Galeria de Fotos'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final XFile? image = await _picker.pickImage(
+                    source: ImageSource.gallery,
+                    maxWidth: 1920,
+                    maxHeight: 1080,
+                    imageQuality: 85,
+                  );
+                  if (image != null) {
+                    setState(() {
+                      _selectedImagePath = image.path;
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera, color: Color(0xFFFF0000)),
+                title: const Text('Câmera'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final XFile? image = await _picker.pickImage(
+                    source: ImageSource.camera,
+                    maxWidth: 1920,
+                    maxHeight: 1080,
+                    imageQuality: 85,
+                  );
+                  if (image != null) {
+                    setState(() {
+                      _selectedImagePath = image.path;
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildImagePickerContainer() {
+    return GestureDetector(
+      onTap: _pickImage,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Colors.grey[300]!,
+            width: 1.5,
+          ),
+        ),
+        child: _selectedImagePath == null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.cloud_upload_outlined, size: 48, color: Colors.blue[600]),
+                  const SizedBox(height: 12),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: const TextStyle(fontSize: 14, color: Colors.black),
+                      children: [
+                        TextSpan(
+                          text: 'Clique para enviar ',
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue[600]),
+                        ),
+                        const TextSpan(
+                          text: 'a imagem',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'PNG, JPG ATÉ 10MB',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      Container(
+                        height: 180,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          image: DecorationImage(
+                            image: FileImage(File(_selectedImagePath!)),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Material(
+                          color: Colors.black.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(20),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: () {
+                              setState(() {
+                                _selectedImagePath = null;
+                              });
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(6),
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton.icon(
+                    onPressed: _pickImage,
+                    icon: const Icon(Icons.loop, size: 18, color: Colors.blue),
+                    label: const Text(
+                      'Trocar Imagem',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
@@ -208,26 +375,26 @@ class _ChamadoFormViewState extends State<ChamadoFormView> {
       prioridade: _prioridade,
       tipoServico: _tipoServico,
       observacao: _observacao.isNotEmpty ? _observacao : null,
+      imagemPath: _selectedImagePath,
     );
 
-    if (context.mounted) {
-      Navigator.pop(context); // dismiss loading
-      if (success != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Chamado #${success.id} criado com sucesso!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erro ao criar chamado: ${viewModel.errorMessage}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+    if (!mounted) return;
+    Navigator.pop(context); // dismiss loading
+    if (success != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Chamado #${success.id} criado com sucesso!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao criar chamado: ${viewModel.errorMessage}'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 }

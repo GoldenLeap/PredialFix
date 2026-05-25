@@ -4,19 +4,26 @@ import 'package:flutter/material.dart';
 import 'view/login_view.dart';
 import 'view_models/login_view_model.dart';
 import 'view/home_view.dart';
-import 'view_models/home_view_model.dart';
+import 'services/sound_navigation_observer.dart';
+import 'services/auth_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final authService = AuthService();
+  final token = await authService.getToken();
+  final initialRoute = (token != null && token.isNotEmpty) ? '/home' : '/';
+
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => LoginViewModel()),
       ChangeNotifierProvider(create: (_) => HomeViewModel()),
-    ], child: const PredialFix()),
+    ], child: PredialFix(initialRoute: initialRoute)),
   );
 }
 
 class PredialFix extends StatelessWidget {
-  const PredialFix({super.key});
+  final String initialRoute;
+  const PredialFix({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +34,13 @@ class PredialFix extends StatelessWidget {
         primarySwatch: Colors.red,
         fontFamily: 'Roboto',
       ),
-      initialRoute: '/',
+      initialRoute: initialRoute,
       routes: {
         '/': (context) => const LoginView(),
         '/home': (context) => const HomeView(),
       },
       navigatorObservers: [
-        SoundNavigationOberver(),
+        SoundNavigationObserver(),
       ],
     );
   }

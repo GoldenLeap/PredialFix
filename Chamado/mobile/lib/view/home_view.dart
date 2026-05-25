@@ -46,15 +46,17 @@ class _HomeViewState extends State<HomeView> {
             ],
           ),
           body: _buildBody(context, viewModel),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () => _navigateToNewChamado(context),
-            backgroundColor: const Color(0xFFFF0000),
-            icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text(
-              'Novo Chamado',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ),
+          floatingActionButton: viewModel.userCargo == 'solicitante'
+              ? FloatingActionButton.extended(
+                  onPressed: () => _navigateToNewChamado(context),
+                  backgroundColor: const Color(0xFFFF0000),
+                  icon: const Icon(Icons.add, color: Colors.white),
+                  label: const Text(
+                    'Novo Chamado',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                )
+              : null,
         );
       },
     );
