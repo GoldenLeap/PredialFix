@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Chamado;
+use App\Models\Material;
 use App\Models\User;
 use Inertia\Inertia;
 
@@ -15,7 +16,8 @@ class DashboardController extends Controller
         $user = $request->user();
 
         if ($user->cargo === 'solicitante') {
-            $recentChamados = Chamado::where('usuario_id', $user->id)
+            $recentChamados = Chamado::with('historicos')
+                ->where('usuario_id', $user->id)
                 ->whereIn('status', ['Aberto', 'Em Análise', 'Em Execução'])
                 ->latest()
                 ->take(5)
@@ -34,11 +36,20 @@ class DashboardController extends Controller
             'concluidos' => Chamado::where('status', 'Concluído')->count(),
         ];
 
-        $recentChamados = Chamado::with('user')->latest()->take(5)->get();
+        $recentChamados = Chamado::with(['user', 'historicos'])->latest()->take(5)->get();
+
+        $recentMaterials = Material::latest()->take(5)->get();
+
+        $topUsers = User::withCount('chamados')
+            ->orderByDesc('chamados_count')
+            ->take(5)
+            ->get();
 
         return Inertia::render('Dashboard', [
             'stats' => $stats,
             'recentChamados' => $recentChamados,
+            'recentMaterials' => $recentMaterials,
+            'topUsers' => $topUsers,
         ]);
     }
 }

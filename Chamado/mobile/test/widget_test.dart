@@ -7,8 +7,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:mobile/main.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile/view/login_view.dart';
+import 'package:mobile/view_models/login_view_model.dart';
+import 'package:mobile/view_models/home_view_model.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
@@ -23,8 +25,8 @@ void main() {
     await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the login page displays institutional email text and the enter button
+    expect(find.text('E-MAIL INSTITUCIONAL'), findsOneWidget);
+    expect(find.text('ENTRAR NO SISTEMA'), findsOneWidget);
   });
 }

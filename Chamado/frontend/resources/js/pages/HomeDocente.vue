@@ -22,6 +22,7 @@ const toggleNotifications = () => {
 // Fechar ao clicar fora (opcional, básico)
 const closeDropdown = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
+
     if (!target.closest('.notification-container')) {
         showNotificationsModal.value = false;
     }
@@ -32,7 +33,7 @@ onUnmounted(() => document.removeEventListener('click', closeDropdown));
 
 // Gerar notificações a partir do histórico recente dos chamados
 const notifications = computed(() => {
-    let notifs: any[] = [];
+    const notifs: any[] = [];
     props.recentChamados.forEach(c => {
         if (c.historicos && c.historicos.length > 0) {
             // Pega o último histórico de cada chamado
@@ -47,35 +48,68 @@ const notifications = computed(() => {
             });
         }
     });
+
     // Ordena da mais recente para a mais antiga e mostra as últimas 5
     return notifs.sort((a, b) => b.data.getTime() - a.data.getTime()).slice(0, 5);
 });
 
 const getStatusClass = (status: string) => {
     const s = status ? status.toLowerCase() : '';
-    if (s.includes('execução') || s.includes('progresso')) return 'bg-[#0081C9] text-white';
-    if (s.includes('análise')) return 'bg-[#F2994A] text-white';
-    if (s.includes('aberto')) return 'bg-[#BDBDBD] text-white';
-    if (s.includes('concluído')) return 'bg-[#27AE60] text-white';
+
+    if (s.includes('execução') || s.includes('progresso')) {
+return 'bg-[#0081C9] text-white';
+}
+
+    if (s.includes('análise')) {
+return 'bg-[#F2994A] text-white';
+}
+
+    if (s.includes('aberto')) {
+return 'bg-[#BDBDBD] text-white';
+}
+
+    if (s.includes('concluído')) {
+return 'bg-[#27AE60] text-white';
+}
+
     return 'bg-gray-200 text-gray-700';
 };
 
 const getIcon = (tipo: string) => {
     const t = tipo ? tipo.toLowerCase() : '';
-    if (t.includes('vazamento') || t.includes('água') || t.includes('banheiro')) return Droplet;
-    if (t.includes('luz') || t.includes('lâmpada') || t.includes('elétrica')) return Lightbulb;
+
+    if (t.includes('vazamento') || t.includes('água') || t.includes('banheiro')) {
+return Droplet;
+}
+
+    if (t.includes('luz') || t.includes('lâmpada') || t.includes('elétrica')) {
+return Lightbulb;
+}
+
     return Wrench;
 };
 
 const formatTime = (date: string) => {
-    if (!date) return '---';
+    if (!date) {
+return '---';
+}
+
     const created = new Date(date);
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60));
     
-    if (diffInHours < 1) return 'Menos de 1 hora atrás';
-    if (diffInHours === 1) return '1 hora atrás';
-    if (diffInHours < 24) return `${diffInHours} horas atrás`;
+    if (diffInHours < 1) {
+return 'Menos de 1 hora atrás';
+}
+
+    if (diffInHours === 1) {
+return '1 hora atrás';
+}
+
+    if (diffInHours < 24) {
+return `${diffInHours} horas atrás`;
+}
+
     return created.toLocaleDateString();
 };
 </script>

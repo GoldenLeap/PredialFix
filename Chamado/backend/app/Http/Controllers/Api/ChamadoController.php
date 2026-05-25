@@ -15,14 +15,9 @@ class ChamadoController extends Controller
     public function index()
     {
         $chamados = auth()->user()->chamados()
+            ->with('historicos')
             ->latest()
-            ->get()
-            ->map(function ($chamado) {
-                if ($chamado->imagem_path) {
-                    $chamado->imagem_url = asset('storage/' . $chamado->imagem_path);
-                }
-                return $chamado;
-            });
+            ->get();
 
         return response()->json($chamados);
     }
@@ -37,6 +32,7 @@ class ChamadoController extends Controller
             'prioridade' => 'required|in:Baixa,Média,Alta',
             'tipo_servico' => 'required|in:Interno,Externo',
             'imagem' => 'nullable|image|max:10240', // Max 10MB
+            'observacao' => 'nullable|string|max:1000',
         ]);
 
         $data = $validated;
@@ -47,6 +43,8 @@ class ChamadoController extends Controller
             $path = $request->file('imagem')->store('chamados', 'public');
             $data['imagem_path'] = $path;
         }
+
+        unset($data['imagem']);
 
         $chamado = Chamado::create($data);
 
@@ -60,15 +58,28 @@ class ChamadoController extends Controller
     {
         $chamado = Chamado::findOrFail($id);
 
-        if ($chamado->usuario_id !== auth()->id()) {
+        // Auth do chamado ou Responsável ou Admin
+        if ($chamado->usuario_id !== auth()->id() && auth()->user()->cargo !== 'responsavel' && auth()->user()->cargo !== 'admin') {
             return response()->json(['message' => 'Não autorizado'], 403);
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:Aberto,Em Análise,Em Execução,Concluído'
+            'status' => 'required|in:Aberto,Em Análise,Em Execução,Concluído',
+            'observacao' => 'nullable|string|max:1000',
         ]);
 
+        $oldStatus = $chamado->status;
         $chamado->update($validated);
+
+        if ($request->status !== $oldStatus) {
+            $chamado->historicos()->create([
+                'status_anterior' => $oldStatus,
+                'status_novo' => $request->status,
+                'alterado_por' => auth()->id(),
+                'observacao' => $request->input('observacao', null),
+                'data_alteracao' => now(),
+            ]);
+        }
 
         return response()->json([
             'message' => "Chamado atualizado com sucesso!",

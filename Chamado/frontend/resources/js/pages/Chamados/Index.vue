@@ -21,13 +21,21 @@ const itemsPerPage = 10;
 
 const filteredChamados = computed(() => {
     let result = props.chamados;
-    if (startDate.value) result = result.filter(c => new Date(c.created_at) >= new Date(startDate.value));
+
+    if (startDate.value) {
+result = result.filter(c => new Date(c.created_at) >= new Date(startDate.value));
+}
+
     if (endDate.value) {
         const end = new Date(endDate.value);
         end.setDate(end.getDate() + 1);
         result = result.filter(c => new Date(c.created_at) < end);
     }
-    if (category.value) result = result.filter(c => c.tipo === category.value);
+
+    if (category.value) {
+result = result.filter(c => c.tipo === category.value);
+}
+
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
         result = result.filter(c => 
@@ -37,23 +45,30 @@ const filteredChamados = computed(() => {
             (c.assunto && c.assunto.toLowerCase().includes(query))
         );
     }
+
     return result;
 });
 
 const paginatedChamados = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
+
     return filteredChamados.value.slice(start, start + itemsPerPage);
 });
 
 const totalPages = computed(() => Math.ceil(filteredChamados.value.length / itemsPerPage));
 
 const changePage = (page: number) => {
-    if (page >= 1 && page <= totalPages.value) currentPage.value = page;
+    if (page >= 1 && page <= totalPages.value) {
+currentPage.value = page;
+}
 };
 
 // Exportações
 const exportCSV = () => {
-    if (filteredChamados.value.length === 0) return;
+    if (filteredChamados.value.length === 0) {
+return;
+}
+
     const headers = ['ID do chamado', 'Data', 'Categoria', 'Assunto', 'Status'];
     const rows = filteredChamados.value.map(c => [c.id, new Date(c.created_at).toLocaleDateString(), `"${c.tipo}"`, `"${c.assunto || c.descricao || c.local}"`, `"${c.status}"`]);
     const csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + "\n" + rows.map(e => e.join(",")).join("\n");
@@ -67,6 +82,20 @@ const exportCSV = () => {
 
 const goToDetails = (id: number) => {
     router.visit(`/chamados/${id}`);
+};
+
+const clearFilters = () => {
+    startDate.value = '';
+    endDate.value = '';
+    category.value = '';
+    searchQuery.value = '';
+    currentPage.value = 1;
+};
+
+const handlePrint = () => {
+    if (typeof window !== 'undefined') {
+        window.print();
+    }
 };
 </script>
 
@@ -92,7 +121,7 @@ const goToDetails = (id: number) => {
                     <p class="text-gray-500 text-base">Visualize e gerencie todos os chamados registrados no sistema</p>
                 </div>
                 <div class="flex gap-4 no-print">
-                    <button @click="window.print()" class="flex items-center gap-2 px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-bold transition-all cursor-pointer shadow-sm bg-white">
+                    <button @click="handlePrint" class="flex items-center gap-2 px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-bold transition-all cursor-pointer shadow-sm bg-white">
                         <Download class="w-4 h-4" />
                         Salvar como PDF
                     </button>
@@ -127,8 +156,8 @@ const goToDetails = (id: number) => {
                         </div>
                     </div>
                     <div class="flex flex-col justify-end">
-                        <button class="bg-[#ED1C24] hover:bg-red-700 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
-                            Filtrar
+                        <button @click="clearFilters" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
+                            Limpar Filtros
                         </button>
                     </div>
                 </div>
@@ -216,10 +245,41 @@ const goToDetails = (id: number) => {
 .bg-gray-50 { background-color: #f9fafb !important; }
 .text-black { color: #000000 !important; }
 
+.print-only { display: none !important; }
+
 @media print {
     .no-print { display: none !important; }
     .print-container { width: 100%; max-width: none; padding: 0; margin: 0; }
     .bg-\[\#ED1C24\] { background-color: #ED1C24 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .text-white { color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .text-gray-400 { color: #9ca3af !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .border-gray-200 { border-color: #e5e7eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .bg-gray-50 { background-color: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .bg-black { background-color: #000000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    @page {
+        size: A3 landscape;
+        margin: 10mm;
+    }
+
+    body {
+        font-size: 10px;
+        color: #000000;
+    }
+
+    .pagination-controls { display: none !important; }
+
+    table {
+        font-size: 10px;
+    }
+
+    th, td {
+        padding: 6px 8px !important;
+        font-size: 10px;
+    }
+
+    .rounded-2xl { border-radius: 0 !important; }
+    .rounded-[2.5rem] { border-radius: 0 !important; }
+    .shadow-sm, .shadow-xl { box-shadow: none !important; }
 }
 </style>

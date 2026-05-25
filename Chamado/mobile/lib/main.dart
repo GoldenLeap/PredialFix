@@ -4,23 +4,18 @@ import 'package:flutter/material.dart';
 import 'view/login_view.dart';
 import 'view_models/login_view_model.dart';
 import 'view/home_view.dart';
-import 'services/sound_navigation_oberver.dart';
+import 'view_models/home_view_model.dart';
 
-void main(){
+void main() {
   runApp(
     MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_)=>LoginViewModel()),
-      ChangeNotifierProvider(create: (_)=>HomeViewModel())
-      // Cria uma instancia das lógicas e deixa guardada no topo para caso alguma página
-      // precise usar
-    ],
-    child: const PredialFix(),
-    ),
+      ChangeNotifierProvider(create: (_) => LoginViewModel()),
+      ChangeNotifierProvider(create: (_) => HomeViewModel()),
+    ], child: const PredialFix()),
   );
-
 }
 
-class PredialFix extends StatelessWidget{
+class PredialFix extends StatelessWidget {
   const PredialFix({super.key});
 
   @override
@@ -30,9 +25,8 @@ class PredialFix extends StatelessWidget{
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
-        fontFamily: 'Roboto'
+        fontFamily: 'Roboto',
       ),
-
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginView(),

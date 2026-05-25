@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-vue-next';
+import { ref } from 'vue';
 
-import logoPredial from '../../../../resources/images/logo.png';
 import logoSenai from '@/../../resources/images/logo senai.png';
+import logoPredial from '../../../../resources/images/logo.png';
 
 defineProps<{
     status?: string;

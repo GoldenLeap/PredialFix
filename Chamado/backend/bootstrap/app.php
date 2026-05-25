@@ -8,7 +8,6 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
 
-
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -28,8 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Garante que rotas da API sempre retornem JSON, independente do header Accept
-        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e): bool {
+        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e):bool{
             return $request->is('api/*');
         });
     })->create();

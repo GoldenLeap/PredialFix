@@ -6,17 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chamado extends Model
 {
-    protected $fillable = [
-        'usuario_id',
-        'tipo',
-        'local',
-        'assunto',
-        'descricao',
-        'prioridade',
-        'status',
-        'tipo_servico',
-        'imagem_path',
-    ];
+protected $fillable = [
+         'usuario_id',
+         'tipo',
+         'local',
+         'assunto',
+         'descricao',
+         'prioridade',
+         'status',
+         'tipo_servico',
+         'imagem_path',
+         'observacao',
+     ];
+
+    protected $appends = ['imagem_url'];
+
+    public function getImagemUrlAttribute()
+    {
+        return $this->imagem_path ? asset('storage/' . $this->imagem_path) : null;
+    }
 
     public function user()
     {
