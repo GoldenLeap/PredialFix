@@ -1,3 +1,4 @@
+import 'package:mobile/view_models/home_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'view/login_view.dart';
@@ -31,6 +32,9 @@ class PredialFix extends StatelessWidget {
         '/': (context) => const LoginView(),
         '/home': (context) => const HomeView(),
       },
+      navigatorObservers: [
+        SoundNavigationOberver(),
+      ],
     );
   }
 }

@@ -13,18 +13,17 @@ import 'package:mobile/view_models/login_view_model.dart';
 import 'package:mobile/view_models/home_view_model.dart';
 
 void main() {
-  testWidgets('Login view smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => LoginViewModel()),
-          ChangeNotifierProvider(create: (_) => HomeViewModel()),
-        ],
-        child: const MaterialApp(
-          home: LoginView(),
-        ),
-      ),
-    );
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const PredialFix());
+
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
 
     // Verify that the login page displays institutional email text and the enter button
     expect(find.text('E-MAIL INSTITUCIONAL'), findsOneWidget);
