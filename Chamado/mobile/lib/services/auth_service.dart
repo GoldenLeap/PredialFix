@@ -26,6 +26,7 @@ class AuthService {
         await prefs.setString('user_name', data['user']['name']);
         await prefs.setString('user_email', data['user']['email']);
         await prefs.setString('user_cargo', data['user']['cargo']);
+        await prefs.setInt('user_id', data['user']['id']);
         return true;
       } else {
         print('Erro no login ${response.body}');
@@ -43,13 +44,19 @@ class AuthService {
     return prefs.getString('token');
   }
 
-  Future<Map<String, String>?> getUserData() async {
+  Future<Map<String, dynamic>?> getUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final name = prefs.getString('user_name');
     final email = prefs.getString('user_email');
     final cargo = prefs.getString('user_cargo');
+    final id = prefs.getInt('user_id');
     if (name == null) return null;
-    return {'name': name, 'email': email ?? '', 'cargo': cargo ?? ''};
+    return {
+      'name': name,
+      'email': email ?? '',
+      'cargo': cargo ?? '',
+      'id': id ?? 0,
+    };
   }
 
   Future<bool> logout() async {

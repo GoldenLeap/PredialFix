@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
 import '../services/chamado_service.dart';
 import '../models/chamado_model.dart';
-
+import '../services/auth_service.dart';
 class HomeViewModel extends ChangeNotifier {
   final ChamadoService _chamadoService = ChamadoService();
 
+  int _userId = 0;
+  int get userId => _userId;
+
   List<Chamado> _chamados = [];
-  List<Chamado> get chamados => _chamados;
+  List<Chamado> get chamados {
+    if (_userCargo == 'solicitante') {
+      return _chamados.where((c) => c.usuarioId == _userId).toList();
+    }
+    return _chamados;
+  }
 
-  List<Chamado> get chamadosAbertos =>
-      _chamados.where((c) => c.status != 'Concluído').toList();
+  List<Chamado> get chamadosAbertos {
+    final list = _userCargo == 'solicitante'
+        ? _chamados.where((c) => c.usuarioId == _userId).toList()
+        : _chamados;
+    return list.where((c) => c.status != 'Concluído').toList();
+  }
 
-  List<Chamado> get chamadosConcluidos =>
-      _chamados.where((c) => c.status == 'Concluído').toList();
+  List<Chamado> get chamadosConcluidos {
+    final list = _userCargo == 'solicitante'
+        ? _chamados.where((c) => c.usuarioId == _userId).toList()
+        : _chamados;
+    return list.where((c) => c.status == 'Concluído').toList();
+  }
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -22,6 +38,9 @@ class HomeViewModel extends ChangeNotifier {
 
   String _userName = '';
   String get userName => _userName;
+
+  String _userCargo = '';
+  String get userCargo => _userCargo;
 
   set userName(String value) {
     _userName = value;
@@ -36,13 +55,16 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   List<Chamado> get filteredChamados {
+    final list = _userCargo == 'solicitante'
+        ? _chamados.where((c) => c.usuarioId == _userId).toList()
+        : _chamados;
     switch (_currentFilter) {
       case 'Abertos':
-        return _chamados.where((c) => c.status != 'Concluído').toList();
+        return list.where((c) => c.status != 'Concluído').toList();
       case 'Concluídos':
-        return _chamados.where((c) => c.status == 'Concluído').toList();
+        return list.where((c) => c.status == 'Concluído').toList();
       default:
-        return _chamados;
+        return list;
     }
   }
 
@@ -52,6 +74,14 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      final authService = AuthService();
+      final userData = await authService.getUserData();
+      if (userData != null) {
+        _userName = userData['name'] ?? '';
+        _userCargo = userData['cargo'] ?? '';
+        _userId = userData['id'] ?? 0;
+      }
+
       _chamados = await _chamadoService.getChamados();
     } catch (e) {
       _errorMessage = 'Erro ao carregar chamados: $e';
@@ -83,6 +113,7 @@ class HomeViewModel extends ChangeNotifier {
     required String prioridade,
     required String tipoServico,
     String? observacao,
+    String? imagemPath,
   }) async {
     try {
       final novo = await _chamadoService.createChamado(
@@ -93,6 +124,7 @@ class HomeViewModel extends ChangeNotifier {
         prioridade: prioridade,
         tipoServico: tipoServico,
         observacao: observacao,
+        imagemPath: imagemPath,
       );
       if (novo != null) {
         await loadChamados();

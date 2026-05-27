@@ -122,6 +122,69 @@ class ChamadoDetailView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
+            // Imagem do Chamado
+            if (chamado.imagemUrl != null && chamado.imagemUrl!.isNotEmpty) ...[
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Imagem do problema',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          _resolveImageUrl(chamado.imagemUrl),
+                          width: double.infinity,
+                          fit: BoxFit.contain,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              height: 120,
+                              color: Colors.grey[100],
+                              child: const Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.broken_image_outlined,
+                                        size: 32, color: Colors.grey),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Não foi possível carregar a imagem',
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+
             // Observação
             if (chamado.observacao != null && chamado.observacao!.isNotEmpty)
               Card(
@@ -183,6 +246,10 @@ class ChamadoDetailView extends StatelessWidget {
             if (chamado.status != 'Concluído')
               Consumer<HomeViewModel>(
                 builder: (context, viewModel, _) {
+                  if (viewModel.userCargo == 'solicitante') {
+                    return const SizedBox.shrink();
+                  }
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -257,6 +324,17 @@ class ChamadoDetailView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _resolveImageUrl(String? url) {
+    if (url == null || url.isEmpty) return '';
+    var resolved = url;
+    if (resolved.contains('localhost')) {
+      resolved = resolved.replaceAll('localhost', '10.0.2.2:8000');
+    } else if (resolved.contains('127.0.0.1')) {
+      resolved = resolved.replaceAll('127.0.0.1', '10.0.2.2:8000');
+    }
+    return resolved;
   }
 
   String _formatDate(String date) {

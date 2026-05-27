@@ -1,5 +1,5 @@
 class ApiConfig {
-  static const String baseUrl = "http://127.0.0.1:8000/api"; // Url base para a api(emulador é 10.0.2.2, celular seria 192.168.x.x, windows é 127.0.0.1)
+  static const String baseUrl = "http://10.0.2.2:8000/api"; // Url base para a api(emulador é 10.0.2.2, celular seria 192.168.x.x)
 
   static Map<String, String> headers([String? token]){
     return {
