@@ -13,6 +13,7 @@ class HistoricoChamado extends Model
         'status_anterior',
         'status_novo',
         'alterado_por',
+        'observacao',
         'data_alteracao',
     ];
 
@@ -21,8 +22,16 @@ class HistoricoChamado extends Model
         return $this->belongsTo(Chamado::class);
     }
 
+    /** Usuário que realizou a alteração de status. */
     public function user()
     {
         return $this->belongsTo(User::class, 'alterado_por');
     }
+
+    /** Alias para eager loading com nome semântico: ->with('historicos.alteradoPor') */
+    public function alteradoPor()
+    {
+        return $this->belongsTo(User::class, 'alterado_por');
+    }
 }
+

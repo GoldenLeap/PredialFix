@@ -7,17 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Chamado extends Model
 {
 protected $fillable = [
-         'usuario_id',
-         'tipo',
-         'local',
-         'assunto',
-         'descricao',
-         'prioridade',
-         'status',
-         'tipo_servico',
-         'imagem_path',
-         'observacao',
-     ];
+        'usuario_id',
+        'tecnico_id',
+        'tipo',
+        'local',
+        'assunto',
+        'descricao',
+        'prioridade',
+        'status',
+        'tipo_servico',
+        'imagem_path',
+        'observacao',
+        'custo_mao_obra',
+        'custo_materiais',
+    ];
 
     protected $appends = ['imagem_url'];
 
@@ -39,5 +42,10 @@ protected $fillable = [
     public function orcamentos()
     {
         return $this->hasMany(Orcamento::class);
+    }
+
+    public function tecnico()
+    {
+        return $this->belongsTo(User::class, 'tecnico_id');
     }
 }
