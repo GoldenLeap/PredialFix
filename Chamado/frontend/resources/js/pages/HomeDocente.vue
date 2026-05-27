@@ -91,26 +91,17 @@ return Lightbulb;
 
 const formatTime = (date: string) => {
     if (!date) {
-return '---';
-}
-
-    const created = new Date(date);
-    const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60));
+        return '---';
+    }
     
-    if (diffInHours < 1) {
-return 'Menos de 1 hora atrás';
-}
-
-    if (diffInHours === 1) {
-return '1 hora atrás';
-}
-
-    if (diffInHours < 24) {
-return `${diffInHours} horas atrás`;
-}
-
-    return created.toLocaleDateString();
+    const created = new Date(date);
+    return created.toLocaleString('pt-BR', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 };
 </script>
 
@@ -246,6 +237,12 @@ return `${diffInHours} horas atrás`;
                                 >
                                     {{ chamado.status }}
                                 </span>
+                                <span :class="{
+                                    'px-3 py-1 rounded-full text-[9px] font-bold': true,
+                                    'text-rose-600': chamado.prioridade === 'Alta',
+                                    'text-amber-600': chamado.prioridade === 'Média',
+                                    'text-zinc-600': chamado.prioridade === 'Baixa'
+                                }">{{ chamado.prioridade }}</span>
                                 <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest">
                                     {{ formatTime(chamado.created_at) }}
                                 </span>

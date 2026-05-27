@@ -25,11 +25,14 @@ class StoreChamadoRequest extends FormRequest
         return [
             'tipo' => 'required|in:Elétrica,Hidráulica,Infraestrutura,Outros',
             'local' => 'required|string|max:255',
+            'bloco' => 'nullable|string|max:255',
             'assunto' => 'required|string|max:255',
             'descricao' => 'required|string',
             'prioridade' => 'required|in:Baixa,Média,Alta',
             'tipo_servico' => 'required|in:Interno,Externo',
-            'imagem' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // max 10MB
+            'patrimonio_sim' => 'boolean',
+            'numero_patrimonio' => 'nullable|string|max:255',
+            'imagem' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
         ];
     }
 }

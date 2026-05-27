@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $user = $request->user();
 
         if ($user->cargo === 'solicitante') {
-            $recentChamados = Chamado::with('historicos')
+            $recentChamados = Chamado::with(['user', 'historicos'])
                 ->where('usuario_id', $user->id)
                 ->whereIn('status', ['Aberto', 'Em Análise', 'Em Execução'])
                 ->latest()

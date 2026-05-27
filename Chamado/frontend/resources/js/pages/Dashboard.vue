@@ -17,6 +17,17 @@ const props = defineProps<{
     topUsers: any[];
 }>();
 
+const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('pt-BR', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -66,7 +77,7 @@ const materialStats = computed(() => {
                 <!-- Solicitações Recentes -->
                 <div class="lg:col-span-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm overflow-hidden">
                     <div class="p-4 border-b border-zinc-200 dark:border-zinc-800 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-800/50">
-                        <h2 class="text-lg font-semibold tracking-tight">Solicitações Recentes</h2>
+                        <h2 class="text-lg font-semibold tracking-tight">Solicitações Ativas</h2>
                         <Link href="/chamados" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">Ver todas →</Link>
                     </div>
                     <div class="overflow-x-auto">
@@ -75,9 +86,11 @@ const materialStats = computed(() => {
                                 <tr>
                                     <th class="px-6 py-3 font-semibold">Chamado</th>
                                     <th class="px-6 py-3 font-semibold">Solicitante</th>
+                                    <th class="px-6 py-3 font-semibold">Email</th>
+                                    <th class="px-6 py-3 font-semibold">Bloco</th>
                                     <th class="px-6 py-3 font-semibold">Status</th>
                                     <th class="px-6 py-3 font-semibold">Prioridade</th>
-                                    <th class="px-6 py-3 font-semibold">Data</th>
+                                    <th class="px-6 py-3 font-semibold">Data/Hora</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -91,12 +104,13 @@ const materialStats = computed(() => {
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <div class="h-6 w-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold">
-                                                {{ chamado.user?.name ? chamado.user.name.charAt(0) : '?' }}
-                                            </div>
-                                            <span class="text-zinc-700 dark:text-zinc-300 font-medium">{{ chamado.user?.name || 'Usuário Deletado' }}</span>
-                                        </div>
+                                        <span class="text-zinc-700 dark:text-zinc-300 font-medium">{{ chamado.user?.name || 'Usuário Deletado' }}</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-zinc-600 dark:text-zinc-400 text-xs">{{ chamado.user?.email || '-' }}</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-zinc-600 dark:text-zinc-400">{{ chamado.bloco || '-' }}</span>
                                     </td>
                                     <td class="px-6 py-4">
                                         <span :class="{
@@ -123,10 +137,10 @@ const materialStats = computed(() => {
                                             'text-zinc-600': chamado.prioridade === 'Baixa'
                                         }">{{ chamado.prioridade }}</span>
                                     </td>
-                                    <td class="px-6 py-4 text-zinc-500 dark:text-zinc-400 whitespace-nowrap">{{ new Date(chamado.created_at).toLocaleDateString() }}</td>
+                                    <td class="px-6 py-4 text-zinc-500 dark:text-zinc-400 text-xs whitespace-nowrap">{{ formatDateTime(chamado.created_at) }}</td>
                                 </tr>
                                 <tr v-if="recentChamados.length === 0">
-                                    <td colspan="5" class="px-6 py-10 text-center text-zinc-500 italic">
+                                    <td colspan="7" class="px-6 py-10 text-center text-zinc-500 italic">
                                         Nenhuma solicitação encontrada.
                                     </td>
                                 </tr>

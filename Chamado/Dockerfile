@@ -2,7 +2,9 @@
 FROM node:20-alpine AS frontend-builder
 
 # Instala o PHP necessário para o plugin Wayfinder do Laravel
-RUN apk add --no-cache php82 php82-phar php82-mbstring php82-openssl php82-xml php82-tokenizer php82-dom php82-session
+RUN apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.18/community \
+    php82 php82-phar php82-mbstring php82-openssl php82-xml php82-tokenizer php82-dom php82-session
+
 RUN ln -s /usr/bin/php82 /usr/bin/php
 
 WORKDIR /app
@@ -10,7 +12,7 @@ WORKDIR /app
 COPY backend /backend
 COPY frontend /app
 
-RUN npm install
+RUN npm install 
 RUN npm run build
 
 # --- Estágio 2: PHP & Nginx ---

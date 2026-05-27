@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import { ArrowLeft, CheckCircle2, Clock, CheckCircle, MapPin, RefreshCcw, Send } from 'lucide-vue-next';
 import { computed } from 'vue';
 
@@ -8,12 +8,23 @@ const props = defineProps<{
     historico: any[];
 }>();
 
-// Função para voltar à página anterior
+const page = usePage();
+const user = computed(() => page.props.auth.user);
+
+const canEditChamado = computed(() => {
+    return ['admin', 'responsavel'].includes(user.value?.cargo);
+});
+
+const canUpdateStatus = computed(() => {
+    if (!canEditChamado.value) return false;
+    const lockedStatuses = ['Em Execução', 'Concluído'];
+    return !lockedStatuses.includes(props.chamado.status);
+});
+
 const goBack = () => {
     window.history.back();
 };
 
-// Define o pipeline de status esperado e os ícones
 const pipelineSteps = [
     { key: 'criado', label: 'Criado', desc: 'Solicitação criada pelo solicitante' },
     { key: 'em_analise', label: 'Em análise', desc: 'Solicitação aguardando avaliação' },
@@ -21,7 +32,6 @@ const pipelineSteps = [
     { key: 'concluido', label: 'Concluído', desc: 'Problema resolvido' },
 ];
 
-// Status order para comparação
 const statusOrder: Record<string, number> = {
     'criado': 0,
     'em_analise': 1,
@@ -33,50 +43,58 @@ const getStatusKey = (status: string): string => {
     const s = status.toLowerCase();
 
     if (s.includes('análise') || s.includes('analise')) {
-return 'em_analise';
-}
+        return 'em_analise';
+    }
 
     if (s.includes('execução') || s.includes('execucao') || s.includes('progresso')) {
-return 'em_execucao';
-}
+        return 'em_execucao';
+    }
 
     if (s.includes('concluído') || s.includes('concluido')) {
-return 'concluido';
-}
+        return 'concluido';
+    }
 
     if (s.includes('aberto') || s.includes('criado')) {
-return 'criado';
-}
+        return 'criado';
+    }
 
     return 'criado';
 };
 
-// Lógica para determinar o estado de cada passo (completo, atual, futuro)
 const getStepStatus = (stepIndex: number) => {
     const currentKey = getStatusKey(props.chamado.status);
     const currentIndex = statusOrder[currentKey] ?? 0;
 
     if (stepIndex < currentIndex) {
-return 'completed';
-}
+        return 'completed';
+    }
 
     if (stepIndex === currentIndex) {
-return 'current';
-}
+        return 'current';
+    }
 
     return 'pending';
 };
 
-// Pega a data de conclusão/alteração do passo
+const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('pt-BR', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
+
 const getStepDate = (stepIndex: number) => {
     const stepKeys = ['criado', 'em_analise', 'em_execucao', 'concluido'];
     const stepKey = stepKeys[stepIndex];
 
     if (stepIndex === 0) {
-        return new Date(props.chamado.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+        return formatDateTime(props.chamado.created_at);
     }
 
-    // Primeiro, tenta encontrar nos históricos recebidos
     const historicos = props.historico || props.chamado.historicos || [];
     const statusMap: Record<string, string> = {
         'em_analise': 'Em Análise',
@@ -91,45 +109,52 @@ const getStepDate = (stepIndex: number) => {
         if (stepKey === key) {
             hist = historicos.find((h: any) => {
                 const sn = (h.status_novo || '').toLowerCase();
-
                 return sn.includes(key);
             });
         }
     }
 
     if (hist) {
-return new Date(hist.data_alteracao).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
-}
+        return formatDateTime(hist.data_alteracao);
+    }
 
     return 'Aguardando...';
 };
 
-// Formulário para atualizar status
 const statusForm = useForm({
     status: props.chamado.status,
     observacao: '',
 });
 
-const statusOptions = [
-    { value: 'Em Análise', label: 'Em Análise' },
-    { value: 'Em Execução', label: 'Em Execução' },
-    { value: 'Concluído', label: 'Concluído' },
-];
+const statusOptions = computed(() => {
+    const allOptions = [
+        { value: 'Em Análise', label: 'Em Análise' },
+        { value: 'Em Execução', label: 'Em Execução' },
+        { value: 'Concluído', label: 'Concluído' },
+    ];
+    return allOptions.filter(opt => opt.value !== props.chamado.status);
+});
 
-const canUpdateStatus = computed(() => {
+const hasStatusChange = computed(() => {
     return statusForm.status !== props.chamado.status;
 });
 
 const submitStatusUpdate = () => {
-    if (!canUpdateStatus.value) {
-return;
-}
+    if (!hasStatusChange.value) {
+        return;
+    }
+    
+    router.put(`/chamados/${props.chamado.id}`, statusForm.data(), {
+        onSuccess: () => statusForm.reset(),
+    });
+};
+</script>
+
+<template>
+    <Head title="Detalhes do Chamado" />
 
     <div class="min-h-screen bg-gray-50 text-black font-sans pb-20">
-
-        <!-- Header Vermelho Sólido -->
         <div class="bg-[#FF0000] py-6 px-8 flex items-center relative shadow-sm">
-            <!-- Botão de Voltar Dinâmico -->
             <button @click="goBack" class="absolute left-8 hover:opacity-80 transition-opacity cursor-pointer outline-none">
                 <ArrowLeft class="w-8 h-8 text-white" stroke-width="2.5" />
             </button>
@@ -137,8 +162,6 @@ return;
         </div>
 
         <div class="p-8 max-w-5xl mx-auto space-y-12 mt-4">
-
-            <!-- Card de Detalhes Principais -->
             <div class="bg-white border border-gray-200 rounded-3xl p-8 md:p-10 shadow-sm relative">
                 <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-8">
                     <h2 class="text-2xl font-black text-gray-900 tracking-tight leading-none">
@@ -154,8 +177,17 @@ return;
                         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 block">Localização</span>
                         <p class="text-gray-900 font-medium text-base flex items-center gap-2">
                             <span class="text-gray-400"><MapPin /></span> {{ chamado.local }}
+                            <span v-if="chamado.bloco" class="text-gray-500">| Bloco: {{ chamado.bloco }}</span>
                         </p>
                     </div>
+                    
+                    <div v-if="chamado.patrimonio_sim">
+                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 block">Patrimônio</span>
+                        <p class="text-gray-900 font-medium text-base">
+                            Número: {{ chamado.numero_patrimonio }}
+                        </p>
+                    </div>
+                    
                     <div>
                         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2 block">Descrição do problema</span>
                         <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100/80">
@@ -164,6 +196,7 @@ return;
                             </p>
                         </div>
                     </div>
+                    
                     <div v-if="chamado.observacao" class="">
                         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2 block">Observação do Admin</span>
                         <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100">
@@ -172,6 +205,7 @@ return;
                             </p>
                         </div>
                     </div>
+                    
                     <div v-if="chamado.imagem_url" class="flex flex-col items-center">
                         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2 block w-full text-left">
                             Evidência do Problema
@@ -185,8 +219,7 @@ return;
                         </div>
                     </div>
 
-                    <!-- Painel de Atualização de Status (Admin) -->
-                    <div class="mt-6 bg-blue-50/50 border border-blue-100 rounded-2xl p-6">
+                    <div v-if="canUpdateStatus" class="mt-6 bg-blue-50/50 border border-blue-100 rounded-2xl p-6">
                         <h4 class="text-sm font-bold text-blue-900 mb-3 flex items-center gap-2">
                             <RefreshCcw class="w-4 h-4" />
                             Atualizar Status
@@ -214,7 +247,7 @@ return;
                             </div>
                             <button
                                 type="submit"
-                                :disabled="!canUpdateStatus || statusForm.processing"
+                                :disabled="!hasStatusChange || statusForm.processing"
                                 class="w-full px-6 py-3 bg-[#007BFF] hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.98]"
                             >
                                 {{ statusForm.processing ? 'Salvando...' : 'Atualizar Status' }}
@@ -222,11 +255,15 @@ return;
                             </button>
                         </form>
                     </div>
-
+                    
+                    <div v-else-if="canEditChamado && !canUpdateStatus" class="mt-6 bg-gray-100 border border-gray-200 rounded-2xl p-6">
+                        <p class="text-sm text-gray-600 font-medium">
+                            Status não pode ser alterado - chamado está em execução ou concluído.
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Linha do Tempo -->
             <div class="space-y-8">
                 <h3 class="text-center font-bold text-black text-lg">Linha do Tempo</h3>
                 <div class="relative pt-6">
@@ -267,7 +304,6 @@ return;
                     </div>
                 </div>
 
-                <!-- Histórico de Mudanças -->
                 <div v-if="(historico || chamado.historicos) && (historico.length > 0 || (chamado.historicos && chamado.historicos.length > 0))" class="mt-8 bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                     <h4 class="text-sm font-bold text-gray-900 mb-4">Histórico de Mudanças de Status</h4>
                     <div class="space-y-3">
@@ -279,13 +315,12 @@ return;
                             <div class="w-2 h-2 rounded-full bg-[#ED1C24] mt-1.5 flex-shrink-0"></div>
                             <div class="text-gray-600">
                                 <span class="font-medium">De {{ item.status_anterior }} → {{ item.status_novo }}</span>
-                                <span class="text-gray-400 ml-2 text-xs">{{ new Date(item.data_alteracao).toLocaleString() }}</span>
+                                <span class="text-gray-400 ml-2 text-xs">{{ formatDateTime(item.data_alteracao) }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>

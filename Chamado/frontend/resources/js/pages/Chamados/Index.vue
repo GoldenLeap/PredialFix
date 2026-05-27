@@ -7,7 +7,18 @@ const props = defineProps<{
     chamados: any[];
 }>();
 
-// Filtros
+const formatDateTime = (dateString: string) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleString('pt-BR', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
+
 const startDate = ref('');
 const endDate = ref('');
 const category = ref('');
@@ -15,7 +26,6 @@ const searchQuery = ref('');
 
 const categories = computed(() => [...new Set(props.chamados.map(c => c.tipo))]);
 
-// Paginação
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
@@ -23,8 +33,8 @@ const filteredChamados = computed(() => {
     let result = props.chamados;
 
     if (startDate.value) {
-result = result.filter(c => new Date(c.created_at) >= new Date(startDate.value));
-}
+        result = result.filter(c => new Date(c.created_at) >= new Date(startDate.value));
+    }
 
     if (endDate.value) {
         const end = new Date(endDate.value);
@@ -33,8 +43,8 @@ result = result.filter(c => new Date(c.created_at) >= new Date(startDate.value))
     }
 
     if (category.value) {
-result = result.filter(c => c.tipo === category.value);
-}
+        result = result.filter(c => c.tipo === category.value);
+    }
 
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
@@ -42,7 +52,8 @@ result = result.filter(c => c.tipo === category.value);
             c.id.toString().includes(query) || 
             (c.descricao && c.descricao.toLowerCase().includes(query)) ||
             (c.local && c.local.toLowerCase().includes(query)) ||
-            (c.assunto && c.assunto.toLowerCase().includes(query))
+            (c.assunto && c.assunto.toLowerCase().includes(query)) ||
+            (c.bloco && c.bloco.toLowerCase().includes(query))
         );
     }
 
@@ -51,7 +62,6 @@ result = result.filter(c => c.tipo === category.value);
 
 const paginatedChamados = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
-
     return filteredChamados.value.slice(start, start + itemsPerPage);
 });
 
@@ -59,18 +69,27 @@ const totalPages = computed(() => Math.ceil(filteredChamados.value.length / item
 
 const changePage = (page: number) => {
     if (page >= 1 && page <= totalPages.value) {
-currentPage.value = page;
-}
+        currentPage.value = page;
+    }
 };
 
-// Exportações
 const exportCSV = () => {
     if (filteredChamados.value.length === 0) {
-return;
-}
+        return;
+    }
 
-    const headers = ['ID do chamado', 'Data', 'Categoria', 'Assunto', 'Status'];
-    const rows = filteredChamados.value.map(c => [c.id, new Date(c.created_at).toLocaleDateString(), `"${c.tipo}"`, `"${c.assunto || c.descricao || c.local}"`, `"${c.status}"`]);
+    const headers = ['ID', 'Solicitante', 'Email', 'Bloco', 'Data/Hora', 'Categoria', 'Assunto', 'Status', 'Prioridade'];
+    const rows = filteredChamados.value.map(c => [
+        c.id, 
+        c.user?.name || '-',
+        c.user?.email || '-',
+        c.bloco || '-',
+        formatDateTime(c.created_at),
+        `"${c.tipo}"`, 
+        `"${c.assunto || c.descricao || c.local}"`, 
+        `"${c.status}"`,
+        `"${c.prioridade}"`
+    ]);
     const csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + "\n" + rows.map(e => e.join(",")).join("\n");
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
@@ -174,42 +193,57 @@ const handlePrint = () => {
                 </div>
             </div>
 
-            <!-- Tabela -->
-            <div class="bg-white rounded-[2.5rem] border border-gray-200 overflow-hidden flex flex-col shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr class="bg-[#ED1C24] text-white">
-                                <th class="px-10 py-6 font-bold text-sm tracking-tight">ID do chamado</th>
-                                <th class="px-10 py-6 font-bold text-sm tracking-tight">Data</th>
-                                <th class="px-10 py-6 font-bold text-sm tracking-tight">Categoria</th>
-                                <th class="px-10 py-6 font-bold text-sm tracking-tight">Assunto</th>
-                                <th class="px-10 py-6 font-bold text-sm tracking-tight">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-400 text-sm">
-                            <tr 
-                                v-for="chamado in paginatedChamados" 
-                                :key="chamado.id" 
-                                @click="goToDetails(chamado.id)"
-                                class="border-b border-gray-50 last:border-0 hover:bg-gray-50/80 transition-colors cursor-pointer group"
-                            >
-                                <td class="px-10 py-6 font-bold group-hover:text-black transition-colors">#{{ chamado.id }}</td>
-                                <td class="px-10 py-6 group-hover:text-black transition-colors">{{ new Date(chamado.created_at).toLocaleDateString() }}</td>
-                                <td class="px-10 py-6 group-hover:text-black transition-colors">{{ chamado.tipo }}</td>
-                                <td class="px-10 py-6 truncate max-w-[250px] group-hover:text-black transition-colors">{{ chamado.assunto || chamado.descricao || chamado.local }}</td>
-                                <td class="px-10 py-6">
-                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-500 uppercase tracking-widest group-hover:bg-[#ED1C24] group-hover:text-white transition-all">
-                                        {{ chamado.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr v-if="paginatedChamados.length === 0">
-                                <td colspan="5" class="px-10 py-20 text-center italic text-gray-300">Nenhum chamado encontrado.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+<!-- Tabela -->
+             <div class="bg-white rounded-[2.5rem] border border-gray-200 overflow-hidden flex flex-col shadow-sm">
+                 <div class="overflow-x-auto">
+                     <table class="w-full text-left border-collapse min-w-[1200px]">
+                         <thead>
+                             <tr class="bg-[#ED1C24] text-white">
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">ID</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Solicitante</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Email</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Bloco</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Data/Hora</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Categoria</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Assunto</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Status</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Prioridade</th>
+                             </tr>
+                         </thead>
+                         <tbody class="text-gray-400 text-sm">
+                             <tr 
+                                 v-for="chamado in paginatedChamados" 
+                                 :key="chamado.id" 
+                                 @click="goToDetails(chamado.id)"
+                                 class="border-b border-gray-50 last:border-0 hover:bg-gray-50/80 transition-colors cursor-pointer group"
+                             >
+                                 <td class="px-4 py-4 font-bold group-hover:text-black transition-colors">#{{ chamado.id }}</td>
+                                 <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.user?.name || '-' }}</td>
+                                 <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ chamado.user?.email || '-' }}</td>
+                                 <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.bloco || '-' }}</td>
+                                 <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ formatDateTime(chamado.created_at) }}</td>
+                                 <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.tipo }}</td>
+                                 <td class="px-4 py-4 truncate max-w-[200px] group-hover:text-black transition-colors">{{ chamado.assunto || chamado.descricao || chamado.local }}</td>
+                                 <td class="px-4 py-4">
+                                     <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-500 uppercase tracking-widest group-hover:bg-[#ED1C24] group-hover:text-white transition-all">
+                                         {{ chamado.status }}
+                                     </span>
+                                 </td>
+                                 <td class="px-4 py-4">
+                                     <span :class="{
+                                         'font-bold text-xs': true,
+                                         'text-rose-600': chamado.prioridade === 'Alta',
+                                         'text-amber-600': chamado.prioridade === 'Média',
+                                         'text-zinc-600': chamado.prioridade === 'Baixa'
+                                     }">{{ chamado.prioridade }}</span>
+                                 </td>
+                             </tr>
+                             <tr v-if="paginatedChamados.length === 0">
+                                 <td colspan="9" class="px-10 py-20 text-center italic text-gray-300">Nenhum chamado encontrado.</td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
 
                 <!-- Rodapé Vermelho da Tabela -->
                 <div class="bg-[#ED1C24] px-10 py-5 flex flex-col md:flex-row justify-between items-center text-white gap-4">

@@ -27,6 +27,9 @@ class ChamadoForm
                     ->required(),
                 TextInput::make('local')
                     ->required(),
+                TextInput::make('bloco')
+                    ->label('Bloco')
+                    ->placeholder('Ex: Bloco A, Bloco B...'),
                 \Filament\Forms\Components\Select::make('prioridade')
                     ->options([
                         'Baixa' => 'Baixa',
@@ -43,6 +46,13 @@ class ChamadoForm
                     ])
                     ->required()
                     ->default('Aberto'),
+                \Filament\Forms\Components\Toggle::make('patrimonio_sim')
+                    ->label('É Patrimônio?')
+                    ->default(false),
+                TextInput::make('numero_patrimonio')
+                    ->label('Número do Patrimônio')
+                    ->placeholder('Digite o número do patrimônio')
+                    ->visible(fn ($get) => $get('patrimonio_sim') === true),
                 Textarea::make('descricao')
                     ->required()
                     ->columnSpanFull(),

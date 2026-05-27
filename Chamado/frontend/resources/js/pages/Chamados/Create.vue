@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { Search, UploadCloud, ChevronLeft } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const form = useForm({
     tipo: '',
     local: '',
+    bloco: '',
     assunto: '',
     descricao: '',
     prioridade: 'Baixa',
     tipo_servico: 'Interno',
+    patrimonio_sim: false,
+    numero_patrimonio: '',
     imagem: null as File | null,
 });
 
@@ -94,6 +97,52 @@ const submit = () => {
                         </div>
                     </div>
                     <div v-if="form.errors.local" class="text-red-500 text-xs font-bold mt-1">{{ form.errors.local }}</div>
+                </div>
+
+                <!-- Bloco -->
+                <div>
+                    <label class="block text-sm font-bold text-black mb-2">Bloco</label>
+                    <input 
+                        type="text" 
+                        v-model="form.bloco" 
+                        class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none"
+                        placeholder="Ex: Bloco A, Bloco B..."
+                    />
+                    <div v-if="form.errors.bloco" class="text-red-500 text-xs font-bold mt-1">{{ form.errors.bloco }}</div>
+                </div>
+
+                <!-- Patrimônio -->
+                <div>
+                    <label class="block text-sm font-bold text-black mb-2">Patrimônio</label>
+                    <div class="flex items-center gap-4 mb-3">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input 
+                                type="radio" 
+                                v-model="form.patrimonio_sim" 
+                                :value="true" 
+                                class="w-4 h-4 text-[#007BFF] focus:ring-[#007BFF]"
+                            />
+                            <span class="text-sm text-gray-600">Sim</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input 
+                                type="radio" 
+                                v-model="form.patrimonio_sim" 
+                                :value="false" 
+                                class="w-4 h-4 text-[#007BFF] focus:ring-[#007BFF]"
+                            />
+                            <span class="text-sm text-gray-600">Não</span>
+                        </label>
+                    </div>
+                    <div v-if="form.patrimonio_sim">
+                        <input 
+                            type="text" 
+                            v-model="form.numero_patrimonio" 
+                            class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none"
+                            placeholder="Digite o número do patrimônio"
+                        />
+                        <div v-if="form.errors.numero_patrimonio" class="text-red-500 text-xs font-bold mt-1">{{ form.errors.numero_patrimonio }}</div>
+                    </div>
                 </div>
 
                 <!-- Assunto -->

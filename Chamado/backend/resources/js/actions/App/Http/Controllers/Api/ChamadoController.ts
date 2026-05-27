@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::index
- * @see app/Http/Controllers/Api/ChamadoController.php:15
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::index
- * @see app/Http/Controllers/Api/ChamadoController.php:15
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::index
- * @see app/Http/Controllers/Api/ChamadoController.php:15
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::index
- * @see app/Http/Controllers/Api/ChamadoController.php:15
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\ChamadoController::index
- * @see app/Http/Controllers/Api/ChamadoController.php:15
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\ChamadoController::index
- * @see app/Http/Controllers/Api/ChamadoController.php:15
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Api\ChamadoController::index
- * @see app/Http/Controllers/Api/ChamadoController.php:15
+ * @see app/Http/Controllers/Api/ChamadoController.php:24
  * @route '/api/chamados'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -78,8 +78,183 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     index.form = indexForm
 /**
+* @see \App\Http\Controllers\Api\ChamadoController::historicoUnidade
+ * @see app/Http/Controllers/Api/ChamadoController.php:157
+ * @route '/api/chamados/historico-unidade'
+ */
+export const historicoUnidade = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: historicoUnidade.url(options),
+    method: 'get',
+})
+
+historicoUnidade.definition = {
+    methods: ["get","head"],
+    url: '/api/chamados/historico-unidade',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Api\ChamadoController::historicoUnidade
+ * @see app/Http/Controllers/Api/ChamadoController.php:157
+ * @route '/api/chamados/historico-unidade'
+ */
+historicoUnidade.url = (options?: RouteQueryOptions) => {
+    return historicoUnidade.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Api\ChamadoController::historicoUnidade
+ * @see app/Http/Controllers/Api/ChamadoController.php:157
+ * @route '/api/chamados/historico-unidade'
+ */
+historicoUnidade.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: historicoUnidade.url(options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\Api\ChamadoController::historicoUnidade
+ * @see app/Http/Controllers/Api/ChamadoController.php:157
+ * @route '/api/chamados/historico-unidade'
+ */
+historicoUnidade.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: historicoUnidade.url(options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\Api\ChamadoController::historicoUnidade
+ * @see app/Http/Controllers/Api/ChamadoController.php:157
+ * @route '/api/chamados/historico-unidade'
+ */
+    const historicoUnidadeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: historicoUnidade.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Api\ChamadoController::historicoUnidade
+ * @see app/Http/Controllers/Api/ChamadoController.php:157
+ * @route '/api/chamados/historico-unidade'
+ */
+        historicoUnidadeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: historicoUnidade.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Api\ChamadoController::historicoUnidade
+ * @see app/Http/Controllers/Api/ChamadoController.php:157
+ * @route '/api/chamados/historico-unidade'
+ */
+        historicoUnidadeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: historicoUnidade.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    historicoUnidade.form = historicoUnidadeForm
+/**
+* @see \App\Http\Controllers\Api\ChamadoController::show
+ * @see app/Http/Controllers/Api/ChamadoController.php:93
+ * @route '/api/chamados/{id}'
+ */
+export const show = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: show.url(args, options),
+    method: 'get',
+})
+
+show.definition = {
+    methods: ["get","head"],
+    url: '/api/chamados/{id}',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Api\ChamadoController::show
+ * @see app/Http/Controllers/Api/ChamadoController.php:93
+ * @route '/api/chamados/{id}'
+ */
+show.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { id: args }
+    }
+
+    
+    if (Array.isArray(args)) {
+        args = {
+                    id: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        id: args.id,
+                }
+
+    return show.definition.url
+            .replace('{id}', parsedArgs.id.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Api\ChamadoController::show
+ * @see app/Http/Controllers/Api/ChamadoController.php:93
+ * @route '/api/chamados/{id}'
+ */
+show.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: show.url(args, options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\Api\ChamadoController::show
+ * @see app/Http/Controllers/Api/ChamadoController.php:93
+ * @route '/api/chamados/{id}'
+ */
+show.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: show.url(args, options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\Api\ChamadoController::show
+ * @see app/Http/Controllers/Api/ChamadoController.php:93
+ * @route '/api/chamados/{id}'
+ */
+    const showForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Api\ChamadoController::show
+ * @see app/Http/Controllers/Api/ChamadoController.php:93
+ * @route '/api/chamados/{id}'
+ */
+        showForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Api\ChamadoController::show
+ * @see app/Http/Controllers/Api/ChamadoController.php:93
+ * @route '/api/chamados/{id}'
+ */
+        showForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
+/**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:25
+ * @see app/Http/Controllers/Api/ChamadoController.php:58
  * @route '/api/chamados'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +269,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:25
+ * @see app/Http/Controllers/Api/ChamadoController.php:58
  * @route '/api/chamados'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -103,7 +278,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:25
+ * @see app/Http/Controllers/Api/ChamadoController.php:58
  * @route '/api/chamados'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +288,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:25
+ * @see app/Http/Controllers/Api/ChamadoController.php:58
  * @route '/api/chamados'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +298,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\ChamadoController::store
- * @see app/Http/Controllers/Api/ChamadoController.php:25
+ * @see app/Http/Controllers/Api/ChamadoController.php:58
  * @route '/api/chamados'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -134,7 +309,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:57
+ * @see app/Http/Controllers/Api/ChamadoController.php:112
  * @route '/api/chamados/{id}'
  */
 export const update = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -149,7 +324,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:57
+ * @see app/Http/Controllers/Api/ChamadoController.php:112
  * @route '/api/chamados/{id}'
  */
 update.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -177,7 +352,7 @@ update.url = (args: { id: string | number } | [id: string | number ] | string | 
 
 /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:57
+ * @see app/Http/Controllers/Api/ChamadoController.php:112
  * @route '/api/chamados/{id}'
  */
 update.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -187,7 +362,7 @@ update.put = (args: { id: string | number } | [id: string | number ] | string | 
 
     /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:57
+ * @see app/Http/Controllers/Api/ChamadoController.php:112
  * @route '/api/chamados/{id}'
  */
     const updateForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -202,7 +377,7 @@ update.put = (args: { id: string | number } | [id: string | number ] | string | 
 
             /**
 * @see \App\Http\Controllers\Api\ChamadoController::update
- * @see app/Http/Controllers/Api/ChamadoController.php:57
+ * @see app/Http/Controllers/Api/ChamadoController.php:112
  * @route '/api/chamados/{id}'
  */
         updateForm.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -216,6 +391,6 @@ update.put = (args: { id: string | number } | [id: string | number ] | string | 
         })
     
     update.form = updateForm
-const ChamadoController = { index, store, update }
+const ChamadoController = { index, historicoUnidade, show, store, update }
 
 export default ChamadoController
