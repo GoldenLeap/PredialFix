@@ -12,22 +12,11 @@ use App\Http\Controllers\Api\ReportController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes — PredialFix Mobile
+| API Routes — PredialFix
 |--------------------------------------------------------------------------
-|
-| Prefixo automático: /api
-| Autenticação: Laravel Sanctum (token via Bearer)
-| Controle de acesso: middleware 'role' (CheckRole)
-|
-| Cargos existentes: solicitante | responsavel | admin
-|
 */
 
-// ═══════════════════════════════════════════════════════════════
-// ROTAS PÚBLICAS (sem autenticação)
-// ═══════════════════════════════════════════════════════════════
-
-// POST /api/login  → Autentica e devolve um Bearer token
+// ── Rota pública: login ──────────────────────────────────────────────────
 Route::post('/login', [AuthController::class, 'login']);
 
 // POST /api/register → Registra novo usuário e devolve um Bearer token
@@ -48,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // PUT /api/profile  → Atualiza dados básicos do perfil (nome, email)
     Route::put('/profile', [\App\Http\Controllers\Api\ProfileController::class, 'update']);
-    
+
     // PUT /api/profile/password  → Atualiza a senha
     Route::put('/profile/password', [\App\Http\Controllers\Api\ProfileController::class, 'updatePassword']);
 

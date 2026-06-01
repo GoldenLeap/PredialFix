@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'view/login_view.dart';
 import 'view_models/login_view_model.dart';
 import 'view/home_view.dart';
+import 'view/profile_view.dart';
+import 'view_models/auth_view_model.dart';
 import 'services/sound_navigation_observer.dart';
 import 'services/auth_service.dart';
 
@@ -17,6 +19,7 @@ void main() async {
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => LoginViewModel()),
       ChangeNotifierProvider(create: (_) => HomeViewModel()),
+      ChangeNotifierProvider(create: (_) => AuthViewModel()),
     ], child: PredialFix(initialRoute: initialRoute)),
   );
 }
@@ -38,6 +41,12 @@ class PredialFix extends StatelessWidget {
       routes: {
         '/': (context) => const LoginView(),
         '/home': (context) => const HomeView(),
+        '/profile': (context) => const ProfileView(),
+        // ROTAS FUTURAS DA FASE 2/3
+        // '/dashboard': (context) => const DashboardView(),
+        // '/materiais': (context) => const MateriaisView(),
+        // '/orcamento': (context) => const OrcamentoView(),
+        // '/relatorios': (context) => const RelatoriosView(),
       },
       navigatorObservers: [
         SoundNavigationObserver(),

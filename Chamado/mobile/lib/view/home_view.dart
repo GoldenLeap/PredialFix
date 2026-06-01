@@ -33,18 +33,13 @@ class _HomeViewState extends State<HomeView> {
             foregroundColor: Colors.white,
             actions: [
               IconButton(
-                icon: const Icon(Icons.logout),
-                onPressed: () async {
-                  final authService = AuthService();
-                  await authService.logout();
-                  if (context.mounted) {
-                    Navigator.pushReplacementNamed(context, '/');
-                  }
-                },
-                tooltip: 'Sair',
+                icon: const Icon(Icons.refresh),
+                onPressed: () => viewModel.loadChamados(),
+                tooltip: 'Atualizar',
               ),
             ],
           ),
+          drawer: _buildDrawer(context, viewModel),
           body: _buildBody(context, viewModel),
           floatingActionButton: viewModel.userCargo == 'solicitante'
               ? FloatingActionButton.extended(
@@ -59,6 +54,89 @@ class _HomeViewState extends State<HomeView> {
               : null,
         );
       },
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context, HomeViewModel viewModel) {
+    return Drawer(
+      child: Column(
+        children: [
+          UserAccountsDrawerHeader(
+            decoration: const BoxDecoration(color: Color(0xFFFF0000)),
+            accountName: Text(viewModel.userName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            accountEmail: Text(viewModel.userCargo.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
+            currentAccountPicture: const CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.person, size: 40, color: Color(0xFFFF0000)),
+            ),
+          ),
+          
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Meu Perfil'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
+          
+          // Itens visíveis apenas para Administradores / Responsáveis
+          if (viewModel.userCargo == 'responsavel' || viewModel.userCargo == 'admin') ...[
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Align(alignment: Alignment.centerLeft, child: Text('ADMINISTRAÇÃO', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5))),
+            ),
+            ListTile(
+              leading: const Icon(Icons.dashboard),
+              title: const Text('Dashboard'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/dashboard');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.inventory_2),
+              title: const Text('Materiais'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/materiais');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.attach_money),
+              title: const Text('Orçamento'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/orcamento');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.analytics),
+              title: const Text('Relatórios'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/relatorios');
+              },
+            ),
+          ],
+          
+          const Spacer(),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Sair do Sistema', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            onTap: () async {
+              final authService = AuthService();
+              await authService.logout();
+              if (context.mounted) {
+                Navigator.pushReplacementNamed(context, '/');
+              }
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 

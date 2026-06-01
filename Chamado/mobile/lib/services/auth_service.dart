@@ -59,6 +59,56 @@ class AuthService {
     };
   }
 
+  Future<bool> updateProfile(String name, String email) async {
+    final token = await getToken();
+    if (token == null) return false;
+
+    final url = Uri.parse("${ApiConfig.baseUrl}/profile");
+    try {
+      final response = await http.put(
+        url,
+        headers: ApiConfig.headers(token),
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user_name', data['user']['name']);
+        await prefs.setString('user_email', data['user']['email']);
+        return true;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> updatePassword(String currentPassword, String password, String passwordConfirmation) async {
+    final token = await getToken();
+    if (token == null) return false;
+
+    final url = Uri.parse("${ApiConfig.baseUrl}/profile/password");
+    try {
+      final response = await http.put(
+        url,
+        headers: ApiConfig.headers(token),
+        body: jsonEncode({
+          'current_password': currentPassword,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+        }),
+      );
+
+      return response.statusCode == 200;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<bool> logout() async {
     final token = await getToken();
     if (token != null) {
