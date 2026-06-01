@@ -10,6 +10,40 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    /**
+     * Registra um novo usuário no sistema (cargo padrão: solicitante).
+     * POST /api/register
+     */
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'device_name' => 'string',
+        ]);
+
+        $user = User::create([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'cargo'    => 'solicitante', // Padrão de segurança: sempre solicitante no registro
+        ]);
+
+        $token = $user->createToken($request->device_name ?? 'mobile-app')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Conta criada com sucesso!',
+            'token'   => $token,
+            'user'    => [
+                'id'    => $user->id,
+                'name'  => $user->name,
+                'email' => $user->email,
+                'cargo' => $user->cargo,
+            ],
+        ], 201);
+    }
 
     public function login(Request $request)
     {
@@ -46,7 +80,23 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Token removido com sucesso e usuário deslogado.'
+            'message' => 'Token removido com sucesso e usuário deslogado.',
+        ]);
+    }
+
+    /**
+     * Retorna os dados do usuário atualmente autenticado.
+     * GET /api/me
+     */
+    public function me(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'cargo' => $user->cargo,
         ]);
     }
 }

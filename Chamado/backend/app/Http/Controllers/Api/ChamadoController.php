@@ -68,15 +68,16 @@ class ChamadoController extends Controller
             'observacao'   => 'nullable|string|max:1000',
         ]);
 
-        $data = $validated;
+        // Remove o campo 'imagem' dos dados validados — o upload é tratado
+        // separadamente e salvo como 'imagem_path' no banco.
+        $data = collect($validated)->except('imagem')->all();
+
         $data['usuario_id'] = auth()->id();
         $data['status']     = 'Aberto';
 
         if ($request->hasFile('imagem')) {
             $data['imagem_path'] = $request->file('imagem')->store('chamados', 'public');
         }
-
-        unset($data['imagem']);
 
         $chamado = Chamado::create($data);
 
@@ -170,6 +171,18 @@ class ChamadoController extends Controller
             'total'    => $chamados->count(),
             'chamados' => $chamados,
         ]);
+    }
+
+    /**
+     * Remove um chamado. Apenas Responsável/Admin (garantido pela rota).
+     * DELETE /api/chamados/{id}
+     */
+    public function destroy($id)
+    {
+        $chamado = Chamado::findOrFail($id);
+        $chamado->delete();
+
+        return response()->json(['message' => 'Chamado removido com sucesso.']);
     }
 }
 
