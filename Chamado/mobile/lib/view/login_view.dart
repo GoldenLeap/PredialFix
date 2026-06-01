@@ -45,7 +45,7 @@ class _LoginViewState extends State<LoginView> {
                 borderRadius: BorderRadius.circular(48),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
@@ -80,7 +80,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Text(
+                  const Text(
                     "SENHA",
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 2),
                   ),
@@ -114,7 +114,7 @@ class _LoginViewState extends State<LoginView> {
                                 _emailController.text,
                                 _passwordController.text,
                               );
-                              if (sucesso && mounted) {
+                              if (sucesso && context.mounted) {
                                 Navigator.pushReplacementNamed(context, '/home');
                               }
                             },

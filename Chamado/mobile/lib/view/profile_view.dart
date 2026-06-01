@@ -29,6 +29,16 @@ class _ProfileViewState extends State<ProfileView> {
     _loadUserData();
   }
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadUserData() async {
     final userData = await AuthService().getUserData();
     if (userData != null) {
@@ -91,7 +101,7 @@ class _ProfileViewState extends State<ProfileView> {
                           onPressed: viewModel.isLoading ? null : () async {
                             if (_profileFormKey.currentState!.validate()) {
                               final ok = await context.read<AuthViewModel>().updateProfile(_nameController.text, _emailController.text);
-                              if (ok && mounted) {
+                              if (ok && context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Perfil atualizado!'), backgroundColor: Colors.green));
                               }
                             }
@@ -144,7 +154,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 _newPasswordController.text, 
                                 _confirmPasswordController.text
                               );
-                              if (ok && mounted) {
+                              if (ok && context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Senha alterada com sucesso!'), backgroundColor: Colors.green));
                                 _currentPasswordController.clear();
                                 _newPasswordController.clear();

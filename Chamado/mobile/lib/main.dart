@@ -42,11 +42,7 @@ class PredialFix extends StatelessWidget {
         '/': (context) => const LoginView(),
         '/home': (context) => const HomeView(),
         '/profile': (context) => const ProfileView(),
-        // ROTAS FUTURAS DA FASE 2/3
-        // '/dashboard': (context) => const DashboardView(),
-        // '/materiais': (context) => const MateriaisView(),
-        // '/orcamento': (context) => const OrcamentoView(),
-        // '/relatorios': (context) => const RelatoriosView(),
+        
       },
       navigatorObservers: [
         SoundNavigationObserver(),

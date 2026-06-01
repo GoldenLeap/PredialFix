@@ -5,22 +5,28 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/main.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile/view_models/login_view_model.dart';
+import 'package:mobile/view_models/home_view_model.dart';
+import 'package:mobile/view_models/auth_view_model.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const PredialFix());
+  testWidgets('Login page smoke test', (WidgetTester tester) async {
+    // Build our app with required providers and trigger a frame.
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => LoginViewModel()),
+          ChangeNotifierProvider(create: (_) => HomeViewModel()),
+          ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ],
+        child: const PredialFix(initialRoute: '/'),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     // Verify that the login page displays institutional email text and the enter button
     expect(find.text('E-MAIL INSTITUCIONAL'), findsOneWidget);
