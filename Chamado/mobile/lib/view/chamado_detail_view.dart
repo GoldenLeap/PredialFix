@@ -21,7 +21,6 @@ class ChamadoDetailView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Cabeçalho com status e prioridade
             Card(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
@@ -97,7 +96,6 @@ class ChamadoDetailView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Descrição
             Card(
               shape:
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -122,7 +120,59 @@ class ChamadoDetailView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Imagem do Chamado
+            Consumer<HomeViewModel>(
+              builder: (context, viewModel, _) {
+                if (viewModel.userCargo == 'solicitante') {
+                  return const SizedBox.shrink();
+                }
+
+                final total = chamado.custoMaoObra + chamado.custoMateriais;
+
+                return Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Execução & Financeiro',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 12),
+                        _detailRow(Icons.engineering, 'Técnico: ${chamado.tecnicoNome ?? "Não atribuído"}'),
+                        const Divider(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Mão de Obra:', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                            Text('R\$ ${chamado.custoMaoObra.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Materiais:', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                            Text('R\$ ${chamado.custoMateriais.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        const Divider(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Custo Total:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFFFF0000))),
+                            Text('R\$ ${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFFF0000))),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+
             if (chamado.imagemUrl != null && chamado.imagemUrl!.isNotEmpty) ...[
               Card(
                 shape: RoundedRectangleBorder(
@@ -185,7 +235,6 @@ class ChamadoDetailView extends StatelessWidget {
               const SizedBox(height: 16),
             ],
 
-            // Observação
             if (chamado.observacao != null && chamado.observacao!.isNotEmpty)
               Card(
                 shape: RoundedRectangleBorder(
@@ -211,7 +260,6 @@ class ChamadoDetailView extends StatelessWidget {
               ),
             const SizedBox(height: 16),
 
-            // Histórico
             if (chamado.historicos.isNotEmpty) ...[
               const Text(
                 'Histórico de alterações',
@@ -242,7 +290,6 @@ class ChamadoDetailView extends StatelessWidget {
               const SizedBox(height: 16),
             ],
 
-            // Botão para atualizar status (se não concluído)
             if (chamado.status != 'Concluído')
               Consumer<HomeViewModel>(
                 builder: (context, viewModel, _) {
@@ -266,28 +313,21 @@ class ChamadoDetailView extends StatelessWidget {
                                     const EdgeInsets.only(bottom: 6),
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) => const Center(
-                                          child:
-                                              CircularProgressIndicator()),
-                                    );
-                                    final success = await viewModel
-                                        .updateStatus(chamado.id, status);
-                                    if (context.mounted) {
-                                      Navigator.pop(context);
-                                      if (success) {
+                                    if (viewModel.tecnicos.isEmpty) {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (_) => const Center(
+                                            child: CircularProgressIndicator()),
+                                      );
+                                      await viewModel.fetchTecnicos();
+                                      if (context.mounted) {
                                         Navigator.pop(context);
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                                'Status atualizado para $status'),
-                                            backgroundColor: Colors.green,
-                                          ),
-                                        );
                                       }
+                                    }
+
+                                    if (context.mounted) {
+                                      _showStatusTransitionDialog(context, viewModel, status);
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -323,6 +363,128 @@ class ChamadoDetailView extends StatelessWidget {
           Text(text, style: const TextStyle(fontSize: 13, color: Colors.grey)),
         ],
       ),
+    );
+  }
+
+  void _showStatusTransitionDialog(BuildContext context, HomeViewModel viewModel, String targetStatus) {
+    final formKey = GlobalKey<FormState>();
+    int? selectedTecnicoId = chamado.tecnicoId;
+    final maoObraCtrl = TextEditingController(text: chamado.custoMaoObra > 0 ? chamado.custoMaoObra.toString() : '');
+    final materiaisCtrl = TextEditingController(text: chamado.custoMateriais > 0 ? chamado.custoMateriais.toString() : '');
+    final obsCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Mudar para: $targetStatus'),
+              content: SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButtonFormField<int>(
+                        decoration: const InputDecoration(labelText: 'Técnico Responsável', border: OutlineInputBorder()),
+                        value: selectedTecnicoId,
+                        items: viewModel.tecnicos.map((t) => DropdownMenuItem<int>(
+                          value: t['id'] as int,
+                          child: Text(t['name'] as String),
+                        )).toList(),
+                        onChanged: (val) => setState(() => selectedTecnicoId = val),
+                        validator: (val) => val == null ? 'Selecione um técnico' : null,
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: maoObraCtrl,
+                        decoration: const InputDecoration(labelText: 'Custo Mão de Obra (R\$)', border: OutlineInputBorder()),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return null;
+                          final n = double.tryParse(v);
+                          if (n == null || n < 0) return 'Valor inválido';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: materiaisCtrl,
+                        decoration: const InputDecoration(labelText: 'Custo Materiais (R\$)', border: OutlineInputBorder()),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return null;
+                          final n = double.tryParse(v);
+                          if (n == null || n < 0) return 'Valor inválido';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: obsCtrl,
+                        decoration: const InputDecoration(labelText: 'Observação (Opcional)', border: OutlineInputBorder()),
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      final obs = obsCtrl.text.trim();
+                      final maoObra = double.tryParse(maoObraCtrl.text) ?? 0.0;
+                      final mat = double.tryParse(materiaisCtrl.text) ?? 0.0;
+                      
+                      Navigator.pop(ctx);
+
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) => const Center(child: CircularProgressIndicator()),
+                      );
+
+                      final success = await viewModel.updateStatus(
+                        chamado.id,
+                        targetStatus,
+                        observacao: obs.isNotEmpty ? obs : null,
+                        tecnicoId: selectedTecnicoId,
+                        custoMaoObra: maoObra,
+                        custoMateriais: mat,
+                      );
+
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                        if (success) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Chamado atualizado para $targetStatus!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Erro ao atualizar chamado.'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF0000), foregroundColor: Colors.white),
+                  child: const Text('Confirmar'),
+                ),
+              ],
+            );
+          }
+        );
+      }
     );
   }
 

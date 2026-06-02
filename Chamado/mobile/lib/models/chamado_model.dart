@@ -12,6 +12,11 @@ class Chamado {
   final String? observacao;
   final int usuarioId;
   final String createdAt;
+  final double custoTotal;
+  final double custoMaoObra;
+  final double custoMateriais;
+  final String? tecnicoNome;
+  final int? tecnicoId;
   final List<Historico> historicos;
 
   Chamado({ 
@@ -27,6 +32,11 @@ class Chamado {
     this.observacao,
     required this.usuarioId,
     required this.createdAt,
+    this.custoTotal = 0.0,
+    this.custoMaoObra = 0.0,
+    this.custoMateriais = 0.0,
+    this.tecnicoNome,
+    this.tecnicoId,
     this.historicos = const [],
   });
 
@@ -45,6 +55,11 @@ class Chamado {
       observacao: json['observacao']?.toString(),
       usuarioId: json['usuario_id'] ?? json['user_id'] ?? 0,
       createdAt: json['created_at'] ?? '',
+      custoTotal: double.tryParse(json['custo_total']?.toString() ?? '0') ?? 0.0,
+      custoMaoObra: double.tryParse(json['custo_mao_obra']?.toString() ?? '0') ?? 0.0,
+      custoMateriais: double.tryParse(json['custo_materiais']?.toString() ?? '0') ?? 0.0,
+      tecnicoNome: json['tecnico']?['name'],
+      tecnicoId: json['tecnico_id'] ?? json['tecnico']?['id'],
       historicos: historicosJson.map((h) => Historico.fromJson(h as Map<String, dynamic>)).toList(),
     );
   }

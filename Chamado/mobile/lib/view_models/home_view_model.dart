@@ -74,15 +74,21 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final authService = AuthService();
-      final userData = await authService.getUserData();
-      if (userData != null) {
-        _userName = userData['name'] ?? '';
-        _userCargo = userData['cargo'] ?? '';
-        _userId = userData['id'] ?? 0;
+      if (_userName.isEmpty || _userCargo.isEmpty) {
+        final authService = AuthService();
+        final userData = await authService.getUserData();
+        if (userData != null) {
+          _userName = userData['name'] ?? '';
+          _userCargo = userData['cargo'] ?? '';
+          _userId = userData['id'] ?? 0;
+        }
       }
 
       _chamados = await _chamadoService.getChamados();
+      
+      if (_userCargo != 'solicitante' && _tecnicos.isEmpty) {
+        fetchTecnicos();
+      }
     } catch (e) {
       _errorMessage = 'Erro ao carregar chamados: $e';
     } finally {
@@ -91,9 +97,36 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateStatus(int id, String status, {String? observacao}) async {
+  List<Map<String, dynamic>> _tecnicos = [];
+  List<Map<String, dynamic>> get tecnicos => _tecnicos;
+
+  Future<void> fetchTecnicos() async {
     try {
-      final success = await _chamadoService.updateStatus(id, status, observacao: observacao);
+      final list = await _chamadoService.getTecnicos();
+      if (list != null) {
+        _tecnicos = list;
+        notifyListeners();
+      }
+    } catch (_) {}
+  }
+
+  Future<bool> updateStatus(
+    int id, 
+    String status, {
+    String? observacao,
+    int? tecnicoId,
+    double? custoMaoObra,
+    double? custoMateriais,
+  }) async {
+    try {
+      final success = await _chamadoService.updateStatus(
+        id, 
+        status, 
+        observacao: observacao,
+        tecnicoId: tecnicoId,
+        custoMaoObra: custoMaoObra,
+        custoMateriais: custoMateriais,
+      );
       if (success) {
         await loadChamados();
       }

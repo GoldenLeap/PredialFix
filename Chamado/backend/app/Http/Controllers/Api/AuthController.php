@@ -20,7 +20,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['As credenciais fornecidas estão incorretas.'],
             ]);
@@ -58,10 +58,16 @@ class AuthController extends Controller
         $user = $request->user();
 
         return response()->json([
-            'id'    => $user->id,
-            'name'  => $user->name,
+            'id' => $user->id,
+            'name' => $user->name,
             'email' => $user->email,
             'cargo' => $user->cargo,
         ]);
+    }
+
+    public function getTecnicos()
+    {
+        $tecnicos = User::whereIn('cargo', ['admin', 'responsavel'])->get(['id', 'name']);
+        return response()->json($tecnicos);
     }
 }

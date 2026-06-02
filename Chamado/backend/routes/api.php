@@ -19,9 +19,6 @@ use App\Http\Controllers\Api\ReportController;
 // ── Rota pública: login ──────────────────────────────────────────────────
 Route::post('/login', [AuthController::class, 'login']);
 
-// POST /api/register → Registra novo usuário e devolve um Bearer token
-Route::post('/register', [AuthController::class, 'register']);
-
 
 // ═══════════════════════════════════════════════════════════════
 // ROTAS PROTEGIDAS — qualquer usuário autenticado via Sanctum
@@ -34,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // GET /api/me  → Retorna os dados do usuário autenticado
     Route::get('/me', [AuthController::class, 'me']);
+
+    Route::get('/tecnicos', [AuthController::class, 'getTecnicos']);
 
     // PUT /api/profile  → Atualiza dados básicos do perfil (nome, email)
     Route::put('/profile', [\App\Http\Controllers\Api\ProfileController::class, 'update']);
