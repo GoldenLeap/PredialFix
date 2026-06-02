@@ -92,7 +92,9 @@ class _HomeViewState extends State<HomeView> {
               title: const Text('Dashboard'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/dashboard');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Dashboard - Em breve!')),
+                );
               },
             ),
             ListTile(
@@ -100,7 +102,9 @@ class _HomeViewState extends State<HomeView> {
               title: const Text('Materiais'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/materiais');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Materiais - Em breve!')),
+                );
               },
             ),
             ListTile(
@@ -108,7 +112,9 @@ class _HomeViewState extends State<HomeView> {
               title: const Text('Orçamento'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/orcamento');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Orçamento - Em breve!')),
+                );
               },
             ),
             ListTile(
@@ -116,7 +122,9 @@ class _HomeViewState extends State<HomeView> {
               title: const Text('Relatórios'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/relatorios');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Relatórios - Em breve!')),
+                );
               },
             ),
           ],
@@ -242,19 +250,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildChamadoCard(
       BuildContext context, Chamado chamado, HomeViewModel viewModel) {
-    return Dismissible(
-      key: Key('chamado_${chamado.id}'),
-      direction: chamado.status == 'Concluído'
-          ? DismissDirection.none
-          : DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        color: Colors.red,
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
-      onDismissed: (_) async {},
-      child: Card(
+    return Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -337,7 +333,7 @@ class _HomeViewState extends State<HomeView> {
                       padding:
                           const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: chamado.statusColor.withOpacity(0.1),
+                        color: chamado.statusColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -361,15 +357,14 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   String _formatDate(String date) {
     if (date.isEmpty) return '';
     try {
       final parts = date.split('T');
-      if (parts.length >= 1) {
+      if (parts.isNotEmpty) {
         final dateParts = parts[0].split('-');
         if (dateParts.length == 3) {
           return '${dateParts[2]}/${dateParts[1]}/${dateParts[0]}';

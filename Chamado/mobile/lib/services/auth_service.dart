@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/api_config.dart';
@@ -29,11 +30,11 @@ class AuthService {
         await prefs.setInt('user_id', data['user']['id']);
         return true;
       } else {
-        print('Erro no login ${response.body}');
+        debugPrint('Erro no login ${response.body}');
         return false;
       }
     } catch (e) {
-      print("Erro de conexão $e");
+      debugPrint("Erro de conexão $e");
       return false;
     }
   }

@@ -175,7 +175,7 @@ class _ChamadoFormViewState extends State<ChamadoFormView> {
     String? Function(T?)? validator,
   }) {
     return DropdownButtonFormField<T>(
-      value: value,
+      initialValue: value,
       items: items.map((item) {
         return DropdownMenuItem(value: item, child: Text(item.toString()));
 
@@ -316,7 +316,7 @@ class _ChamadoFormViewState extends State<ChamadoFormView> {
                         top: 8,
                         right: 8,
                         child: Material(
-                          color: Colors.black.withOpacity(0.6),
+                          color: Colors.black.withValues(alpha: 0.6),
                           borderRadius: BorderRadius.circular(20),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(20),

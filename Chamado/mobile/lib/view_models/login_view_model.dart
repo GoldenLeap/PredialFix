@@ -25,8 +25,5 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     return success;
-
   }
-  
-
 } 

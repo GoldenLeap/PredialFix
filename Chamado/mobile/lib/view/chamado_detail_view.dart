@@ -60,7 +60,7 @@ class ChamadoDetailView extends StatelessWidget {
                               horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
                             color:
-                                chamado.statusColor.withOpacity(0.15),
+                                chamado.statusColor.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
