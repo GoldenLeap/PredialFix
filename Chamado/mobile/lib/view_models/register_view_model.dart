@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
-
-class LoginViewModel extends ChangeNotifier {
+class RegisterViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
   bool _isLoading = false;
@@ -11,22 +10,19 @@ class LoginViewModel extends ChangeNotifier {
   String _errorMessage = "";
   String get errorMessage => _errorMessage;
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> register(String name, String email, String password, String passwordConfirmation) async {
     _isLoading = true;
     _errorMessage = "";
     notifyListeners();
 
-    bool success = await _authService.login(email, password);
+    bool success = await _authService.register(name, email, password, passwordConfirmation);
 
-    if(!success){
-      _errorMessage = "Falha ao autenticar, verifique suas credenciais.";
+    if (!success) {
+      _errorMessage = "Falha ao registrar. Verifique os dados e tente novamente.";
     }
     _isLoading = false;
     notifyListeners();
 
     return success;
-
   }
-  
-
-} 
+}
