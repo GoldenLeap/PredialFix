@@ -57,7 +57,7 @@ class BudgetController extends Controller
         return response()->json([
             'config'       => $config,
             'total_gasto'  =>  $totalGasto,
-            'orcamento_restante' => $config ? ($config->total_budget - $totalGasto) : 0,
+            'orcamento_restante' => $config ? ((float) $config->total_budget - $totalGasto) : 0,
             'historico'    => $historico,
         ]);
     }

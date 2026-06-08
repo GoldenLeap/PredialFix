@@ -19,5 +19,5 @@ class DashboardService {
     }
 
     return jsonDecode(response.body) as Map<String, dynamic>;
-  }
+  }g
 }

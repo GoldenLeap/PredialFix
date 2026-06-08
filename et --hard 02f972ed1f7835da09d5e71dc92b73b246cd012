@@ -1,0 +1,406 @@
+[33mcommit 0eebd1493b5e1d7c64c38babe08deda7a86b3fce[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 02f972e 72e3428
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon Jun 8 15:03:16 2026 -0300
+
+    Merge branch 'main' of https://github.com/GoldenLeap/PredialFix
+
+[33mcommit 02f972ed1f7835da09d5e71dc92b73b246cd0128[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon Jun 8 15:02:14 2026 -0300
+
+    paginas mobile
+
+[33mcommit 72e342819374f7f43a6333edf0549be20806f750[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Jun 3 16:55:00 2026 -0300
+
+    Refactor route definitions in Chamado API to accept string IDs; update Livewire routes and package dependencies
+
+[33mcommit 490fe4fd43e1b381291f2174a9c2d7ae8a5b8f50[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Jun 3 06:09:44 2026 -0300
+
+    fix: corrigir consulta de agrupamento por mês e ano no relatório
+
+[33mcommit e67214e21bbc87859ec51c54e76304c1b681cf0c[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Jun 3 00:06:39 2026 -0300
+
+    feat: update Livewire routes and add profile controller
+    
+    - Updated Livewire asset routes to use new version identifiers.
+    - Added new metrics for dashboard in Chamados index page.
+    - Enhanced search functionality to include NIF and Patrimonio.
+    - Updated CSV export to include NIF and Patrimonio fields.
+    - Created ProfileController with update and updatePassword methods for API.
+
+[33mcommit 8383eef03cba4ae1f3a5fdcbb6eec8588c71ea14[m
+Merge: fc0c46c ed81e25
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon Jun 1 22:54:23 2026 -0300
+
+    Merge branch 'main' into dashboard
+
+[33mcommit fc0c46c8764effceaf6f1a7010c8926d96ddb11d[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon Jun 1 22:49:21 2026 -0300
+
+    feat: implement dashboard and budget management features including service layers, view models, and UI components.
+
+[33mcommit ed81e25f552eb27b1ab19bf2873fd9d37ec815bc[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon Jun 1 14:26:56 2026 -0300
+
+    feat: update navigation routes, improve error handling, and enhance UI elements across multiple views
+
+[33mcommit f4809fb4a25525ca1a502da958846b9eefbd16ba[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon Jun 1 12:25:19 2026 -0300
+
+    feat: implement user profile management with update capabilities and add navigation drawer to home view
+
+[33mcommit 921b42eb097accc3f704390031eb7ab8bf1c3d88[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon Jun 1 12:22:26 2026 -0300
+
+    feat: implement user registration and profile endpoints, add delete functionality for tickets, and update dependencies
+
+[33mcommit d56750aa37de5594c8c056446f87a9268f74fe5f[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed May 27 16:24:25 2026 -0300
+
+    feat: enhance dashboard and home docente with new date formatting and additional fields
+    
+    - Updated Dashboard.vue to format date and time for recent requests, changed title to "Solicitações Ativas", and added email and block columns.
+    - Modified HomeDocente.vue to improve time formatting for created_at field.
+    - Introduced ChamadoStatusChanged notification class for email and database notifications on status changes.
+    - Added migration for new fields (bloco, patrimonio_sim, numero_patrimonio) in chamados table.
+    - Created notifications table migration.
+    - Implemented BudgetController, DashboardController, MaterialController, and ReportController for API actions.
+    - Developed email template for chamado status notifications.
+
+[33mcommit e2cf66630cbc3eae99afae07a7128326d401ff7a[m
+Merge: 9958cce c538904
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Tue May 26 22:35:34 2026 -0300
+
+    Merge branch 'main' of github-work:GoldenLeap/PredialFix
+
+[33mcommit 9958ccea59f46a601e2ac0908d9f49a4c93d376c[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Tue May 26 22:33:00 2026 -0300
+
+    feat: implementa gestão financeira, controle de estoque de materiais e controle de acesso baseado em funções com painéis administrativos e recursos de relatórios
+
+[33mcommit c53890493c9a70b58b23e21e44184b85305127ef[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 25 15:58:20 2026 -0300
+
+    Corrige responsabilidade de cargo
+
+[33mcommit 5270d7610dfce7f1dc065b0d944567e9b4d38e49[m
+Merge: 1dfc0e6 35fb0b1
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 25 13:33:26 2026 -0300
+
+    Merge pull request #1 from GoldenLeap/feat/audiomobile
+    
+    feat: Adiciona um audio incrivel ao mudar de página no mobile
+
+[33mcommit 35fb0b147bd585bbadbf2f999b041c3fd8518e3f[m
+Merge: 9be8567 1dfc0e6
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 25 13:33:16 2026 -0300
+
+    Merge branch 'main' into feat/audiomobile
+
+[33mcommit 9be85676c88f86362f6239e377b73a81ab555c0b[m[33m ([m[1;31morigin/feat/audiomobile[m[33m, [m[1;32mfeat/audiomobile[m[33m)[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 18 16:27:07 2026 -0300
+
+    feat: Adiciona um audio incrivel ao mudar de página no mobile
+
+[33mcommit 1dfc0e67be7d41c3b8fb09d16c9ea8b810cb9d47[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Mon May 18 16:01:46 2026 -0300
+
+    update
+
+[33mcommit 21001d106b61cb59ab65c12182ca13e9985ce273[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Mon May 18 15:36:56 2026 -0300
+
+    feat(routes): add create and update routes for materiais and orcamento
+    
+    - Implemented 'create' route for materiais with GET method.
+    - Added 'update' route for orcamento with POST method.
+    - Updated route definitions and query parameters handling.
+    
+    feat(routes): add pdf route for relatorios
+    
+    - Introduced 'pdf' route for relatorios with GET method.
+    - Updated route definitions and query parameters handling.
+    
+    fix: minor code formatting and cleanup
+    
+    - Adjusted code formatting in various Vue components for better readability.
+    - Removed unnecessary imports and fixed minor issues in Dart files.
+
+[33mcommit 4dc3d2171c03173ea53588e9589b9c56395ea107[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed May 13 16:17:55 2026 -0300
+
+    feat: adiciona funcionalidades de gerenciamento de chamados e melhorias na interface
+
+[33mcommit 2e5f0b885d657292b9fbac30b728ae89c019fe13[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed May 13 15:39:12 2026 -0300
+
+    feat: major improvements to PredialFix
+
+[33mcommit 865961607825c9fdbc0060a522d9a4360c7697b2[m
+Merge: e0ffa58 f33ac36
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Tue May 12 15:01:58 2026 -0300
+
+    Merge branch 'main' of https://github.com/GoldenLeap/PredialFix
+
+[33mcommit e0ffa58043990fe8165f662efe1ded476ebd8053[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Tue May 12 14:57:09 2026 -0300
+
+    atualiza rotas e adiciona as rotas de orçamento e de materiais
+
+[33mcommit f33ac36830ceab68153f1129a6880b6fd43f9ad1[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Tue May 12 14:54:51 2026 -0300
+
+    adiciona dependências do sistema no Dockerfile
+
+[33mcommit e75013217f509e71a41a1cfedd4a5ade24429fa7[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Tue May 12 14:44:56 2026 -0300
+
+    update de funções
+
+[33mcommit 4e28136cf233c4bf72808c57290ca8bf21a6cbe5[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Mon May 11 16:46:17 2026 -0300
+
+    adiciona instalação do PHP para o plugin Wayfinder no Dockerfile
+
+[33mcommit f051f818aec916bc69a8c0a4881baaf1ddb19f35[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Mon May 11 16:24:32 2026 -0300
+
+    update front
+
+[33mcommit 97baae4659814bd8b280b9320045440d696e83a9[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 11 12:15:21 2026 -0300
+
+    inicia o projeto mobile
+
+[33mcommit c3b9eb3dc2c2aa95d70a1614df4b11a5364f7f33[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 4 16:23:16 2026 -0300
+
+    refatora o codigo
+
+[33mcommit 95cc9fffda210a8557ed9c23c47871860194d912[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 4 16:22:38 2026 -0300
+
+    corrige.
+
+[33mcommit ea3840e04df1c3862fd2ec11454bb4eea143af5f[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 4 16:18:30 2026 -0300
+
+    adiciona rotas de api
+
+[33mcommit c3bd1e76bba64aa1c56687adb1fd45f119771764[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Mon May 4 12:19:50 2026 -0300
+
+    começa arquitetura de api
+
+[33mcommit 005fa4e5413ef0b3c3428ff4f92258f537bc0aac[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Sat May 2 21:16:28 2026 -0300
+
+    Atualiza o readme
+
+[33mcommit d517b98930c0e777603f709ea546a317fde10eb6[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Sat May 2 20:58:36 2026 -0300
+
+    feat(frontend): implementa fluxo de chamados do solicitante
+    
+    - Implementa página inicial do solicitante.
+    - Permite criação de chamados com upload de imagem.
+    - Adiciona detalhes do chamado com timeline, descrição e imagem.
+    - Adiciona visão de histórico de chamados para o responsável.
+
+[33mcommit 25ce97728b865c678414c7d815964b64b567ad33[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Fri May 1 16:27:38 2026 -0300
+
+    update
+
+[33mcommit bef29eb15fd1eb7a75f23f8c811b082e0d94c435[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Apr 29 16:22:05 2026 -0300
+
+    remove arquivo não usado test_paths.php
+
+[33mcommit 9d33aaa66972c93b9de786762e8327caa2f656c0[m
+Merge: 3d9d652 8bf5296
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Apr 29 16:19:44 2026 -0300
+
+    Merge branch 'main' of https://github.com/GoldenLeap/PredialFix
+
+[33mcommit 3d9d65298182087b6942103761e542f232b9eca8[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Apr 29 16:19:24 2026 -0300
+
+    feat: adicionar rotas de verificação de senha e email do usuário
+    
+    - Implementadas rotas de gerenciamento de senha do usuário em `user-password/index.ts`, incluindo funcionalidades de edição e atualização.
+    - Adicionadas rotas de verificação de email em `verification/index.ts` para aviso, verificação e envio.
+    - Criada uma utilidade `wayfinder` em `wayfinder/index.ts` para lidar com parâmetros de consulta e definições de rotas.
+    - Atualizada a configuração do frontend para usar TypeScript com Vite em `vite.config.ts`.
+    - Modificado o template principal Blade para carregar o ponto de entrada do TypeScript.
+    - Adicionado um arquivo `.gitignore` para o frontend, para excluir logs e artefatos de build.
+    - Atualizado `package-lock.json` para refletir mudanças e atualizações de dependências.
+    - Criado um script de teste `test_paths.php` para verificar os caminhos dos recursos.
+
+[33mcommit 8bf5296996c10827af6e8566c38a3afaf04e64d2[m
+Author: GabrielF <escritor759@gmail.com>
+Date:   Wed Apr 29 15:50:09 2026 -0300
+
+    README
+
+[33mcommit 3bde38ae01bc1654dc6a567d7038f6a5d75ad946[m
+Author: GabrielF <escritor759@gmail.com>
+Date:   Wed Apr 29 14:51:00 2026 -0300
+
+    Initialize README with project information
+    
+    Add README.md with project overview and details
+
+[33mcommit 3da14662289b6c199572cf844c6c8257b583e68e[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Apr 29 14:48:14 2026 -0300
+
+    update struct
+
+[33mcommit 5c7d40fcb705c113ff3438fb1f975857ba850394[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Apr 29 14:37:57 2026 -0300
+
+    update struct
+
+[33mcommit c9a1bccdca7e4ea3a5129b05b9ec54ba1b21654a[m
+Merge: d0f5bb5 08fcd0b
+Author: escritor2 <escritor759@gmail.com>
+Date:   Tue Apr 14 16:45:53 2026 -0300
+
+    Merge branch 'main' of https://github.com/GoldenLeap/PredialFix
+
+[33mcommit d0f5bb5bf443d2440ee2286e011530d5a4eb08da[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Tue Apr 14 16:43:09 2026 -0300
+
+    feat: add Chamados and Dashboard pages with routing and status management
+    
+    - Created Show.vue for displaying details of a specific Chamado.
+    - Implemented Dashboard.vue to show statistics and recent Chamados.
+    - Added routes for Chamados including index, create, show, edit, update, and destroy.
+    - Established a channel for broadcasting user-specific events.
+
+[33mcommit 08fcd0b86b1bdc0bbba63c3c9325849978608eaa[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Apr 1 16:47:27 2026 -0300
+
+    update dos arquivos
+
+[33mcommit ff9a6ec5fd7997e62fad796a03009da1a63b1bd7[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Apr 1 14:24:09 2026 -0300
+
+    'documentação'
+
+[33mcommit 9ac475b38b8cb2700700541908a3fad4329293c8[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Apr 1 14:00:27 2026 -0300
+
+    Remove Seção de arquitetura de dados e mapa de endpoint
+
+[33mcommit 569c83974e1c8fa1afd43bf45e6d1a08aeac74b6[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Mar 18 16:55:25 2026 -0300
+
+    Remove imagem de DER
+
+[33mcommit c203e7b6d4ee461af9d7d99abb95924def2776ec[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Mar 18 16:53:32 2026 -0300
+
+    Adiciona metodologia agil
+
+[33mcommit 2ddce38fb3edb7bb7c8d5c557243f300986e62e2[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Mar 18 14:14:48 2026 -0300
+
+    update routes
+
+[33mcommit b7af5f36400265a73ced66eacc04abd868a83221[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Tue Mar 17 12:23:34 2026 -0300
+
+    muda .gitignore
+
+[33mcommit d2088f74d5787d02eb9d1be74ffa8c4f4c1b24dd[m
+Author: escritor2 <escritor759@gmail.com>
+Date:   Wed Mar 11 16:48:39 2026 -0300
+
+    Estrutura inicial de pastas
+
+[33mcommit d739b93180ea782cc8cf150ffb49f9f971d262d6[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Mar 11 15:50:24 2026 -0300
+
+    Muda o framework de frontend no readme
+
+[33mcommit 52b61a74fc2715e0b74d8b84f97bd7f8fc04baae[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Sun Mar 1 10:40:55 2026 -0300
+
+    docs: adiciona DER e mapa de endpoints ao README
+
+[33mcommit eb59d47eb3cfde83c5afbfcf7f76545f3a1e30b4[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Feb 25 16:52:54 2026 -0300
+
+    Muda o tamanho da logo no readme
+
+[33mcommit 85a2a08c9e1a90e0e80380f00f6cb59dd41ca4ee[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Feb 25 16:51:56 2026 -0300
+
+    mudança na logo
+
+[33mcommit 76744eb0586d8d14c2b720ca318de6b9a2f1a13d[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Feb 25 16:44:58 2026 -0300
+
+    Readme
+
+[33mcommit 0f0bb6c41aa7817e96624a0bac709ad15c7db502[m
+Author: Gabriel Bernardi <115042820+GoldenLeap@users.noreply.github.com>
+Date:   Wed Feb 25 16:10:42 2026 -0300
+
+    Initial commit
