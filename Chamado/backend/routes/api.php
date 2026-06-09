@@ -22,6 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // GET /api/me  → Retorna os dados do usuário autenticado
     Route::get('/me', [AuthController::class, 'me']);
 
+    Route::get('/tecnicos', [AuthController::class, 'getTecnicos']);
+
     // PUT /api/profile  → Atualiza dados básicos do perfil (nome, email)
     Route::put('/profile', [\App\Http\Controllers\Api\ProfileController::class, 'update']);
 
@@ -39,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // ROTAS RESTRITAS — apenas Responsável e Admin
     Route::middleware('role:responsavel,admin')->group(function () {
 
-        // Chamados 
+        // Chamados
         // PUT    /api/chamados/{id}  → Atualiza status, técnico, custos
         // DELETE /api/chamados/{id}  → Remove um chamado
         Route::put('/chamados/{id}', [ChamadoController::class, 'update']);
@@ -61,7 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/materiais/{id}', [MaterialController::class, 'update']);
         Route::delete('/materiais/{id}', [MaterialController::class, 'destroy']);
 
-        // Orçamento Mensal 
+        // Orçamento Mensal
         // GET  /api/orcamento?mes=6&ano=2026  → Config + histórico 6 meses
         // POST /api/orcamento                 → Cria ou atualiza orçamento
         Route::get('/orcamento', [BudgetController::class, 'index']);

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Chamado;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class ChamadoController extends Controller
 {
@@ -52,19 +54,54 @@ class ChamadoController extends Controller
     }
 
     /**
+     * Retorna estatísticas para o Dashboard visual.
+     * GET /api/chamados/dashboard
+     */
+    public function dashboard()
+    {
+        $user = auth()->user();
+        $query = Chamado::query();
+        $now = Carbon::now();
+
+        // Se não for admin, vê apenas as próprias estatísticas
+        if (!in_array($user->cargo, ['admin', 'responsavel'])) {
+            $query->where('usuario_id', $user->id);
+        }
+
+        $stats = [
+            'total' => (clone $query)->count(),
+            'atual' => (clone $query)->whereMonth('created_at', $now->month)
+                                     ->whereYear('created_at', $now->year)->count(),
+            'abertos' => (clone $query)->where('status', 'Aberto')->count(),
+            'em_execucao' => (clone $query)->where('status', 'Em Execução')->count(),
+            'concluidos' => (clone $query)->where('status', 'Concluído')->count(),
+            'por_prioridade' => [
+                'Alta' => (clone $query)->where('prioridade', 'Alta')->count(),
+                'Média' => (clone $query)->where('prioridade', 'Média')->count(),
+                'Baixa' => (clone $query)->where('prioridade', 'Baixa')->count(),
+            ]
+        ];
+
+        return response()->json($stats);
+    }
+
+    /**
      * Abre um novo chamado.
      * POST /api/chamados
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'nif'          => 'required|string|max:20',
             'tipo'         => 'required|in:Elétrica,Hidráulica,Infraestrutura,Outros',
             'local'        => 'required|string|max:255',
+            'patrimonio'   => 'nullable|string|max:100',
             'assunto'      => 'required|string|max:255',
             'descricao'    => 'required|string',
             'prioridade'   => 'required|in:Baixa,Média,Alta',
             'tipo_servico' => 'required|in:Interno,Externo',
             'imagem'       => 'nullable|image|max:10240',
+            'data_limite'  => 'nullable|date',
             'observacao'   => 'nullable|string|max:1000',
         ]);
 
@@ -72,6 +109,22 @@ class ChamadoController extends Controller
         // separadamente e salvo como 'imagem_path' no banco.
         $data = collect($validated)->except('imagem')->all();
 
+        // Regra de Negócio: Conversão automática de Data -> Prioridade
+        if (!empty($validated['data_limite'])) {
+            $hoje = Carbon::now();
+            $limite = Carbon::parse($validated['data_limite']);
+            $diasRestantes = $hoje->diffInDays($limite, false);
+
+            if ($diasRestantes <= 2) {
+                $data['prioridade'] = 'Alta';
+            } elseif ($diasRestantes <= 5) {
+                $data['prioridade'] = 'Média';
+            } else {
+                $data['prioridade'] = 'Baixa';
+            }
+        }
+
+        $user = auth()->user();
         $data['usuario_id'] = auth()->id();
         $data['status']     = 'Aberto';
 
@@ -80,6 +133,16 @@ class ChamadoController extends Controller
         }
 
         $chamado = Chamado::create($data);
+
+        // Desafio Técnico: Notificação por E-mail (SMTP)
+        // Certifique-se de ter configurado o .env com os dados do servidor SMTP
+        try {
+            Mail::raw("Olá, um novo chamado (#{$chamado->id}) foi aberto para o setor de {$chamado->tipo} por {$user->name}.", function ($message) use ($user) {
+                $message->to($user->email)->subject('Confirmação de Abertura de Chamado - PredialFix');
+            });
+        } catch (\Exception $e) {
+            // Log do erro se o SMTP falhar, mas permite que o fluxo continue
+        }
 
         return response()->json([
             'message' => 'Chamado criado com sucesso!',
@@ -185,4 +248,3 @@ class ChamadoController extends Controller
         return response()->json(['message' => 'Chamado removido com sucesso.']);
     }
 }
-

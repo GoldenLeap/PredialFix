@@ -26,6 +26,19 @@ const searchQuery = ref('');
 
 const categories = computed(() => [...new Set(props.chamados.map(c => c.tipo))]);
 
+// Métricas para o Dashboard
+const stats = computed(() => {
+    const total = filteredChamados.value.length;
+    const atual = props.chamados.filter(c => {
+        const d = new Date(c.created_at);
+        const now = new Date();
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).length;
+    const alta = filteredChamados.value.filter(c => c.prioridade === 'Alta').length;
+    const concluidos = filteredChamados.value.filter(c => c.status === 'Concluído').length;
+    return { total, atual, alta, concluidos };
+});
+
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
@@ -50,6 +63,8 @@ const filteredChamados = computed(() => {
         const query = searchQuery.value.toLowerCase();
         result = result.filter(c => 
             c.id.toString().includes(query) || 
+            (c.nif && c.nif.toLowerCase().includes(query)) ||
+            (c.patrimonio && c.patrimonio.toLowerCase().includes(query)) ||
             (c.descricao && c.descricao.toLowerCase().includes(query)) ||
             (c.local && c.local.toLowerCase().includes(query)) ||
             (c.assunto && c.assunto.toLowerCase().includes(query)) ||
@@ -78,12 +93,14 @@ const exportCSV = () => {
         return;
     }
 
-    const headers = ['ID', 'Solicitante', 'Email', 'Bloco', 'Data/Hora', 'Categoria', 'Assunto', 'Status', 'Prioridade'];
+    const headers = ['ID', 'NIF', 'Solicitante', 'Email', 'Bloco', 'Patrimonio', 'Data/Hora', 'Categoria', 'Assunto', 'Status', 'Prioridade'];
     const rows = filteredChamados.value.map(c => [
         c.id, 
+        c.nif || '-',
         c.user?.name || '-',
         c.user?.email || '-',
         c.bloco || '-',
+        c.patrimonio || '-',
         formatDateTime(c.created_at),
         `"${c.tipo}"`, 
         `"${c.assunto || c.descricao || c.local}"`, 
@@ -151,6 +168,31 @@ const handlePrint = () => {
                 </div>
             </div>
 
+            <!-- Dashboard de Indicadores (Novo) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 no-print">
+                <div class="bg-white border border-gray-200 p-6 rounded-[2rem] shadow-sm flex flex-col items-center text-center">
+                    <span class="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Monitoramento</span>
+                    <span class="text-5xl font-black text-black">{{ stats.atual }}</span>
+                    <div class="mt-4 flex items-center gap-1 text-[10px] font-bold text-gray-400 uppercase">
+                        <span>Novos este mês (Total: {{ stats.total }})</span>
+                    </div>
+                </div>
+                <div class="bg-white border border-gray-200 p-6 rounded-[2rem] shadow-sm flex flex-col items-center text-center">
+                    <span class="text-xs font-black uppercase tracking-widest text-rose-500 mb-2">Alta Prioridade</span>
+                    <span class="text-5xl font-black text-rose-600">{{ stats.alta }}</span>
+                    <div class="mt-4 flex items-center gap-1 text-[10px] font-bold text-rose-400 uppercase">
+                        <span>Requer atenção imediata</span>
+                    </div>
+                </div>
+                <div class="bg-white border border-gray-200 p-6 rounded-[2rem] shadow-sm flex flex-col items-center text-center">
+                    <span class="text-xs font-black uppercase tracking-widest text-emerald-500 mb-2">Concluídos</span>
+                    <span class="text-5xl font-black text-emerald-600">{{ stats.concluidos }}</span>
+                    <div class="mt-4 flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase">
+                        <span>Eficiência de atendimento</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Painel de Filtros -->
             <div class="bg-white border border-gray-200 rounded-[2rem] p-10 my-10 shadow-sm no-print">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-8">
@@ -187,7 +229,7 @@ const handlePrint = () => {
                     <input 
                         type="text" 
                         v-model="searchQuery" 
-                        placeholder="Pesquisar por ID ou assunto" 
+                        placeholder="Pesquisar por ID, NIF, Patrimônio ou Assunto..." 
                         class="w-full pl-14 pr-6 py-4 bg-gray-50/50 border border-gray-200 rounded-xl text-sm text-gray-400 focus:outline-none focus:border-gray-300 transition-colors"
                     >
                 </div>
@@ -200,9 +242,11 @@ const handlePrint = () => {
                          <thead>
                              <tr class="bg-[#ED1C24] text-white">
                                  <th class="px-4 py-4 font-bold text-sm tracking-tight">ID</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">NIF</th>
                                  <th class="px-4 py-4 font-bold text-sm tracking-tight">Solicitante</th>
                                  <th class="px-4 py-4 font-bold text-sm tracking-tight">Email</th>
                                  <th class="px-4 py-4 font-bold text-sm tracking-tight">Bloco</th>
+                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Patrimônio</th>
                                  <th class="px-4 py-4 font-bold text-sm tracking-tight">Data/Hora</th>
                                  <th class="px-4 py-4 font-bold text-sm tracking-tight">Categoria</th>
                                  <th class="px-4 py-4 font-bold text-sm tracking-tight">Assunto</th>
@@ -218,9 +262,11 @@ const handlePrint = () => {
                                  class="border-b border-gray-50 last:border-0 hover:bg-gray-50/80 transition-colors cursor-pointer group"
                              >
                                  <td class="px-4 py-4 font-bold group-hover:text-black transition-colors">#{{ chamado.id }}</td>
+                                 <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ chamado.nif || '-' }}</td>
                                  <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.user?.name || '-' }}</td>
                                  <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ chamado.user?.email || '-' }}</td>
                                  <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.bloco || '-' }}</td>
+                                 <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ chamado.patrimonio || '-' }}</td>
                                  <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ formatDateTime(chamado.created_at) }}</td>
                                  <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.tipo }}</td>
                                  <td class="px-4 py-4 truncate max-w-[200px] group-hover:text-black transition-colors">{{ chamado.assunto || chamado.descricao || chamado.local }}</td>

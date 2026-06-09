@@ -43,7 +43,7 @@ class ReportController extends Controller
             ->orderByDesc('total')
             ->get();
 
-        $chamadosByMonth = Chamado::selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, count(*) as total')
+        $chamadosByMonth = Chamado::selectRaw('CAST(strftime(\'%m\', created_at) AS INTEGER) as month, CAST(strftime(\'%Y\', created_at) AS INTEGER) as year, count(*) as total')
             ->groupBy('year', 'month')
             ->orderByDesc('year')
             ->orderByDesc('month')

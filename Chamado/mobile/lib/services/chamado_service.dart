@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/api_config.dart';
@@ -23,14 +24,30 @@ class ChamadoService {
     }
   }
 
-  Future<bool> updateStatus(int id, String status, {String? observacao}) async {
+  Future<bool> updateStatus(
+    int id, 
+    String status, {
+    String? observacao,
+    int? tecnicoId,
+    double? custoMaoObra,
+    double? custoMateriais,
+  }) async {
     final token = await _getToken();
     if (token == null) throw Exception('Token não encontrado');
 
     final url = Uri.parse('${ApiConfig.baseUrl}/chamados/$id');
-    final body = {'status': status};
+    final body = <String, dynamic>{'status': status};
     if (observacao != null && observacao.isNotEmpty) {
       body['observacao'] = observacao;
+    }
+    if (tecnicoId != null) {
+      body['tecnico_id'] = tecnicoId;
+    }
+    if (custoMaoObra != null) {
+      body['custo_mao_obra'] = custoMaoObra;
+    }
+    if (custoMateriais != null) {
+      body['custo_materiais'] = custoMateriais;
     }
 
     final response = await http.put(
@@ -40,6 +57,27 @@ class ChamadoService {
     );
 
     return response.statusCode == 200;
+  }
+
+  Future<List<Map<String, dynamic>>?> getTecnicos() async {
+    final token = await _getToken();
+    if (token == null) throw Exception('Token não encontrado');
+
+    final url = Uri.parse('${ApiConfig.baseUrl}/tecnicos');
+    try {
+      final response = await http.get(
+        url,
+        headers: ApiConfig.headers(token),
+      );
+
+      if (response.statusCode == 200) {
+        final list = jsonDecode(response.body) as List;
+        return list.map((e) => Map<String, dynamic>.from(e)).toList();
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<Chamado?> createChamado({
@@ -76,7 +114,12 @@ class ChamadoService {
       request.files.add(await http.MultipartFile.fromPath('imagem', imagemPath));
     }
 
-    final streamedResponse = await request.send();
+    final streamedResponse = await request.send().timeout(
+      const Duration(seconds: 60),
+      onTimeout: () {
+        throw TimeoutException('O servidor demorou demais para responder.');
+      },
+    );
     final response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 201 || response.statusCode == 200) {
