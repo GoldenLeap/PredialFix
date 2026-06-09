@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../core/api_config.dart';
+<<<<<<< HEAD
 import '../models/material_model.dart';
 import 'auth_service.dart';
 
@@ -73,5 +74,24 @@ class MaterialService {
     } catch (_) {
       return false;
     }
+=======
+import 'auth_service.dart';
+
+class MaterialService {
+  Future<Map<String, dynamic>> getMaterials({String? busca}) async {
+    final token = await AuthService().getToken();
+    if (token == null) throw Exception('Token não encontrado');
+
+    final query = <String, String>{};
+    if (busca != null && busca.isNotEmpty) query['busca'] = busca;
+
+    final uri = Uri.parse('${ApiConfig.baseUrl}/materiais').replace(queryParameters: query.isEmpty ? null : query);
+    final response = await http.get(uri, headers: ApiConfig.headers(token));
+    if (response.statusCode != 200) {
+      throw Exception('Erro ao carregar materiais: ${response.statusCode}');
+    }
+
+    return jsonDecode(response.body) as Map<String, dynamic>;
+>>>>>>> fa6256c34e6d440e3b2bb93a2b5a899aad3e923c
   }
 }
