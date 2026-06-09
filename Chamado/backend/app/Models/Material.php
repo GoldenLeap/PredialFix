@@ -16,5 +16,13 @@ class Material extends Model
         'quantidade_atual',
         'quantidade_minima',
         'unidade',
+        'valor_unitario',
     ];
+
+    public function chamados()
+    {
+        return $this->belongsToMany(Chamado::class, 'chamado_material')
+                    ->withPivot('quantidade', 'valor_unitario', 'subtotal')
+                    ->withTimestamps();
+    }
 }

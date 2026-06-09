@@ -24,14 +24,43 @@ class BudgetController extends Controller
                 'year' => $year,
                 'total_budget' => 50000,
                 'allocations' => [
-                    'Encanação' => 0.3,
-                    'Manutenção geral' => 0.5,
-                    'Pintura' => 0.2
+                    'Elétrica' => 0.25,
+                    'Hidráulica' => 0.25,
+                    'Infraestrutura' => 0.25,
+                    'Outros' => 0.25,
                 ]
             ]);
         }
 
-        $history = BudgetConfig::orderBy('year', 'desc')->orderBy('month', 'desc')->take(6)->get();
+        $chamados = \App\Models\Chamado::where('status', 'Concluído')
+            ->whereMonth('updated_at', $month)
+            ->whereYear('updated_at', $year)
+            ->get();
+
+        $spentByCategory = [];
+        foreach ($chamados as $chamado) {
+            $cat = $chamado->tipo;
+            if (!isset($spentByCategory[$cat])) {
+                $spentByCategory[$cat] = 0;
+            }
+            $spentByCategory[$cat] += ($chamado->custo_mao_obra + $chamado->custo_materiais);
+        }
+
+        $configData = $config->toArray();
+        $configData['spent_by_category'] = $spentByCategory;
+
+        $history = BudgetConfig::orderBy('year', 'desc')->orderBy('month', 'desc')->take(6)->get()->map(function($c) {
+            $chamadosHist = \App\Models\Chamado::where('status', 'Concluído')
+                ->whereMonth('updated_at', $c->month)
+                ->whereYear('updated_at', $c->year)
+                ->get();
+            $spent = $chamadosHist->sum(function($ch) {
+                return $ch->custo_mao_obra + $ch->custo_materiais;
+            });
+            $arr = $c->toArray();
+            $arr['spent'] = $spent;
+            return $arr;
+        });
 
         $months = [
             '01' => 'Janeiro', '02' => 'Fevereiro', '03' => 'Março',
@@ -43,7 +72,7 @@ class BudgetController extends Controller
         $years = range($now->year - 2, $now->year + 1);
 
         return Inertia::render('Orcamento', [
-            'config' => $config,
+            'config' => $configData,
             'history' => $history,
             'months' => $months,
             'years' => $years,

@@ -28,12 +28,14 @@ class UpdateChamadoRequest extends FormRequest
             'bloco' => 'nullable|string|max:255',
             'descricao' => 'sometimes|required|string',
             'prioridade' => 'sometimes|required|in:Baixa,Média,Alta',
-            'status' => 'sometimes|required|in:Aberto,Em Análise,Em Execução,Concluído',
+            'status' => 'sometimes|required|in:Aberto,Em Análise,Aguardando Material,Em Execução,Concluído',
             'assunto' => 'sometimes|required|string|max:255',
             'tipo_servico' => 'sometimes|required|in:Interno,Externo',
             'patrimonio_sim' => 'boolean',
             'numero_patrimonio' => 'nullable|string|max:255',
             'observacao' => 'nullable|string|max:1000',
+            'custo_mao_obra' => 'nullable|numeric|min:0',
+            'custo_materiais' => 'nullable|numeric|min:0',
         ];
     }
 }

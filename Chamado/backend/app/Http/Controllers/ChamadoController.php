@@ -56,10 +56,14 @@ class ChamadoController extends Controller
     public function show(Chamado $chamado)
     {
         \Illuminate\Support\Facades\Gate::authorize('view', $chamado);
-        $chamado->load(['user', 'historicos.user', 'orcamentos']);
+        $chamado->load(['user', 'historicos.user', 'orcamentos', 'materiais', 'evidencias']);
+        
+        $materiais = \App\Models\Material::orderBy('categoria')->orderBy('nome')->get();
+        
         return Inertia::render('Chamados/Show', [
             'chamado' => $chamado,
-            'historico' => $chamado->historicos()->latest()->get(),
+            'historico' => $chamado->historicos()->with('user')->latest()->get(),
+            'materiais_disponiveis' => $materiais,
         ]);
     }
 
@@ -87,6 +91,21 @@ class ChamadoController extends Controller
                 'data_alteracao' => now(),
             ]);
 
+            // Descontar materiais do estoque ao concluir
+            if ($request->status === 'Concluído') {
+                $chamado->load('materiais');
+                foreach ($chamado->materiais as $mat) {
+                    $mat->decrement('quantidade_atual', $mat->pivot->quantidade);
+                }
+            }
+            // Devolver materiais ao estoque se reabrir um chamado concluído
+            if ($oldStatus === 'Concluído') {
+                $chamado->load('materiais');
+                foreach ($chamado->materiais as $mat) {
+                    $mat->increment('quantidade_atual', $mat->pivot->quantidade);
+                }
+            }
+
             // Enviar notificação por email ao solicitante
             $chamado->load('user');
             $chamado->user->notify(new ChamadoStatusChanged($chamado, $oldStatus, $request->status));
@@ -102,5 +121,53 @@ class ChamadoController extends Controller
         $chamado->delete();
         return redirect()->route('dashboard')
             ->with('success', 'Chamado excluído com sucesso.');
+    }
+
+    public function addMaterial(Request $request, Chamado $chamado)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('update', $chamado);
+
+        $validated = $request->validate([
+            'material_id' => 'required|exists:materials,id',
+            'quantidade'  => 'required|integer|min:1',
+        ]);
+
+        $material = \App\Models\Material::findOrFail($validated['material_id']);
+        $subtotal = $material->valor_unitario * $validated['quantidade'];
+
+        // Attach or update pivot
+        if ($chamado->materiais()->where('material_id', $material->id)->exists()) {
+            $chamado->materiais()->updateExistingPivot($material->id, [
+                'quantidade'     => \DB::raw('quantidade + ' . $validated['quantidade']),
+                'subtotal'       => \DB::raw('subtotal + ' . $subtotal),
+            ]);
+        } else {
+            $chamado->materiais()->attach($material->id, [
+                'quantidade'    => $validated['quantidade'],
+                'valor_unitario' => $material->valor_unitario,
+                'subtotal'      => $subtotal,
+            ]);
+        }
+
+        // Recalculate custo_materiais
+        $total = $chamado->materiais()->sum('chamado_material.subtotal');
+        $chamado->update(['custo_materiais' => $total]);
+
+        return redirect()->route('chamados.show', $chamado)
+            ->with('success', 'Material adicionado ao chamado.');
+    }
+
+    public function removeMaterial(Request $request, Chamado $chamado, \App\Models\Material $material)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('update', $chamado);
+
+        $chamado->materiais()->detach($material->id);
+
+        // Recalculate custo_materiais
+        $total = $chamado->materiais()->sum('chamado_material.subtotal');
+        $chamado->update(['custo_materiais' => $total]);
+
+        return redirect()->route('chamados.show', $chamado)
+            ->with('success', 'Material removido do chamado.');
     }
 }

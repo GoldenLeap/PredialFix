@@ -169,4 +169,40 @@ class HomeViewModel extends ChangeNotifier {
       return null;
     }
   }
+
+  Future<bool> adicionarMaterial(int chamadoId, int materialId, int quantidade) async {
+    try {
+      final success = await _chamadoService.adicionarMaterial(chamadoId, materialId, quantidade);
+      if (success) await loadChamados();
+      return success;
+    } catch (e) {
+      _errorMessage = 'Erro ao adicionar material: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> solicitarMaterial(int chamadoId, String observacao) async {
+    try {
+      final success = await _chamadoService.solicitarMaterial(chamadoId, observacao);
+      if (success) await loadChamados();
+      return success;
+    } catch (e) {
+      _errorMessage = 'Erro ao solicitar material: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> uploadEvidencias(int chamadoId, List<String> filePaths, List<String> tipos) async {
+    try {
+      final success = await _chamadoService.uploadEvidencias(chamadoId, filePaths, tipos);
+      if (success) await loadChamados();
+      return success;
+    } catch (e) {
+      _errorMessage = 'Erro ao fazer upload de evidências: $e';
+      notifyListeners();
+      return false;
+    }
+  }
 }

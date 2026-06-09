@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import '../models/chamado_model.dart';
 import 'chamado_form_view.dart';
 import 'chamado_detail_view.dart';
+import '../services/notification_service.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -15,6 +16,91 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   bool _initialized = false;
+  final NotificationService _notificationService = NotificationService();
+  List<dynamic> _notifications = [];
+  bool _hasUnread = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotifications();
+  }
+
+  Future<void> _loadNotifications() async {
+    final notifs = await _notificationService.getNotifications();
+    if (notifs != null && mounted) {
+      setState(() {
+        _notifications = notifs;
+        _hasUnread = notifs.isNotEmpty;
+      });
+    }
+  }
+
+  void _showNotificationsPanel() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return FractionallySizedBox(
+              heightFactor: 0.8,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade300))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Notificações', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        if (_notifications.isNotEmpty)
+                          TextButton.icon(
+                            icon: const Icon(Icons.checklist, size: 18),
+                            label: const Text('Ler todas'),
+                            onPressed: () async {
+                              final success = await _notificationService.markAllAsRead();
+                              if (success) {
+                                setModalState(() => _notifications.clear());
+                                setState(() { _notifications.clear(); _hasUnread = false; });
+                              }
+                            },
+                          )
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: _notifications.isEmpty
+                        ? const Center(child: Text('Nenhuma notificação não lida.'))
+                        : ListView.builder(
+                            itemCount: _notifications.length,
+                            itemBuilder: (context, index) {
+                              final notif = _notifications[index];
+                              final data = notif['data'];
+                              return ListTile(
+                                leading: const CircleAvatar(backgroundColor: Colors.blue, child: Icon(Icons.info, color: Colors.white)),
+                                title: Text(data['mensagem'] ?? 'Atualização de chamado'),
+                                subtitle: Text('Chamado #${data['chamado_id']}'),
+                                onTap: () async {
+                                  await _notificationService.markAsRead(notif['id']);
+                                  if (mounted) {
+                                    Navigator.pop(context); // Close modal
+                                    _loadNotifications(); // Refresh list
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                  )
+                ],
+              ),
+            );
+          }
+        );
+      }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +118,35 @@ class _HomeViewState extends State<HomeView> {
             backgroundColor: const Color(0xFFFF0000),
             foregroundColor: Colors.white,
             actions: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications),
+                    onPressed: _showNotificationsPanel,
+                    tooltip: 'Notificações',
+                  ),
+                  if (_hasUnread)
+                    Positioned(
+                      right: 12,
+                      top: 12,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: const BoxConstraints(minWidth: 10, minHeight: 10),
+                      ),
+                    )
+                ],
+              ),
               IconButton(
                 icon: const Icon(Icons.refresh),
-                onPressed: () => viewModel.loadChamados(),
+                onPressed: () {
+                  viewModel.loadChamados();
+                  _loadNotifications();
+                },
                 tooltip: 'Atualizar',
               ),
             ],

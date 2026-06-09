@@ -18,8 +18,11 @@ class Chamado {
   final String? tecnicoNome;
   final int? tecnicoId;
   final List<Historico> historicos;
+  final List<dynamic>? materiais;
+  final List<dynamic>? evidencias;
 
   Chamado({ 
+
     required this.id,
     required this.tipo,
     required this.local,
@@ -38,6 +41,8 @@ class Chamado {
     this.tecnicoNome,
     this.tecnicoId,
     this.historicos = const [],
+    this.materiais = const [],
+    this.evidencias = const [],
   });
 
   factory Chamado.fromJson(Map<String, dynamic> json) {
@@ -61,6 +66,8 @@ class Chamado {
       tecnicoNome: json['tecnico']?['name'],
       tecnicoId: json['tecnico_id'] ?? json['tecnico']?['id'],
       historicos: historicosJson.map((h) => Historico.fromJson(h as Map<String, dynamic>)).toList(),
+      materiais: json['materiais'] as List?,
+      evidencias: json['evidencias'] as List?,
     );
   }
 

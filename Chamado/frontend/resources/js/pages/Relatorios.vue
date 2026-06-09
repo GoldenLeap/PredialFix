@@ -2,8 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-    Search,
-    FileDown
+import { Search, FileDown } from 'lucide-vue-next';
 
 const breadcrumbs = [
     { title: 'Painel', href: '/dashboard' },
@@ -25,19 +24,22 @@ const statusOptions = ['Aberto', 'Em Análise', 'Em Execução', 'Concluído'];
 const tipos = ['Elétrica', 'Hidráulica', 'Infraestrutura', 'Outros'];
 
 const filteredReports = computed(() => {
+    if (!props.reports) return [];
     let result = props.reports.data || props.reports;
+    if (!Array.isArray(result)) return [];
+    
     if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase();
         result = result.filter((r: any) =>
-            r.id.toString().includes(q) ||
-            (r.assunto && r.assunto.toLowerCase().includes(q))
+            r?.id?.toString().includes(q) ||
+            (r?.assunto && r.assunto.toLowerCase().includes(q))
         );
     }
     if (selectedStatus.value) {
-        result = result.filter((r: any) => r.status === selectedStatus.value);
+        result = result.filter((r: any) => r?.status === selectedStatus.value);
     }
     if (selectedTipo.value) {
-        result = result.filter((r: any) => r.tipo === selectedTipo.value);
+        result = result.filter((r: any) => r?.tipo === selectedTipo.value);
     }
     return result;
 });
@@ -49,6 +51,7 @@ const handlePrint = () => {
 };
 
 const getStatusBadgeClass = (status: string) => {
+    if (!status) return 'bg-gray-100 text-gray-700';
     const s = status.toLowerCase();
     if (s.includes('aberto')) return 'bg-blue-100 text-blue-700';
     if (s.includes('análise') || s.includes('analise')) return 'bg-amber-100 text-amber-700';
@@ -190,7 +193,8 @@ const getPriorityBadgeClass = (priority: string) => {
                         Mostrando {{ props.reports.from || 0 }}–{{ props.reports.to || 0 }} de {{ props.reports.total }} resultados
                     </p>
                     <div class="flex gap-1">
-                        <Link
+                        <component
+                            :is="link.url ? Link : 'span'"
                             v-for="(link, idx) in props.reports.links"
                             :key="idx"
                             :href="link.url"

@@ -31,12 +31,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile/password', [\App\Http\Controllers\Api\ProfileController::class, 'updatePassword']);
 
 
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index']);
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead']);
+
     // Chamados
     Route::get('/chamados', [ChamadoController::class, 'index']);
     Route::post('/chamados', [ChamadoController::class, 'store']);
     Route::get('/chamados/historico-unidade', [ChamadoController::class, 'historicoUnidade']);
 
     Route::get('/chamados/{id}', [ChamadoController::class, 'show']);
+    Route::post('/chamados/{id}/materiais', [ChamadoController::class, 'adicionarMaterial']);
+    Route::post('/chamados/{id}/solicitar-material', [ChamadoController::class, 'solicitarMaterial']);
+    Route::post('/chamados/{id}/evidencias', [ChamadoController::class, 'adicionarEvidencias']);
 
     // ROTAS RESTRITAS — apenas Responsável e Admin
     Route::middleware('role:responsavel,admin')->group(function () {

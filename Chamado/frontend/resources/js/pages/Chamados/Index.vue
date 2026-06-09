@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Download, Search, ChevronLeft } from 'lucide-vue-next';
+import { Download, Search } from 'lucide-vue-next';
 import { ref, computed } from 'vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+
+const breadcrumbs = [
+    { title: 'Painel', href: '/dashboard' },
+    { title: 'Chamados', href: '/chamados' },
+];
 
 const props = defineProps<{
     chamados: any[];
@@ -138,196 +144,141 @@ const handlePrint = () => {
 <template>
     <Head title="Histórico de Chamados" />
 
-    <div class="min-h-screen bg-white text-black font-sans">
-        
-        <!-- Navegação Superior Minimalista (Limpa) -->
-        <nav class="bg-white border-b border-gray-100 px-8 py-4 no-print sticky top-0 z-10 flex items-center">
-            <Link href="/dashboard" class="flex items-center gap-2 text-gray-400 hover:text-[#ED1C24] transition-all font-bold text-sm">
-                <ChevronLeft class="w-5 h-5" />
-                Voltar ao Início
-            </Link>
-        </nav>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
 
-        <div class="p-8 max-w-7xl mx-auto w-full print-container">
-            
-            <!-- Título e Botões de Exportação -->
-            <div class="flex flex-col md:flex-row justify-between items-start mb-2 gap-4">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start gap-4">
                 <div>
-                    <h1 class="text-4xl font-bold text-black mb-2 tracking-tight">Histórico de chamados</h1>
-                    <p class="text-gray-500 text-base">Visualize e gerencie todos os chamados registrados no sistema</p>
+                    <h1 class="text-2xl font-black tracking-tight">Histórico de Chamados</h1>
+                    <p class="text-sm text-muted-foreground mt-1">Visualize e gerencie todos os chamados registrados no sistema.</p>
                 </div>
-                <div class="flex gap-4 no-print">
-                    <button @click="handlePrint" class="flex items-center gap-2 px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-bold transition-all cursor-pointer shadow-sm bg-white">
-                        <Download class="w-4 h-4" />
-                        Salvar como PDF
+                <div class="flex gap-3">
+                    <button @click="handlePrint" class="inline-flex items-center gap-2 px-4 py-2.5 border border-border bg-card hover:bg-muted rounded-xl text-sm font-semibold transition-all">
+                        <Download class="w-4 h-4" />PDF
                     </button>
-                    <button @click="exportCSV" class="flex items-center gap-2 px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-bold transition-all cursor-pointer shadow-sm bg-white">
-                        <Download class="w-4 h-4" />
-                        Exportar CSV
+                    <button @click="exportCSV" class="inline-flex items-center gap-2 px-4 py-2.5 border border-border bg-card hover:bg-muted rounded-xl text-sm font-semibold transition-all">
+                        <Download class="w-4 h-4" />CSV
                     </button>
                 </div>
             </div>
 
-            <!-- Dashboard de Indicadores (Novo) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 no-print">
-                <div class="bg-white border border-gray-200 p-6 rounded-[2rem] shadow-sm flex flex-col items-center text-center">
-                    <span class="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Monitoramento</span>
-                    <span class="text-5xl font-black text-black">{{ stats.atual }}</span>
-                    <div class="mt-4 flex items-center gap-1 text-[10px] font-bold text-gray-400 uppercase">
-                        <span>Novos este mês (Total: {{ stats.total }})</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-card border border-border rounded-2xl p-5 text-center shadow-sm">
+                    <span class="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1 block">Este Mês</span>
+                    <span class="text-5xl font-black">{{ stats.atual }}</span>
+                    <p class="text-xs text-muted-foreground mt-2">Total geral: {{ stats.total }}</p>
                 </div>
-                <div class="bg-white border border-gray-200 p-6 rounded-[2rem] shadow-sm flex flex-col items-center text-center">
-                    <span class="text-xs font-black uppercase tracking-widest text-rose-500 mb-2">Alta Prioridade</span>
-                    <span class="text-5xl font-black text-rose-600">{{ stats.alta }}</span>
-                    <div class="mt-4 flex items-center gap-1 text-[10px] font-bold text-rose-400 uppercase">
-                        <span>Requer atenção imediata</span>
-                    </div>
+                <div class="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 rounded-2xl p-5 text-center shadow-sm">
+                    <span class="text-xs font-bold uppercase tracking-widest text-rose-500 mb-1 block">Alta Prioridade</span>
+                    <span class="text-5xl font-black text-rose-600 dark:text-rose-400">{{ stats.alta }}</span>
+                    <p class="text-xs text-muted-foreground mt-2">Requer atenção imediata</p>
                 </div>
-                <div class="bg-white border border-gray-200 p-6 rounded-[2rem] shadow-sm flex flex-col items-center text-center">
-                    <span class="text-xs font-black uppercase tracking-widest text-emerald-500 mb-2">Concluídos</span>
-                    <span class="text-5xl font-black text-emerald-600">{{ stats.concluidos }}</span>
-                    <div class="mt-4 flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase">
-                        <span>Eficiência de atendimento</span>
-                    </div>
+                <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-5 text-center shadow-sm">
+                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-500 mb-1 block">Concluídos</span>
+                    <span class="text-5xl font-black text-emerald-600 dark:text-emerald-400">{{ stats.concluidos }}</span>
+                    <p class="text-xs text-muted-foreground mt-2">Eficiência de atendimento</p>
                 </div>
             </div>
 
-            <!-- Painel de Filtros -->
-            <div class="bg-white border border-gray-200 rounded-[2rem] p-10 my-10 shadow-sm no-print">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-8">
-                    <div class="flex flex-col">
-                        <label class="text-sm font-bold text-black mb-3 ml-1">Data de inicio</label>
-                        <input type="date" v-model="startDate" class="border border-gray-200 bg-gray-50/50 rounded-xl px-4 py-3.5 text-sm text-gray-400 focus:outline-none focus:border-gray-300 transition-colors">
+            <!-- Filtros -->
+            <div class="bg-card border border-border rounded-2xl p-5 shadow-sm mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Data Inicial</label>
+                        <input type="date" v-model="startDate" class="border border-input bg-background rounded-xl px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary">
                     </div>
-                    <div class="flex flex-col">
-                        <label class="text-sm font-bold text-black mb-3 ml-1">Data fim</label>
-                        <input type="date" v-model="endDate" class="border border-gray-200 bg-gray-50/50 rounded-xl px-4 py-3.5 text-sm text-gray-400 focus:outline-none focus:border-gray-300 transition-colors">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Data Final</label>
+                        <input type="date" v-model="endDate" class="border border-input bg-background rounded-xl px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary">
                     </div>
-                    <div class="flex flex-col">
-                        <label class="text-sm font-bold text-black mb-3 ml-1">Categoria</label>
-                        <div class="relative">
-                            <select v-model="category" class="w-full border border-gray-200 bg-gray-50/50 rounded-xl px-4 py-3.5 text-sm text-gray-400 focus:outline-none focus:border-gray-300 transition-colors appearance-none">
-                                <option value="">Todas as categorias</option>
-                                <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-                            </select>
-                            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </div>
-                        </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Categoria</label>
+                        <select v-model="category" class="border border-input bg-background rounded-xl px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Todas as categorias</option>
+                            <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                        </select>
                     </div>
                     <div class="flex flex-col justify-end">
-                        <button @click="clearFilters" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
+                        <button @click="clearFilters" class="bg-muted hover:bg-muted/80 font-semibold py-2.5 px-4 rounded-xl transition-all text-sm">
                             Limpar Filtros
                         </button>
                     </div>
                 </div>
-
-                <!-- Barra de Pesquisa -->
                 <div class="relative">
-                    <Search class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
-                    <input 
-                        type="text" 
-                        v-model="searchQuery" 
-                        placeholder="Pesquisar por ID, NIF, Patrimônio ou Assunto..." 
-                        class="w-full pl-14 pr-6 py-4 bg-gray-50/50 border border-gray-200 rounded-xl text-sm text-gray-400 focus:outline-none focus:border-gray-300 transition-colors"
-                    >
+                    <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input type="text" v-model="searchQuery" placeholder="Pesquisar por ID, NIF, Assunto..."
+                        class="w-full pl-12 pr-5 py-3 bg-muted/50 border border-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all">
                 </div>
             </div>
 
-<!-- Tabela -->
-             <div class="bg-white rounded-[2.5rem] border border-gray-200 overflow-hidden flex flex-col shadow-sm">
-                 <div class="overflow-x-auto">
-                     <table class="w-full text-left border-collapse min-w-[1200px]">
-                         <thead>
-                             <tr class="bg-[#ED1C24] text-white">
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">ID</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">NIF</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Solicitante</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Email</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Bloco</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Patrimônio</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Data/Hora</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Categoria</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Assunto</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Status</th>
-                                 <th class="px-4 py-4 font-bold text-sm tracking-tight">Prioridade</th>
-                             </tr>
-                         </thead>
-                         <tbody class="text-gray-400 text-sm">
-                             <tr 
-                                 v-for="chamado in paginatedChamados" 
-                                 :key="chamado.id" 
-                                 @click="goToDetails(chamado.id)"
-                                 class="border-b border-gray-50 last:border-0 hover:bg-gray-50/80 transition-colors cursor-pointer group"
-                             >
-                                 <td class="px-4 py-4 font-bold group-hover:text-black transition-colors">#{{ chamado.id }}</td>
-                                 <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ chamado.nif || '-' }}</td>
-                                 <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.user?.name || '-' }}</td>
-                                 <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ chamado.user?.email || '-' }}</td>
-                                 <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.bloco || '-' }}</td>
-                                 <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ chamado.patrimonio || '-' }}</td>
-                                 <td class="px-4 py-4 group-hover:text-black transition-colors text-xs">{{ formatDateTime(chamado.created_at) }}</td>
-                                 <td class="px-4 py-4 group-hover:text-black transition-colors">{{ chamado.tipo }}</td>
-                                 <td class="px-4 py-4 truncate max-w-[200px] group-hover:text-black transition-colors">{{ chamado.assunto || chamado.descricao || chamado.local }}</td>
-                                 <td class="px-4 py-4">
-                                     <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-500 uppercase tracking-widest group-hover:bg-[#ED1C24] group-hover:text-white transition-all">
-                                         {{ chamado.status }}
-                                     </span>
-                                 </td>
-                                 <td class="px-4 py-4">
-                                     <span :class="{
-                                         'font-bold text-xs': true,
-                                         'text-rose-600': chamado.prioridade === 'Alta',
-                                         'text-amber-600': chamado.prioridade === 'Média',
-                                         'text-zinc-600': chamado.prioridade === 'Baixa'
-                                     }">{{ chamado.prioridade }}</span>
-                                 </td>
-                             </tr>
-                             <tr v-if="paginatedChamados.length === 0">
-                                 <td colspan="9" class="px-10 py-20 text-center italic text-gray-300">Nenhum chamado encontrado.</td>
-                             </tr>
-                         </tbody>
-                     </table>
-                 </div>
+            <!-- Tabela -->
+            <div class="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[1100px]">
+                        <thead>
+                            <tr class="bg-primary text-primary-foreground">
+                                <th class="px-4 py-3.5 font-semibold text-xs tracking-wide">ID</th>
+                                <th class="px-4 py-3.5 font-semibold text-xs tracking-wide">Solicitante</th>
+                                <th class="px-4 py-3.5 font-semibold text-xs tracking-wide">Bloco</th>
+                                <th class="px-4 py-3.5 font-semibold text-xs tracking-wide">Data/Hora</th>
+                                <th class="px-4 py-3.5 font-semibold text-xs tracking-wide">Categoria</th>
+                                <th class="px-4 py-3.5 font-semibold text-xs tracking-wide">Assunto</th>
+                                <th class="px-4 py-3.5 font-semibold text-xs tracking-wide">Status</th>
+                                <th class="px-4 py-3.5 font-semibold text-xs tracking-wide">Prioridade</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-border">
+                            <tr v-for="chamado in paginatedChamados" :key="chamado.id"
+                                @click="goToDetails(chamado.id)"
+                                class="hover:bg-muted/50 transition-colors cursor-pointer group">
+                                <td class="px-4 py-3.5 font-bold text-primary group-hover:text-primary/80">#{{ chamado.id }}</td>
+                                <td class="px-4 py-3.5">
+                                    <div class="font-medium">{{ chamado.user?.name || '-' }}</div>
+                                    <div class="text-xs text-muted-foreground">{{ chamado.user?.email || '-' }}</div>
+                                </td>
+                                <td class="px-4 py-3.5 text-muted-foreground">{{ chamado.bloco || '-' }}</td>
+                                <td class="px-4 py-3.5 text-muted-foreground text-xs whitespace-nowrap">{{ formatDateTime(chamado.created_at) }}</td>
+                                <td class="px-4 py-3.5 text-muted-foreground">{{ chamado.tipo }}</td>
+                                <td class="px-4 py-3.5 truncate max-w-[180px]">{{ chamado.assunto || chamado.descricao || chamado.local }}</td>
+                                <td class="px-4 py-3.5">
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-muted text-muted-foreground uppercase tracking-wider">
+                                        {{ chamado.status }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3.5">
+                                    <span :class="{'font-bold text-xs': true, 'text-rose-500': chamado.prioridade==='Alta', 'text-amber-500': chamado.prioridade==='Média', 'text-emerald-500': chamado.prioridade==='Baixa'}">
+                                        {{ chamado.prioridade }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr v-if="!paginatedChamados.length">
+                                <td colspan="8" class="px-10 py-20 text-center italic text-muted-foreground">Nenhum chamado encontrado.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                <!-- Rodapé Vermelho da Tabela -->
-                <div class="bg-[#ED1C24] px-10 py-5 flex flex-col md:flex-row justify-between items-center text-white gap-4">
-                    <div class="text-sm font-bold">
-                        Exibindo {{ filteredChamados.length }} resultados
-                    </div>
-                    
-                    <div class="flex gap-2 items-center no-print">
-                        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="bg-white text-black px-5 py-2 rounded-xl text-xs font-bold disabled:opacity-30 transition-all active:scale-95 cursor-pointer">Anterior</button>
-                        
+                <!-- Pagination Footer -->
+                <div class="bg-primary px-6 py-4 flex flex-col md:flex-row justify-between items-center text-primary-foreground gap-4">
+                    <div class="text-sm font-semibold">Exibindo {{ filteredChamados.length }} resultados</div>
+                    <div class="flex gap-2 items-center">
+                        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1"
+                            class="bg-white/20 hover:bg-white/30 px-4 py-1.5 rounded-lg text-xs font-bold disabled:opacity-30 transition-all">Anterior</button>
                         <div class="flex gap-1 mx-2">
-                            <button 
-                                v-for="p in totalPages" 
-                                :key="p" 
-                                @click="changePage(p)" 
-                                :class="['w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all cursor-pointer', currentPage === p ? 'bg-white text-black shadow-sm' : 'text-white hover:bg-white/20']"
-                            >
-                                {{ p }}
-                            </button>
+                            <button v-for="p in totalPages" :key="p" @click="changePage(p)"
+                                :class="['w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all cursor-pointer', currentPage===p ? 'bg-white text-primary shadow-sm' : 'hover:bg-white/20']">{{ p }}</button>
                         </div>
-
-                        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" class="bg-white text-black px-5 py-2 rounded-xl text-xs font-bold disabled:opacity-50 transition-all active:scale-95 cursor-pointer">Proximo</button>
+                        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages"
+                            class="bg-white/20 hover:bg-white/30 px-4 py-1.5 rounded-lg text-xs font-bold disabled:opacity-30 transition-all">Próximo</button>
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
+    </AppLayout>
 </template>
 
-<style scoped>
-.bg-white { background-color: #ffffff !important; }
-.bg-gray-50 { background-color: #f9fafb !important; }
-.text-black { color: #000000 !important; }
-
-.print-only { display: none !important; }
-
-@media print {
+<style scoped>@media print {
     .no-print { display: none !important; }
     .print-container { width: 100%; max-width: none; padding: 0; margin: 0; }
     .bg-\[\#ED1C24\] { background-color: #ED1C24 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }

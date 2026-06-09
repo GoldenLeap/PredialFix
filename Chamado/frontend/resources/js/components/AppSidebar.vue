@@ -43,11 +43,6 @@ const mainNavItems: NavItem[] = [
         href: '/relatorios',
         icon: FileText,
     },
-    {
-        title: 'Calendário',
-        href: '/calendario',
-        icon: Calendar,
-    },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -60,7 +55,7 @@ const footerNavItems: NavItem[] = [
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar collapsible="icon" variant="floating" class="backdrop-blur-xl border-white/10 shadow-2xl transition-all duration-300">
         <SidebarHeader>
             <SidebarMenu>
                 <SidebarMenuItem>

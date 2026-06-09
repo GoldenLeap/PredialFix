@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, DollarSign, FileText, Folder, LayoutGrid, Menu, Package, Search, Sun, Moon, Monitor } from 'lucide-vue-next';
+import { Link, usePage, router } from '@inertiajs/vue3';
+import { BookOpen, DollarSign, FileText, Folder, LayoutGrid, Menu, Package, Search, Sun, Moon, Monitor, Bell, Check, BellRing } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -212,6 +212,53 @@ const themeItems = [
                 </div>
 
                 <div class="ml-auto flex items-center space-x-2">
+                    <!-- Theme Toggle -->
+                    <!-- Notifications -->
+                    <DropdownMenu v-if="auth.user">
+                        <DropdownMenuTrigger as-child>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                class="relative h-9 w-9 cursor-pointer"
+                            >
+                                <Bell v-if="auth.unreadNotificationsCount === 0" class="h-4 w-4" />
+                                <BellRing v-else class="h-4 w-4 text-primary animate-pulse" />
+                                <span v-if="auth.unreadNotificationsCount > 0" class="absolute top-1.5 right-1.5 flex h-3 w-3">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-primary border-2 border-background text-[8px] font-bold text-white items-center justify-center">{{ auth.unreadNotificationsCount }}</span>
+                                </span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" class="w-80">
+                            <div class="flex items-center justify-between px-3 py-2 border-b border-border/50">
+                                <DropdownMenuLabel class="px-0">Notificações</DropdownMenuLabel>
+                                <button v-if="auth.unreadNotificationsCount > 0" @click="router.post(route('notifications.readAll'), {}, { preserveScroll: true })" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                                    <Check class="w-3 h-3" /> Ler todas
+                                </button>
+                            </div>
+                            <div v-if="auth.notifications.length === 0" class="p-4 text-center text-sm text-muted-foreground italic">
+                                Nenhuma notificação nova.
+                            </div>
+                            <div v-else class="max-h-[300px] overflow-y-auto">
+                                <DropdownMenuItem
+                                    v-for="notification in auth.notifications"
+                                    :key="notification.id"
+                                    class="flex flex-col items-start gap-1 p-3 border-b border-border/50 last:border-0 cursor-pointer hover:bg-muted/50"
+                                    @click="router.post(route('notifications.read', notification.id), {}, { preserveScroll: true, onSuccess: () => router.visit(`/chamados/${notification.data.chamado_id}`) })"
+                                >
+                                    <div class="flex justify-between w-full items-center gap-2">
+                                        <span class="text-xs font-bold text-primary">Chamado #{{ notification.data.chamado_id }}</span>
+                                        <span class="text-[10px] text-muted-foreground">{{ new Date(notification.created_at).toLocaleDateString() }}</span>
+                                    </div>
+                                    <p class="text-xs font-medium line-clamp-2">
+                                        O status foi alterado de {{ notification.data.status_anterior }} para <span class="font-bold text-foreground">{{ notification.data.status_novo }}</span>.
+                                    </p>
+                                    <p class="text-[10px] text-muted-foreground">Por: {{ notification.data.solicitante_nome }}</p>
+                                </DropdownMenuItem>
+                            </div>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
                     <!-- Theme Toggle -->
                     <DropdownMenu>
                         <DropdownMenuTrigger as-child>

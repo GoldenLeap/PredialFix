@@ -129,6 +129,57 @@ class ChamadoService {
     return null;
   }
 
+  Future<bool> adicionarMaterial(int chamadoId, int materialId, int quantidade) async {
+    final token = await _getToken();
+    if (token == null) return false;
+
+    final url = Uri.parse('${ApiConfig.baseUrl}/chamados/$chamadoId/materiais');
+    final response = await http.post(
+      url,
+      headers: ApiConfig.headers(token),
+      body: jsonEncode({
+        'material_id': materialId,
+        'quantidade': quantidade,
+      }),
+    );
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  Future<bool> solicitarMaterial(int chamadoId, String observacao) async {
+    final token = await _getToken();
+    if (token == null) return false;
+
+    final url = Uri.parse('${ApiConfig.baseUrl}/chamados/$chamadoId/solicitar-material');
+    final response = await http.post(
+      url,
+      headers: ApiConfig.headers(token),
+      body: jsonEncode({
+        'observacao': observacao,
+      }),
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<bool> uploadEvidencias(int chamadoId, List<String> filePaths, List<String> tipos) async {
+    final token = await _getToken();
+    if (token == null) return false;
+
+    final url = Uri.parse('${ApiConfig.baseUrl}/chamados/$chamadoId/evidencias');
+    final headers = ApiConfig.headers(token);
+    headers.remove('Content-Type');
+
+    final request = http.MultipartRequest('POST', url);
+    request.headers.addAll(headers);
+
+    for (int i = 0; i < filePaths.length; i++) {
+      request.files.add(await http.MultipartFile.fromPath('evidencias[]', filePaths[i]));
+      request.fields['tipos[$i]'] = tipos[i];
+    }
+
+    final streamedResponse = await request.send();
+    return streamedResponse.statusCode == 200 || streamedResponse.statusCode == 201;
+  }
+
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');

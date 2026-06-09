@@ -51,4 +51,16 @@ protected $fillable = [
     {
         return $this->belongsTo(User::class, 'tecnico_id');
     }
+
+    public function materiais()
+    {
+        return $this->belongsToMany(Material::class, 'chamado_material')
+                    ->withPivot('quantidade', 'valor_unitario', 'subtotal')
+                    ->withTimestamps();
+    }
+
+    public function evidencias()
+    {
+        return $this->hasMany(ChamadoEvidencia::class);
+    }
 }
