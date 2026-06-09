@@ -21,9 +21,10 @@ class BudgetController extends Controller
 
         $config = BudgetConfig::where('month', $mes)->where('year', $ano)->first();
 
-        $totalGasto = (float) Chamado::whereMonth('created_at', $mes)
-                    ->whereYear('created_at', $ano)
-                    ->sum(\DB::raw('COALESCE(custo_mao_obra, 0) + COALESCE(custo_materiais, 0)'));     
+        $totalGasto = Chamado::whereMonth('created_at', $mes)
+            ->whereYear('created_at', $ano)
+            ->selectRaw('SUM(COALESCE(custo_mao_obra, 0) + COALESCE(custo_materiais, 0)) as total')
+            ->value('total') ?? 0;
 
         // Histórico dos últimos 6 meses
         $historico = [];
@@ -33,30 +34,26 @@ class BudgetController extends Controller
             $a = $data->year;
 
             $cfg = BudgetConfig::where('month', $m)->where('year', $a)->first();
-            $gasto = (float) Chamado::whereMonth('created_at', $m)
+            $gasto = Chamado::whereMonth('created_at', $m)
                 ->whereYear('created_at', $a)
-                ->sum(\DB::raw('COALESCE(custo_mao_obra, 0) + COALESCE(custo_materiais, 0)'));
+                ->selectRaw('SUM(COALESCE(custo_mao_obra, 0) + COALESCE(custo_materiais, 0)) as total')
+                ->value('total') ?? 0;
 
             $orcamentoInicial = $cfg ? $cfg->total_budget : 0;
             $variancia = $orcamentoInicial - $gasto;
-            $mesesPt = [
-                1 => 'Janeiro', 2 => 'Fevereiro', 3 => 'Março', 4 => 'Abril',
-                5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto',
-                9 => 'Setembro', 10 => 'Outubro', 11 => 'Novembro', 12 => 'Dezembro'
-            ];
-            $nomeMesFormatado = $mesesPt[$m] . ' ' . $a;
+
             $historico[] = [
-                'mes'               => $nomeMesFormatado,
+                'mes'               => $data->translatedFormat('F Y'),
                 'orcamento_inicial' => $orcamentoInicial,
-                'total_gasto'       => $gasto,
-                'variancia'         => $variancia,
+                'total_gasto'       => (float) $gasto,
+                'variancia'         => (float) $variancia,
                 'status'            => $variancia >= 0 ? 'Econômico' : 'Acima',
             ];
         }
 
         return response()->json([
             'config'       => $config,
-            'total_gasto'  =>  $totalGasto,
+            'total_gasto'  => (float) $totalGasto,
             'orcamento_restante' => $config ? ($config->total_budget - $totalGasto) : 0,
             'historico'    => $historico,
         ]);

@@ -131,32 +131,6 @@ class _LoginViewState extends State<LoginView> {
                             ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-
-                  // Links para Esqueceu Senha e Registrar
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/forgot-password');
-                        },
-                        child: const Text(
-                          'Esqueceu a senha?',
-                          style: TextStyle(color: Color(0xFFFF0000), fontSize: 12),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/register');
-                        },
-                        child: const Text(
-                          'Criar conta',
-                          style: TextStyle(color: Color(0xFFFF0000), fontSize: 12, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
