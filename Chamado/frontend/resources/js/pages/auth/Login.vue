@@ -55,7 +55,7 @@ const submit = () => {
                 </div>
             </div>
 
-            <form @submit.prevent="submit" class="space-y-8">
+<form @submit.prevent="submit" class="space-y-8">
                 <!-- E-mail -->
                 <div>
                     <label class="block text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-3 ml-2">E-mail Institucional</label>

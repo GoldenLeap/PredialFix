@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
 import { Search, FileDown } from 'lucide-vue-next';
+import { ref, computed } from 'vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 const breadcrumbs = [
     { title: 'Painel', href: '/dashboard' },
@@ -24,9 +24,15 @@ const statusOptions = ['Aberto', 'Em Análise', 'Em Execução', 'Concluído'];
 const tipos = ['Elétrica', 'Hidráulica', 'Infraestrutura', 'Outros'];
 
 const filteredReports = computed(() => {
-    if (!props.reports) return [];
+    if (!props.reports) {
+return [];
+}
+
     let result = props.reports.data || props.reports;
-    if (!Array.isArray(result)) return [];
+
+    if (!Array.isArray(result)) {
+return [];
+}
     
     if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase();
@@ -35,12 +41,15 @@ const filteredReports = computed(() => {
             (r?.assunto && r.assunto.toLowerCase().includes(q))
         );
     }
+
     if (selectedStatus.value) {
         result = result.filter((r: any) => r?.status === selectedStatus.value);
     }
+
     if (selectedTipo.value) {
         result = result.filter((r: any) => r?.tipo === selectedTipo.value);
     }
+
     return result;
 });
 
@@ -51,18 +60,40 @@ const handlePrint = () => {
 };
 
 const getStatusBadgeClass = (status: string) => {
-    if (!status) return 'bg-gray-100 text-gray-700';
+    if (!status) {
+return 'bg-gray-100 text-gray-700';
+}
+
     const s = status.toLowerCase();
-    if (s.includes('aberto')) return 'bg-blue-100 text-blue-700';
-    if (s.includes('análise') || s.includes('analise')) return 'bg-amber-100 text-amber-700';
-    if (s.includes('execução') || s.includes('execucao') || s.includes('progresso')) return 'bg-indigo-100 text-indigo-700';
-    if (s.includes('concluído') || s.includes('concluido')) return 'bg-emerald-100 text-emerald-700';
+
+    if (s.includes('aberto')) {
+return 'bg-blue-100 text-blue-700';
+}
+
+    if (s.includes('análise') || s.includes('analise')) {
+return 'bg-amber-100 text-amber-700';
+}
+
+    if (s.includes('execução') || s.includes('execucao') || s.includes('progresso')) {
+return 'bg-rose-100 text-rose-700';
+}
+
+    if (s.includes('concluído') || s.includes('concluido')) {
+return 'bg-emerald-100 text-emerald-700';
+}
+
     return 'bg-gray-100 text-gray-700';
 };
 
 const getPriorityBadgeClass = (priority: string) => {
-    if (priority === 'Alta') return 'bg-red-100 text-red-700';
-    if (priority === 'Média') return 'bg-amber-100 text-amber-700';
+    if (priority === 'Alta') {
+return 'bg-red-100 text-red-700';
+}
+
+    if (priority === 'Média') {
+return 'bg-amber-100 text-amber-700';
+}
+
     return 'bg-gray-100 text-gray-700';
 };
 </script>
@@ -83,17 +114,17 @@ const getPriorityBadgeClass = (priority: string) => {
                     <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium mb-1 uppercase tracking-wider">Total de Chamados</p>
                     <p class="text-2xl font-black text-gray-900 dark:text-white">{{ stats.total }}</p>
                 </div>
-                <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl shadow-sm border border-blue-100 dark:border-blue-900/30">
-                    <p class="text-[10px] text-blue-600 dark:text-blue-400 font-medium mb-1 uppercase tracking-wider">Abertos</p>
-                    <p class="text-2xl font-black text-blue-700 dark:text-blue-300">{{ stats.abertos }}</p>
+                <div class="bg-primary/10 dark:bg-primary/20 p-6 rounded-xl shadow-sm border border-primary/20">
+                    <p class="text-[10px] text-primary font-medium mb-1 uppercase tracking-wider">Abertos</p>
+                    <p class="text-2xl font-black text-primary mt-1">{{ stats.abertos }}</p>
                 </div>
                 <div class="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-xl shadow-sm border border-amber-100 dark:border-amber-900/30">
                     <p class="text-[10px] text-amber-600 dark:text-amber-400 font-medium mb-1 uppercase tracking-wider">Em Análise</p>
                     <p class="text-2xl font-black text-amber-700 dark:text-amber-300">{{ stats.em_analise }}</p>
                 </div>
-                <div class="bg-indigo-50 dark:bg-indigo-900/20 p-6 rounded-xl shadow-sm border border-indigo-100 dark:border-indigo-900/30">
-                    <p class="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium mb-1 uppercase tracking-wider">Em Execução</p>
-                    <p class="text-2xl font-black text-indigo-700 dark:text-indigo-300">{{ stats.em_execucao }}</p>
+                <div class="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl shadow-sm border border-red-200 dark:border-red-800">
+                    <p class="text-[10px] text-red-600 dark:text-red-400 font-medium mb-1 uppercase tracking-wider">Em Execução</p>
+                    <p class="text-2xl font-black text-red-700 dark:text-red-300 mt-1">{{ stats.em_execucao }}</p>
                 </div>
                 <div class="bg-emerald-50 dark:bg-emerald-900/20 p-6 rounded-xl shadow-sm border border-emerald-100 dark:border-emerald-900/30">
                     <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mb-1 uppercase tracking-wider">Concluídos</p>
@@ -173,7 +204,7 @@ const getPriorityBadgeClass = (priority: string) => {
                                 </td>
                                 <td class="py-3 px-4 text-gray-600 dark:text-gray-400 text-xs">{{ report.user?.name || 'N/A' }}</td>
                                 <td class="py-3 px-4">
-                                    <Link :href="`/chamados/${report.id}`" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium">
+                                    <Link :href="`/chamados/${report.id}`" class="text-primary hover:text-primary/80 dark:text-primary dark:hover:text-primary/80 text-sm font-medium">
                                         Ver detalhes →
                                     </Link>
                                 </td>

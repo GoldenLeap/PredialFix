@@ -27,4 +27,5 @@ export default defineConfig({
             command: 'php ../backend/artisan wayfinder:generate',
         }),
     ],
+    assetsInclude: ['**/*.mp3'],
 });

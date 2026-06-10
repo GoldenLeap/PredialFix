@@ -17,6 +17,7 @@ const categories = computed(() => [...new Set(props.materials?.map((m: any) => m
 
 const filteredMaterials = computed(() => {
     let result = props.materials || [];
+
     if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase();
         result = result.filter((m: any) =>
@@ -25,17 +26,26 @@ const filteredMaterials = computed(() => {
             m.localizacao.toLowerCase().includes(q)
         );
     }
+
     if (selectedCategory.value) {
         result = result.filter((m: any) => m.categoria === selectedCategory.value);
     }
+
     return result;
 });
 
 const getStatusClass = (mat: any) => {
     const qty = mat.quantidade_atual || 0;
     const min = mat.quantidade_minima || 0;
-    if (qty < min * 0.3) return { status: 'Crítico', color: 'text-rose-600', bg: 'bg-rose-50 dark:bg-rose-900/20', border: 'border-rose-200 dark:border-rose-800', bar: 'bg-rose-500', dot: 'bg-rose-500' };
-    if (qty < min)      return { status: 'Baixo',   color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-900/20', border: 'border-orange-200 dark:border-orange-800', bar: 'bg-orange-500', dot: 'bg-orange-500' };
+
+    if (qty < min * 0.3) {
+return { status: 'Crítico', color: 'text-rose-600', bg: 'bg-rose-50 dark:bg-rose-900/20', border: 'border-rose-200 dark:border-rose-800', bar: 'bg-rose-500', dot: 'bg-rose-500' };
+}
+
+    if (qty < min)      {
+return { status: 'Baixo',   color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-900/20', border: 'border-orange-200 dark:border-orange-800', bar: 'bg-orange-500', dot: 'bg-orange-500' };
+}
+
     return                    { status: 'Adequado', color: 'text-emerald-600', bg: 'bg-emerald-50/50 dark:bg-emerald-900/10', border: 'border-border', bar: 'bg-emerald-500', dot: 'bg-emerald-500' };
 };
 
@@ -46,7 +56,12 @@ const formatCurrency = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'c
 const totalStats = computed(() => {
     const total = props.materials?.length || 0;
     const critico = props.materials?.filter(m => (m.quantidade_atual||0) < (m.quantidade_minima||0) * 0.3).length || 0;
-    const baixo   = props.materials?.filter(m => { const q=m.quantidade_atual||0, mn=m.quantidade_minima||0; return q < mn && q >= mn * 0.3; }).length || 0;
+    const baixo   = props.materials?.filter(m => {
+ const q=m.quantidade_atual||0, mn=m.quantidade_minima||0;
+
+ return q < mn && q >= mn * 0.3; 
+}).length || 0;
+
     return { total, critico, baixo, adequado: total - critico - baixo };
 });
 </script>

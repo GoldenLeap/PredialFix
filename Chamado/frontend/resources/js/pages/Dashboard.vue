@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import { ClipboardList, AlertCircle, Wrench, CheckCircle2, TrendingUp, Package, Users, ArrowRight, Clock } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
-import { ClipboardList, AlertCircle, Wrench, CheckCircle2, TrendingUp, Package, Users, ArrowRight, Clock } from 'lucide-vue-next';
 
 const props = defineProps<{
     stats: { total: number; abertos: number; em_analise: number; em_execucao: number; concluidos: number; };
@@ -56,12 +56,12 @@ const prioColor: Record<string,string> = { Alta:'text-rose-500', Média:'text-am
                     <p class="text-4xl font-black tracking-tight">{{ stats.total }}</p>
                     <p class="text-xs text-muted-foreground mt-1">registrados</p>
                 </div>
-                <div class="bg-card border border-sky-200 dark:border-sky-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+                <div class="bg-card border border-primary/20 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-semibold text-sky-500 uppercase tracking-wider">Abertos</span>
-                        <div class="p-2 bg-sky-50 dark:bg-sky-900/20 rounded-xl"><AlertCircle class="w-4 h-4 text-sky-500" /></div>
+                        <span class="text-xs font-semibold text-primary uppercase tracking-wider">Abertos</span>
+                        <div class="p-2 bg-primary/10 rounded-xl"><AlertCircle class="w-4 h-4 text-primary" /></div>
                     </div>
-                    <p class="text-4xl font-black text-sky-600 dark:text-sky-400 tracking-tight">{{ stats.abertos }}</p>
+                    <p class="text-4xl font-black text-primary tracking-tight">{{ stats.abertos }}</p>
                     <p class="text-xs text-muted-foreground mt-1">aguardando triagem</p>
                 </div>
                 <div class="bg-card border border-amber-200 dark:border-amber-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">

@@ -19,7 +19,10 @@ const canEditChamado = computed(() => {
 const isConcluido = computed(() => props.chamado.status === 'Concluído');
 
 const canUpdateStatus = computed(() => {
-    if (!canEditChamado.value) return false;
+    if (!canEditChamado.value) {
+return false;
+}
+
     return !isConcluido.value;
 });
 
@@ -47,10 +50,23 @@ const statusOrder: Record<string, number> = {
 
 const getStatusKey = (status: string): string => {
     const s = status.toLowerCase();
-    if (s.includes('aguardando')) return 'aguardando_material';
-    if (s.includes('análise') || s.includes('analise')) return 'em_analise';
-    if (s.includes('execução') || s.includes('execucao') || s.includes('progresso')) return 'em_execucao';
-    if (s.includes('concluído') || s.includes('concluido')) return 'concluido';
+
+    if (s.includes('aguardando')) {
+return 'aguardando_material';
+}
+
+    if (s.includes('análise') || s.includes('analise')) {
+return 'em_analise';
+}
+
+    if (s.includes('execução') || s.includes('execucao') || s.includes('progresso')) {
+return 'em_execucao';
+}
+
+    if (s.includes('concluído') || s.includes('concluido')) {
+return 'concluido';
+}
+
     return 'criado';
 };
 
@@ -58,13 +74,20 @@ const getStepStatus = (stepIndex: number) => {
     const currentKey = getStatusKey(props.chamado.status);
     const currentIndex = statusOrder[currentKey] ?? 0;
 
-    if (stepIndex < currentIndex) return 'completed';
-    if (stepIndex === currentIndex) return 'current';
+    if (stepIndex < currentIndex) {
+return 'completed';
+}
+
+    if (stepIndex === currentIndex) {
+return 'current';
+}
+
     return 'pending';
 };
 
 const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
+
     return date.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 
@@ -76,7 +99,9 @@ const getStepDate = (stepIndex: number) => {
     const stepKeys = ['criado', 'em_analise', 'aguardando_material', 'em_execucao', 'concluido'];
     const stepKey = stepKeys[stepIndex];
 
-    if (stepIndex === 0) return formatDateTime(props.chamado.created_at);
+    if (stepIndex === 0) {
+return formatDateTime(props.chamado.created_at);
+}
 
     const historicos = props.historico || props.chamado.historicos || [];
     const statusMap: Record<string, string> = {
@@ -86,7 +111,8 @@ const getStepDate = (stepIndex: number) => {
         'concluido': 'Concluído',
     };
 
-    let hist = historicos.find((h: any) => (h.status_novo || '').toLowerCase().includes(stepKey.replace('_', ' ')));
+    const hist = historicos.find((h: any) => (h.status_novo || '').toLowerCase().includes(stepKey.replace('_', ' ')));
+
     return hist ? formatDateTime(hist.data_alteracao) : 'Aguardando...';
 };
 
@@ -103,7 +129,10 @@ const statusOptions = computed(() => {
 const hasStatusChange = computed(() => statusForm.status !== props.chamado.status);
 
 const submitStatusUpdate = () => {
-    if (!hasStatusChange.value) return;
+    if (!hasStatusChange.value) {
+return;
+}
+
     router.put(`/chamados/${props.chamado.id}`, statusForm.data(), {
         onSuccess: () => statusForm.reset('observacao'),
     });
@@ -130,7 +159,10 @@ const selectedMaterial = computed(() =>
 );
 
 const addMaterial = () => {
-    if (!materialForm.material_id) return;
+    if (!materialForm.material_id) {
+return;
+}
+
     materialForm.post(`/chamados/${props.chamado.id}/materiais`, {
         onSuccess: () => {
             materialForm.reset();
@@ -140,7 +172,10 @@ const addMaterial = () => {
 };
 
 const removeMaterial = (materialId: number) => {
-    if (!confirm('Remover este material do chamado?')) return;
+    if (!confirm('Remover este material do chamado?')) {
+return;
+}
+
     router.delete(`/chamados/${props.chamado.id}/materiais/${materialId}`);
 };
 
@@ -148,9 +183,14 @@ const materiaisAgrupados = computed(() => {
     const grupos: Record<string, any[]> = {};
     props.materiais_disponiveis.forEach(m => {
         const cat = m.categoria || 'Outros';
-        if (!grupos[cat]) grupos[cat] = [];
+
+        if (!grupos[cat]) {
+grupos[cat] = [];
+}
+
         grupos[cat].push(m);
     });
+
     return grupos;
 });
 </script>
@@ -164,7 +204,7 @@ const materiaisAgrupados = computed(() => {
             <button @click="goBack" class="absolute left-8 p-2 rounded-full hover:bg-muted transition-colors cursor-pointer outline-none group">
                 <ArrowLeft class="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" stroke-width="2.5" />
             </button>
-            <h1 class="w-full text-center text-xl font-bold tracking-tight bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
+            <h1 class="w-full text-center text-xl font-bold tracking-tight text-foreground">
                 Protocolo #{{ chamado.id }}
             </h1>
             <div v-if="canEditChamado" class="absolute right-8">

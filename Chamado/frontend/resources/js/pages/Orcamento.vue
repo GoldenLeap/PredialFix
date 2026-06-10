@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
 import { DollarSign, Save, RefreshCcw } from 'lucide-vue-next';
+import { ref, computed } from 'vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 const breadcrumbs = [
     { title: 'Painel', href: '/dashboard' },
@@ -40,7 +40,9 @@ const saveBudget = () => {
         year: parseInt(selectedYear.value),
         total_budget: monthlyBudget.value,
     }, {
-        onFinish: () => { isSaving.value = false; },
+        onFinish: () => {
+ isSaving.value = false; 
+},
     });
 };
 
@@ -55,6 +57,7 @@ const categories = computed(() => {
         const percentage = allocations[name] ?? (1 / CATEGORIES.length);
         const limit = total * percentage;
         const spent = spentByCategory[name] || 0;
+
         return { name, percentage: percentage * 100, limit, spent };
     });
 });
@@ -62,19 +65,24 @@ const categories = computed(() => {
 const getCategoryColor = (name: string) => {
     const colors: Record<string, string> = {
         'Elétrica': 'bg-yellow-500',
-        'Hidráulica': 'bg-blue-500',
+        'Hidráulica': 'bg-rose-500',
         'Infraestrutura': 'bg-green-500',
         'Outros': 'bg-gray-500',
     };
+
     return colors[name] || 'bg-gray-400';
 };
 
 const formattedHistory = computed(() => {
-    if (!props.history) return [];
+    if (!props.history) {
+return [];
+}
+
     return props.history.map(item => {
         const spent = item.spent || 0;
         const variance = item.total_budget - spent;
         const monthName = props.months[item.month.toString().padStart(2, '0')] || item.month;
+
         return {
             label: `${monthName}/${item.year}`,
             budget: item.total_budget,
@@ -99,7 +107,7 @@ const totalRemaining = computed(() => monthlyBudget.value - totalSpent.value);
 
             <!-- Configuração -->
             <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
-                <div class="bg-[#ff8a8a] px-6 py-3 flex items-center gap-2 text-white font-medium">
+                <div class="bg-primary px-6 py-3 flex items-center gap-2 text-primary-foreground font-medium">
                     <DollarSign class="w-5 h-5" />
                     Configuração do orçamento
                 </div>
@@ -117,7 +125,7 @@ const totalRemaining = computed(() => monthlyBudget.value - totalSpent.value);
                         </select>
                     </div>
                     <div class="flex items-end">
-                        <button @click="updatePeriod" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                        <button @click="updatePeriod" class="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
                             <RefreshCcw class="w-4 h-4" /> Atualizar período
                         </button>
                     </div>
@@ -125,7 +133,7 @@ const totalRemaining = computed(() => monthlyBudget.value - totalSpent.value);
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Orçamento Mensal (R$)</label>
                         <input type="number" step="0.01" v-model.number="monthlyBudget"
-                            class="w-full bg-[#e0ffff] rounded-lg border border-gray-200 py-3 px-4 font-medium text-lg focus:ring-2 focus:ring-cyan-500 outline-none" />
+                            class="w-full bg-background rounded-lg border border-input py-3 px-4 font-medium text-lg focus:ring-2 focus:ring-primary outline-none" />
                     </div>
                     <div class="flex items-end">
                         <button @click="saveBudget" :disabled="isSaving"

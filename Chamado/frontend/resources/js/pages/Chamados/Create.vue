@@ -60,7 +60,7 @@ const submit = () => {
                         <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <select 
                             v-model="form.tipo" 
-                            class="w-full bg-white border border-gray-300 rounded-xl pl-12 pr-10 py-3 text-sm text-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none outline-none"
+                             class="w-full bg-white border border-gray-300 rounded-xl pl-12 pr-10 py-3 text-sm text-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none outline-none"
                             required
                         >
                             <option value="" disabled selected>Categoria...</option>
@@ -82,7 +82,7 @@ const submit = () => {
                     <div class="relative">
                         <select 
                             v-model="form.local" 
-                            class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none outline-none"
+                             class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none outline-none"
                             required
                         >
                             <option value="" disabled selected>Selecione um lugar</option>
@@ -105,8 +105,8 @@ const submit = () => {
                     <input 
                         type="text" 
                         v-model="form.bloco" 
-                        class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none"
-                        placeholder="Ex: Bloco A, Bloco B..."
+                                class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                                placeholder="Ex: Bloco A, Bloco B..."
                     />
                     <div v-if="form.errors.bloco" class="text-red-500 text-xs font-bold mt-1">{{ form.errors.bloco }}</div>
                 </div>
@@ -120,7 +120,7 @@ const submit = () => {
                                 type="radio" 
                                 v-model="form.patrimonio_sim" 
                                 :value="true" 
-                                class="w-4 h-4 text-[#007BFF] focus:ring-[#007BFF]"
+                                class="w-4 h-4 text-primary focus:ring-primary"
                             />
                             <span class="text-sm text-gray-600">Sim</span>
                         </label>
@@ -129,7 +129,7 @@ const submit = () => {
                                 type="radio" 
                                 v-model="form.patrimonio_sim" 
                                 :value="false" 
-                                class="w-4 h-4 text-[#007BFF] focus:ring-[#007BFF]"
+                                class="w-4 h-4 text-primary focus:ring-primary"
                             />
                             <span class="text-sm text-gray-600">Não</span>
                         </label>
@@ -138,8 +138,8 @@ const submit = () => {
                         <input 
                             type="text" 
                             v-model="form.numero_patrimonio" 
-                            class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none"
-                            placeholder="Digite o número do patrimônio"
+                                class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                                placeholder="Digite o número do patrimônio"
                         />
                         <div v-if="form.errors.numero_patrimonio" class="text-red-500 text-xs font-bold mt-1">{{ form.errors.numero_patrimonio }}</div>
                     </div>
@@ -151,8 +151,8 @@ const submit = () => {
                     <input 
                         type="text" 
                         v-model="form.assunto" 
-                        class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none"
-                        placeholder="Um resumo breve do problema"
+                                class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                                placeholder="Um resumo breve do problema"
                         required
                     />
                     <div v-if="form.errors.assunto" class="text-red-500 text-xs font-bold mt-1">{{ form.errors.assunto }}</div>
@@ -164,8 +164,8 @@ const submit = () => {
                     <textarea 
                         v-model="form.descricao" 
                         rows="5"
-                        class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none resize-none"
-                        placeholder="Uma descrição detalhada do problema..."
+                                class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none resize-none"
+                                placeholder="Uma descrição detalhada do problema..."
                         required
                     ></textarea>
                     <div v-if="form.errors.descricao" class="text-red-500 text-xs font-bold mt-1">{{ form.errors.descricao }}</div>
@@ -182,7 +182,7 @@ const submit = () => {
                                 :value="p" 
                                 class="sr-only peer"
                             />
-                            <div class="px-4 py-2.5 text-center rounded-xl border border-gray-300 bg-white transition-all peer-checked:bg-[#B3D4FF] peer-checked:border-[#007BFF] peer-checked:text-[#007BFF]">
+                            <div class="px-4 py-2.5 text-center rounded-xl border border-gray-300 bg-white transition-all peer-checked:bg-red-50 peer-checked:border-primary peer-checked:text-primary">
                                 <span class="text-sm font-normal">{{ p }}</span>
                             </div>
                         </label>
@@ -200,7 +200,7 @@ const submit = () => {
                                 :value="t" 
                                 class="sr-only peer"
                             />
-                            <div class="px-4 py-2.5 text-center rounded-xl border border-gray-300 bg-white transition-all peer-checked:bg-[#B3D4FF] peer-checked:border-[#007BFF] peer-checked:text-[#007BFF]">
+                            <div class="px-4 py-2.5 text-center rounded-xl border border-gray-300 bg-white transition-all peer-checked:bg-red-50 peer-checked:border-primary peer-checked:text-primary">
                                 <span class="text-sm font-normal">{{ t }}</span>
                             </div>
                         </label>
@@ -221,7 +221,7 @@ const submit = () => {
                         
                         <div v-if="!previewUrl" class="flex flex-col items-center">
                             <UploadCloud class="w-8 h-8 text-gray-400 mb-2" />
-                            <p class="text-sm font-bold text-[#007BFF]">Clique para enviar <span class="text-gray-500 font-normal">a imagem</span></p>
+                            <p class="text-sm font-bold text-primary">Clique para enviar <span class="text-gray-500 font-normal">a imagem</span></p>
                             <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-wider">PNG, JPG até 10MB</p>
                         </div>
 
@@ -246,7 +246,7 @@ const submit = () => {
                     <button 
                         type="submit" 
                         :disabled="form.processing"
-                        class="px-10 py-3 bg-[#007BFF] hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-md active:scale-95"
+                        class="px-10 py-3 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-md active:scale-95"
                     >
                         {{ form.processing ? 'Enviando...' : 'Enviar Chamado' }}
                     </button>

@@ -24,7 +24,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
                 
                 <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-6">
-                    Bem-vindo ao <span class="text-indigo-600 dark:text-indigo-400">PredialFix</span>
+                    Bem-vindo ao <span class="text-primary">PredialFix</span>
                 </h1>
                 
                 <p class="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -35,29 +35,29 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link 
                         href="/dashboard" 
-                        class="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/30 transition-all transform hover:-translate-y-1 active:scale-95"
+                        class="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-2xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-1 active:scale-95"
                     >
                         Ir para o Dashboard
                     </Link>
                     <Link 
                         href="/chamados/create" 
-                        class="px-8 py-4 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white font-bold rounded-2xl shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all transform hover:-translate-y-1 active:scale-95"
+                        class="px-8 py-4 bg-white dark:bg-zinc-800 text-primary dark:text-primary font-bold rounded-2xl shadow-lg border border-primary/30 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all transform hover:-translate-y-1 active:scale-95"
                     >
-                        Abrir Novo Chamado
+                        Novo Chamado
                     </Link>
                 </div>
 
                 <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
                     <div class="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800">
-                        <div class="text-indigo-600 dark:text-indigo-400 font-bold mb-2">Gestão Unificada</div>
+                        <div class="text-primary font-bold mb-2">Gestão Unificada</div>
                         <p class="text-sm text-zinc-500">Todos os chamados de manutenção em um único lugar para fácil acompanhamento.</p>
                     </div>
                     <div class="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800">
-                        <div class="text-indigo-600 dark:text-indigo-400 font-bold mb-2">Histórico Completo</div>
+                        <div class="text-primary font-bold mb-2">Histórico Completo</div>
                         <p class="text-sm text-zinc-500">Acompanhe cada mudança de status e auditoria de quem realizou a manutenção.</p>
                     </div>
                     <div class="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800">
-                        <div class="text-indigo-600 dark:text-indigo-400 font-bold mb-2">Aprovação Rápida</div>
+                        <div class="text-primary font-bold mb-2">Aprovação Rápida</div>
                         <p class="text-sm text-zinc-500">Sistema de orçamentos integrado para aprovações imediatas e redução de atrasos.</p>
                     </div>
                 </div>

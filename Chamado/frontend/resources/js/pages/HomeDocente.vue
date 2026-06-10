@@ -95,6 +95,7 @@ const formatTime = (date: string) => {
     }
     
     const created = new Date(date);
+
     return created.toLocaleString('pt-BR', { 
         day: '2-digit', 
         month: '2-digit', 

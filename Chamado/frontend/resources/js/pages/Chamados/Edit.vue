@@ -41,7 +41,7 @@ return 'bg-amber-500';
 }
 
     if (s?.includes('execução') || s?.includes('execucao') || s?.includes('progresso')) {
-return 'bg-blue-500';
+return 'bg-primary';
 }
 
     if (s?.includes('concluído') || s?.includes('concluido')) {

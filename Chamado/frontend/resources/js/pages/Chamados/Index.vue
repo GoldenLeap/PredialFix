@@ -14,8 +14,12 @@ const props = defineProps<{
 }>();
 
 const formatDateTime = (dateString: string) => {
-    if (!dateString) return '-';
+    if (!dateString) {
+return '-';
+}
+
     const date = new Date(dateString);
+
     return date.toLocaleString('pt-BR', { 
         day: '2-digit', 
         month: '2-digit', 
@@ -38,10 +42,12 @@ const stats = computed(() => {
     const atual = props.chamados.filter(c => {
         const d = new Date(c.created_at);
         const now = new Date();
+
         return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
     }).length;
     const alta = filteredChamados.value.filter(c => c.prioridade === 'Alta').length;
     const concluidos = filteredChamados.value.filter(c => c.status === 'Concluído').length;
+
     return { total, atual, alta, concluidos };
 });
 
@@ -83,6 +89,7 @@ const filteredChamados = computed(() => {
 
 const paginatedChamados = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
+
     return filteredChamados.value.slice(start, start + itemsPerPage);
 });
 
