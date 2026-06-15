@@ -83,13 +83,7 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-const rightNavItems: NavItem[] = [
-    {
-        title: 'Documentação',
-        href: '#',
-        icon: BookOpen,
-    },
-];
+const rightNavItems: NavItem[] = [];
 
 const themeItems = [
     { label: 'Claro', icon: Sun, value: 'light' },
