@@ -8,11 +8,18 @@
     <img src="Chamado/imagens/logo.png" alt="Logo" width="300" height="300">
   </a>
 
-<h3 align="center">PredialFix</h3>
+  <h3 align="center">PredialFix</h3>
 
   <p align="center">
     Plataforma para gerenciar solicitações de manutenção predial no Senai.
     <br />
+    <a href="docs/DOCUMENTACAO.md"><strong>📚 Documentação Completa »</strong></a>
+    <br />
+    <br />
+    <a href="https://www.figma.com/site/7rBeSDg6EBjocLUKzxxonh/PredialFix">Ver Protótipo</a>
+    ·
+    <a href="https://trello.com/b/LMRbT3a9/predialfix">Quadro Kanban</a>
+  </p>
 </div>
 
 ---
@@ -27,15 +34,16 @@
 
 **Situação Problema**
 
-O SENAI enfrenta desafios no gerenciamento de solicitações de manutenção predial. A ausência de um sistema estruturado gera falta de transparência, demora no atendimento dos chamados e dificuldade no controle das solicitações. 
+O SENAI enfrenta desafios no gerenciamento de solicitações de manutenção predial. A ausência de um sistema estruturado gera falta de transparência, demora no atendimento dos chamados e dificuldade no controle das solicitações.
 
 Diante desse cenário, surge o **PredialFix**, uma plataforma para centralizar as solicitações e permitir o acompanhamento de cada etapa até a resolução. O projeto utiliza uma arquitetura híbrida:
+
 - **Web**: Interface rica utilizando **Inertia.js** com **Vue.js** para uma experiência fluida no desktop.
 - **Mobile**: Disponibilização de uma **API RESTful** robusta para integração com dispositivos móveis.
 
 ---
 
- **Objetivo do Projeto**
+**Objetivo do Projeto**
 
 O objetivo principal do PredialFix é centralizar as demandas de manutenção predial. O projeto foca em:
 
@@ -47,14 +55,14 @@ O objetivo principal do PredialFix é centralizar as demandas de manutenção pr
 
 ---
 
- **Tecnologias Utilizadas**
+**Tecnologias Utilizadas**
 
-* **Back-End:** [![Laravel][Laravel.com]][Laravel-url] [![SQLite][SQLite.com]][SQLite-url] [![Filament][Filament.com]][Filament-url]
-* **Front-End:** [![Vue.js][Vue.js]][Vue-url] [![Inertia.js][Inertia.com]][Inertia-url] [![Tailwind CSS][Tailwind.com]][Tailwind-url] [![TypeScript][TypeScript.com]][TypeScript-url]
+- **Back-End:** [![Laravel][Laravel.com]][Laravel-url] [![SQLite][SQLite.com]][SQLite-url] [![Filament][Filament.com]][Filament-url]
+- **Front-End:** [![Vue.js][Vue.js]][Vue-url] [![Inertia.js][Inertia.com]][Inertia-url] [![Tailwind CSS][Tailwind.com]][Tailwind-url] [![TypeScript][TypeScript.com]][TypeScript-url]
 
 ---
 
- **Levantamento de Requisitos**
+**Levantamento de Requisitos**
 
 O sistema foi estruturado para atender às necessidades de controle de chamados no SENAI, considerando aspectos como funcionalidade, desempenho e segurança:
 
@@ -65,7 +73,7 @@ O sistema foi estruturado para atender às necessidades de controle de chamados 
 
 ---
 
- **Prototipagem**
+**Prototipagem**
 
 O desenvolvimento do PredialFix seguiu uma abordagem de prototipagem em três níveis: Interface (UX/UI), Dados (Banco de dados) e Comunicação (API). A interface foi desenhada no Figma para alinhar expectativas e melhorar a usabilidade.
 
@@ -76,13 +84,12 @@ O desenvolvimento do PredialFix seguiu uma abordagem de prototipagem em três n�
 **Metodologias Ágeis**
 
 Para garantir a eficiência no desenvolvimento e a organização das entregas, o projeto utiliza a metodologia Kanban. O fluxo de trabalho é dividido em três estados principais:
+
 - **A Fazer**: Tarefas priorizadas e prontas para o início do desenvolvimento.
 - **Em Andamento**: Funcionalidades que estão sendo codificadas e testadas.
 - **Concluído**: Requisitos finalizados, documentados e com o merge realizado.
 
 - **Acesse o quadro no** [Trello](https://trello.com/b/LMRbT3a9/predialfix)
-
-
 
 [Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
 [Vue-url]: https://vuejs.org/

@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
-* @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
-* @route '/livewire-d60ff4ea/update'
-*/
+ * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:138
+ * @route '/livewire-901188fe/update'
+ */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(options),
     method: 'post',
@@ -11,50 +11,49 @@ export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
 update.definition = {
     methods: ["post"],
-    url: '/livewire-d60ff4ea/update',
+    url: '/livewire-901188fe/update',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
-* @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
-* @route '/livewire-d60ff4ea/update'
-*/
+ * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:138
+ * @route '/livewire-901188fe/update'
+ */
 update.url = (options?: RouteQueryOptions) => {
     return update.definition.url + queryParams(options)
 }
 
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
-* @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
-* @route '/livewire-d60ff4ea/update'
-*/
+ * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:138
+ * @route '/livewire-901188fe/update'
+ */
 update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(options),
     method: 'post',
 })
 
-/**
+    /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
-* @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
-* @route '/livewire-d60ff4ea/update'
-*/
-const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(options),
-    method: 'post',
-})
+ * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:138
+ * @route '/livewire-901188fe/update'
+ */
+    const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(options),
+        method: 'post',
+    })
 
-/**
+            /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
-* @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:135
-* @route '/livewire-d60ff4ea/update'
-*/
-updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(options),
-    method: 'post',
-})
-
-update.form = updateForm
-
+ * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:138
+ * @route '/livewire-901188fe/update'
+ */
+        updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(options),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 const defaultLivewire = {
     update: Object.assign(update, update),
 }

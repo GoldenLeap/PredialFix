@@ -31,7 +31,7 @@ class EstoqueCritico extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject("⚠️ Estoque Crítico: {$this->material->nome}")
+            ->subject("Estoque Crítico: {$this->material->nome}")
             ->greeting("Olá {$notifiable->name}!")
             ->line("O estoque do seguinte material atingiu nível crítico:")
             ->line("**Material:** {$this->material->nome}")

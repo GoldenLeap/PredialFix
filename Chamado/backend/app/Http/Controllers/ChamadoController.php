@@ -92,14 +92,6 @@ class ChamadoController extends Controller
             ]);
         }
 
-        // Regra de Negócio: obrigar técnico antes de "Em Execução"
-        if ($request->input('status') === 'Em Execução') {
-            $tecnicoId = $request->input('tecnico_id') ?? $chamado->tecnico_id;
-            if (empty($tecnicoId)) {
-                return back()->withErrors(['status' => 'É necessário designar um técnico antes de iniciar a execução.']);
-            }
-        }
-
         $oldStatus = $chamado->status;
         $oldTecnicoId = $chamado->tecnico_id;
         $user = $request->user();
@@ -177,8 +169,8 @@ class ChamadoController extends Controller
             // Attach or update pivot
             if ($chamado->materiais()->where('material_id', $material->id)->exists()) {
                 $chamado->materiais()->updateExistingPivot($material->id, [
-                    'quantidade'     => \DB::raw('quantidade + ' . $validated['quantidade']),
-                    'subtotal'       => \DB::raw('subtotal + ' . $subtotal),
+                    'quantidade'     => DB::raw('quantidade + ' . $validated['quantidade']),
+                    'subtotal'       => DB::raw('subtotal + ' . $subtotal),
                 ]);
             } else {
                 $chamado->materiais()->attach($material->id, [

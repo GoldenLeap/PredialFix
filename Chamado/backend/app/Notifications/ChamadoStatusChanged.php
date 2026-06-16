@@ -10,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 /**
  * Notificação disparada quando o status de um chamado muda.
- * Enviada ao solicitante via mail + database (sininho 🔔).
+ * Enviada ao solicitante via mail
  */
 class ChamadoStatusChanged extends Notification implements ShouldQueue
 {
@@ -22,11 +22,11 @@ class ChamadoStatusChanged extends Notification implements ShouldQueue
 
     /** Mensagens de progresso humanizadas por status. */
     private const MENSAGENS_PROGRESSO = [
-        'Em Análise' => '🔍 Seu chamado está sendo analisado pela equipe técnica.',
-        'Aguardando Material' => '📦 Aguardando chegada de material necessário para o serviço.',
-        'Em Execução' => '🔧 Técnico a caminho. O serviço foi iniciado!',
-        'Concluído' => '✅ Serviço finalizado. Chamado encerrado com sucesso!',
-        'Aberto' => '🔄 Chamado foi reaberto para nova análise.',
+        'Em Análise' => 'Seu chamado está sendo analisado pela equipe técnica.',
+        'Aguardando Material' => 'Aguardando chegada de material necessário para o serviço.',
+        'Em Execução' => 'Técnico a caminho. O serviço foi iniciado!',
+        'Concluído' => 'Serviço finalizado. Chamado encerrado com sucesso!',
+        'Aberto' => 'Chamado foi reaberto para nova análise.',
     ];
 
     public function __construct(Chamado $chamado, string $statusAnterior, string $statusNovo)
