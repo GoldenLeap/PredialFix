@@ -12,6 +12,11 @@ import 'view_models/orcamento_view_model.dart';
 import 'view_models/relatorios_view_model.dart';
 import 'services/sound_navigation_observer.dart';
 import 'services/auth_service.dart';
+import 'view/dashboard_view.dart';
+import 'view/materiais_view.dart';
+import 'view/orcamento_view.dart';
+import 'view/relatorios_view.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,10 +55,10 @@ class PredialFix extends StatelessWidget {
         '/': (context) => const LoginView(),
         '/home': (context) => const HomeView(),
         '/profile': (context) => const ProfileView(),
-        '/dashboard': (context) => const DashboardView(),
-        '/materiais': (context) => const MateriaisView(),
-        '/orcamento': (context) => const OrcamentoView(),
-        '/relatorios': (context) => const RelatoriosView(),
+        '/dashboard': (context) => DashboardView(),
+        '/materiais': (context) => MateriaisView(),
+        '/orcamento': (context) => OrcamentoView(),
+        '/relatorios': (context) => RelatoriosView(),
       },
       navigatorObservers: [
         SoundNavigationObserver(),

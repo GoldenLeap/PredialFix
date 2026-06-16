@@ -7,6 +7,11 @@ import 'chamado_form_view.dart';
 import 'chamado_detail_view.dart';
 import '../services/notification_service.dart';
 
+import 'dashboard_view.dart';
+import 'materiais_view.dart';
+import 'orcamento_view.dart';
+import 'relatorios_view.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -204,9 +209,7 @@ class _HomeViewState extends State<HomeView> {
               title: const Text('Dashboard'),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Dashboard - Em breve!')),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (_) => DashboardView()));
               },
             ),
             ListTile(
@@ -214,9 +217,7 @@ class _HomeViewState extends State<HomeView> {
               title: const Text('Materiais'),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Materiais - Em breve!')),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (_) => MateriaisView()));
               },
             ),
             ListTile(
@@ -224,9 +225,7 @@ class _HomeViewState extends State<HomeView> {
               title: const Text('Orçamento'),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Orçamento - Em breve!')),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (_) => OrcamentoView()));
               },
             ),
             ListTile(
@@ -234,9 +233,7 @@ class _HomeViewState extends State<HomeView> {
               title: const Text('Relatórios'),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Relatórios - Em breve!')),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (_) => RelatoriosView()));
               },
             ),
           ],

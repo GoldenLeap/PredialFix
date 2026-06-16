@@ -22,7 +22,8 @@ class MateriaisViewModel extends ChangeNotifier {
     final data = await _service.getMateriais();
     
     if (data != null) {
-      _materiais = data;
+      final list = data['materiais'] as List<dynamic>? ?? [];
+      _materiais = list.map((m) => MaterialItem.fromJson(m)).toList();
     } else {
       _errorMessage = "Erro ao carregar materiais.";
     }
