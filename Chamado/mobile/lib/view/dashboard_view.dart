@@ -51,184 +51,184 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   Widget _buildDashboardContent(BuildContext context, DashboardViewModel viewModel) {
-    final data = viewModel.dashboardData!;
+    final data = viewModel.dashboardData ?? {};
 
-    // Mapear corretamente a estrutura real da API
-    final financeiro = data['financeiro'] as Map<String, dynamic>? ?? {};
-    final chamadosInfo = data['chamados'] as Map<String, dynamic>? ?? {};
+    final stats = data['stats'] ?? {};
+    final total = (stats['total'] as num?)?.toInt() ?? 0;
+    final abertos = (stats['abertos'] as num?)?.toInt() ?? 0;
+    final emAnalise = (stats['em_analise'] as num?)?.toInt() ?? 0;
+    final emExecucao = (stats['em_execucao'] as num?)?.toInt() ?? 0;
+    final concluidos = (stats['concluidos'] as num?)?.toInt() ?? 0;
 
-    final double valorOrcamento = (financeiro['orcamento_total'] as num?)?.toDouble() ?? 0.0;
-    final double valorGasto = (financeiro['total_gasto'] as num?)?.toDouble() ?? 0.0;
-    final int abertos = (chamadosInfo['abertos'] as num?)?.toInt() ?? 0;
-    final int finalizados = (chamadosInfo['finalizados'] as num?)?.toInt() ?? 0;
-    final int emAndamento = (chamadosInfo['em_andamento'] as num?)?.toInt() ?? 0;
+    final double resolutionRate = total > 0 ? (concluidos / total) * 100 : 0.0;
 
-    final double saldo = valorOrcamento - valorGasto;
-
-    // Atividades recentes é uma lista de Maps
-    final atividadesRecentes = data['atividades_recentes'] as List<dynamic>? ?? [];
+    final recentChamados = data['recentChamados'] as List<dynamic>? ?? [];
+    final recentMaterials = data['recentMaterials'] as List<dynamic>? ?? [];
+    final criticalMaterials = recentMaterials.where((m) => ((m['quantidade_atual'] as num?) ?? 0) < ((m['quantidade_minima'] as num?) ?? 0)).toList();
+    final topUsers = data['topUsers'] as List<dynamic>? ?? [];
 
     return RefreshIndicator(
       onRefresh: viewModel.loadDashboard,
       child: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Seletor de Mês/Ano
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Período:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  Row(
-                    children: [
-                      DropdownButton<int>(
-                        value: viewModel.selectedMonth,
-                        underline: const SizedBox(),
-                        items: List.generate(12, (i) => DropdownMenuItem(
-                          value: i + 1,
-                          child: Text(_months[i]),
-                        )),
-                        onChanged: (val) {
-                          if (val != null) viewModel.setDate(val, viewModel.selectedYear);
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                      DropdownButton<int>(
-                        value: viewModel.selectedYear,
-                        underline: const SizedBox(),
-                        items: List.generate(5, (i) => DropdownMenuItem(
-                          value: DateTime.now().year - 2 + i,
-                          child: Text('${DateTime.now().year - 2 + i}'),
-                        )),
-                        onChanged: (val) {
-                          if (val != null) viewModel.setDate(viewModel.selectedMonth, val);
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+          const Text('Painel de Controle', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          const Text('Visão geral do sistema de manutenção predial.', style: TextStyle(color: Colors.grey, fontSize: 14)),
           const SizedBox(height: 16),
 
-          // Cards de Chamados
-          Row(
+          // KPI Cards Grid
+          GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            childAspectRatio: 1.5,
             children: [
-              Expanded(child: _buildInfoCard('Abertos', abertos.toString(), Icons.inbox, Colors.orange)),
-              const SizedBox(width: 8),
-              Expanded(child: _buildInfoCard('Em Andamento', emAndamento.toString(), Icons.autorenew, Colors.blue)),
-              const SizedBox(width: 8),
-              Expanded(child: _buildInfoCard('Concluídos', finalizados.toString(), Icons.check_circle, Colors.green)),
+              _buildModernKpiCard('Total', total.toString(), Icons.content_paste, Colors.grey),
+              _buildModernKpiCard('Abertos', abertos.toString(), Icons.error_outline, Colors.blue),
+              _buildModernKpiCard('Em Análise', emAnalise.toString(), Icons.content_paste_search, Colors.amber),
+              _buildModernKpiCard('Execução', emExecucao.toString(), Icons.build, Colors.orange),
+              _buildModernKpiCard('Concluídos', concluidos.toString(), Icons.check_circle_outline, Colors.green),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
 
-          // Card Financeiro Principal
+          // Taxa de Resolução
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 2,
-            child: Container(
+            child: Padding(
               padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: LinearGradient(
-                  colors: saldo >= 0 ? [Colors.green.shade700, Colors.green.shade500] : [Colors.red.shade700, Colors.red.shade500],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Saldo Mensal', style: TextStyle(color: Colors.white70, fontSize: 14)),
-                  const SizedBox(height: 4),
-                  Text('R\$ ${saldo.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Orçamento', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                          Text('R\$ ${valorOrcamento.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Text('Gastos', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                          Text('R\$ ${valorGasto.toStringAsFixed(2)}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
+                      const Text('Taxa de Resolução', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                      Icon(Icons.trending_up, color: Colors.green.shade600, size: 20),
                     ],
                   ),
                   const SizedBox(height: 12),
+                  Text('${resolutionRate.round()}%', style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
                   LinearProgressIndicator(
-                    value: valorOrcamento > 0 ? (valorGasto / valorOrcamento).clamp(0.0, 1.0) : 0.0,
-                    backgroundColor: Colors.white30,
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                    minHeight: 6,
-                    borderRadius: BorderRadius.circular(10),
+                    value: resolutionRate / 100,
+                    backgroundColor: Colors.grey.shade200,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green.shade500),
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(8),
                   ),
+                  const SizedBox(height: 8),
+                  Text('$concluidos de $total resolvidos', style: const TextStyle(color: Colors.grey, fontSize: 12)),
                 ],
               ),
             ),
           ),
           const SizedBox(height: 24),
-          
-          const Text('Atividades Recentes', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey)),
-          const SizedBox(height: 8),
-          
-          ..._buildAtividadesRecentes(atividadesRecentes),
+
+          // Estoque Crítico
+          const Row(
+            children: [
+              Icon(Icons.inventory_2, color: Colors.red, size: 20),
+              SizedBox(width: 8),
+              Text('Estoque Crítico', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (criticalMaterials.isEmpty)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green, size: 40),
+                    SizedBox(height: 8),
+                    Text('Estoque normalizado!', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            )
+          else
+            ...criticalMaterials.take(5).map((m) {
+              final qtd = m['quantidade_atual'] ?? 0;
+              final min = m['quantidade_minima'] ?? 0;
+              return Card(
+                color: Colors.red.shade50,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.red.shade100)),
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  title: Text(m['nome'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  subtitle: Text(m['categoria'] ?? '', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                  trailing: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(color: Colors.red.shade100, borderRadius: BorderRadius.circular(8)),
+                    child: Text('$qtd / $min', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12)),
+                  ),
+                ),
+              );
+            }),
+          const SizedBox(height: 24),
+
+          // Usuários Mais Ativos
+          const Row(
+            children: [
+              Icon(Icons.people, color: Colors.grey, size: 20),
+              SizedBox(width: 8),
+              Text('Mais Ativos', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (topUsers.isEmpty)
+            const Center(child: Padding(padding: EdgeInsets.all(16.0), child: Text("Sem dados.", style: TextStyle(color: Colors.grey))))
+          else
+            ...topUsers.take(5).map((u) {
+              return Card(
+                elevation: 1,
+                margin: const EdgeInsets.only(bottom: 8),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.blue.shade100,
+                    child: Text((u['name'] ?? '?').toString().toUpperCase().substring(0, 1), style: TextStyle(color: Colors.blue.shade800, fontWeight: FontWeight.bold)),
+                  ),
+                  title: Text(u['name'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  subtitle: Text(u['cargo'] ?? '', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                  trailing: Text(u['chamados_count']?.toString() ?? '0', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue)),
+                ),
+              );
+            }),
         ],
       ),
     );
   }
 
-  Widget _buildInfoCard(String title, String value, IconData icon, Color color) {
+  Widget _buildModernKpiCard(String title, String value, IconData icon, Color color) {
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: color.withOpacity(0.3))),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(height: 6),
-            Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            Text(title, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: Text(title, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color), overflow: TextOverflow.ellipsis)),
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                  child: Icon(icon, color: color, size: 16),
+                ),
+              ],
+            ),
+            Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color == Colors.grey ? Colors.black87 : color)),
           ],
         ),
       ),
     );
-  }
-
-  List<Widget> _buildAtividadesRecentes(List<dynamic> atividades) {
-    if (atividades.isEmpty) {
-      return [const Padding(padding: EdgeInsets.all(16.0), child: Text("Nenhuma atividade recente."))];
-    }
-    
-    return atividades.take(5).map((a) {
-      final descricao = a['descricao']?.toString() ?? '';
-      final statusNovo = a['status_novo']?.toString() ?? '';
-      final statusColor = statusNovo == 'Concluído' ? Colors.green : (statusNovo == 'Aberto' ? Colors.red : Colors.orange);
-      return Card(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: ListTile(
-          title: Text(descricao, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-          subtitle: Text('por ${a['alterado_por'] ?? 'Sistema'}', style: const TextStyle(fontSize: 12)),
-          trailing: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
-            child: Text(statusNovo, style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold)),
-          ),
-        ),
-      );
-    }).toList();
   }
 }

@@ -138,6 +138,10 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
+  Future<bool> updateLaborCost(int id, String currentStatus, double custoMaoObra) async {
+    return await updateStatus(id, currentStatus, custoMaoObra: custoMaoObra);
+  }
+
   Future<Chamado?> createChamado({
     required String tipo,
     required String local,

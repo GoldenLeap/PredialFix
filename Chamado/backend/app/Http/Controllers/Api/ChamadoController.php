@@ -4,9 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Chamado;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Notifications\ChamadoStatusChanged;
+use App\Notifications\ChamadoCreated;
+use App\Notifications\TecnicoAtribuido;
+use App\Notifications\EstoqueCritico;
+use App\Rules\ValidStatusTransition;
 use Carbon\Carbon;
 
 class ChamadoController extends Controller
@@ -135,14 +141,26 @@ class ChamadoController extends Controller
 
         $chamado = Chamado::create($data);
 
-        // Desafio Técnico: Notificação por E-mail (SMTP)
-        // Certifique-se de ter configurado o .env com os dados do servidor SMTP
+        // ── Notificações ──────────────────────────────────────────────
+        // 1. Email de confirmação simples ao solicitante
         try {
-            Mail::raw("Olá, um novo chamado (#{$chamado->id}) foi aberto para o setor de {$chamado->tipo} por {$user->name}.", function ($message) use ($user) {
-                $message->to($user->email)->subject('Confirmação de Abertura de Chamado - PredialFix');
-            });
+            \Illuminate\Support\Facades\Mail::raw(
+                "Olá, um novo chamado (#{$chamado->id}) foi aberto para o setor de {$chamado->tipo} por {$user->name}.",
+                function ($message) use ($user) {
+                    $message->to($user->email)->subject('Confirmação de Abertura de Chamado - PredialFix');
+                }
+            );
         } catch (\Exception $e) {
-            // Log do erro se o SMTP falhar, mas permite que o fluxo continue
+            Log::error('Falha ao enviar email de confirmação de chamado: ' . $e->getMessage(), [
+                'chamado_id' => $chamado->id,
+                'user_id' => $user->id,
+            ]);
+        }
+
+        // 2. Notificar admins/responsáveis (email + sininho) via Notification
+        $admins = User::whereIn('cargo', ['admin', 'responsavel'])->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new ChamadoCreated($chamado));
         }
 
         return response()->json([
@@ -189,31 +207,69 @@ class ChamadoController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:Aberto,Em Análise,Aguardando Material,Em Execução,Concluído',
+            'status' => [
+                'required',
+                'in:Aberto,Em Análise,Aguardando Material,Em Execução,Concluído',
+                new ValidStatusTransition($chamado->status),
+            ],
             'observacao' => 'nullable|string|max:1000',
             'tecnico_id' => 'nullable|exists:users,id',
             'custo_mao_obra' => 'nullable|numeric|min:0',
             'custo_materiais' => 'nullable|numeric|min:0',
         ]);
 
-        $oldStatus = $chamado->status;
-        $chamado->update($validated);
-
-        // Registra histórico apenas se o status mudou
-        if ($validated['status'] !== $oldStatus) {
-            $chamado->historicos()->create([
-                'status_anterior' => $oldStatus,
-                'status_novo' => $validated['status'],
-                'alterado_por' => $user->id,
-                'observacao' => $validated['observacao'] ?? null,
-                'data_alteracao' => now(),
-            ]);
-
-            // Dispara notificação de mudança de status por email/fila
-            if ($chamado->user) {
-                $chamado->user->notify(new ChamadoStatusChanged($chamado, $oldStatus, $validated['status']));
+        // ── Regra de Negócio: tecnico_id deve ser admin ou responsável ──
+        if (!empty($validated['tecnico_id'])) {
+            $tecnico = User::find($validated['tecnico_id']);
+            if (!$tecnico || !in_array($tecnico->cargo, ['admin', 'responsavel'])) {
+                return response()->json([
+                    'message' => 'O técnico designado deve ser um responsável ou admin.',
+                ], 422);
             }
         }
+
+        // ── Regra de Negócio: obrigar técnico antes de "Em Execução" ──
+        if ($validated['status'] === 'Em Execução') {
+            $tecnicoId = $validated['tecnico_id'] ?? $chamado->tecnico_id;
+            if (empty($tecnicoId)) {
+                return response()->json([
+                    'message' => 'É necessário designar um técnico antes de iniciar a execução.',
+                ], 422);
+            }
+        }
+
+        $oldStatus = $chamado->status;
+        $oldTecnicoId = $chamado->tecnico_id;
+
+        // Usa transação para garantir integridade
+        DB::transaction(function () use ($chamado, $validated, $oldStatus, $oldTecnicoId, $user) {
+            $chamado->update($validated);
+
+            // Registra histórico apenas se o status mudou
+            if ($validated['status'] !== $oldStatus) {
+                $chamado->historicos()->create([
+                    'status_anterior' => $oldStatus,
+                    'status_novo' => $validated['status'],
+                    'alterado_por' => $user->id,
+                    'observacao' => $validated['observacao'] ?? null,
+                    'data_alteracao' => now(),
+                ]);
+
+                // Notificar o solicitante sobre a mudança de status (email + sininho)
+                if ($chamado->user) {
+                    $chamado->user->notify(new ChamadoStatusChanged($chamado, $oldStatus, $validated['status']));
+                }
+            }
+
+            // ── Notificar técnico quando é designado ──
+            $novoTecnicoId = $validated['tecnico_id'] ?? null;
+            if ($novoTecnicoId && $novoTecnicoId != $oldTecnicoId) {
+                $tecnico = User::find($novoTecnicoId);
+                if ($tecnico) {
+                    $tecnico->notify(new TecnicoAtribuido($chamado));
+                }
+            }
+        });
 
         // Simulação de notificação de progresso
         $notificacao = $this->notificacoes[$validated['status']] ?? null;
@@ -235,8 +291,11 @@ class ChamadoController extends Controller
             'local' => 'required|string|max:255',
         ]);
 
+        // Sanitiza wildcards LIKE para evitar problemas com caracteres especiais
+        $localSanitizado = str_replace(['%', '_'], ['\%', '\_'], $request->local);
+
         $chamados = Chamado::with(['user:id,name', 'historicos', 'tecnico:id,name'])
-            ->where('local', 'like', '%' . $request->local . '%')
+            ->where('local', 'like', '%' . $localSanitizado . '%')
             ->latest()
             ->get();
 
@@ -250,10 +309,20 @@ class ChamadoController extends Controller
     /**
      * Remove um chamado. Apenas Responsável/Admin (garantido pela rota).
      * DELETE /api/chamados/{id}
+     *
+     * Regra de Negócio: Chamados concluídos não podem ser excluídos
+     * pois fazem parte do histórico da unidade.
      */
     public function destroy($id)
     {
         $chamado = Chamado::findOrFail($id);
+
+        if ($chamado->status === 'Concluído') {
+            return response()->json([
+                'message' => 'Chamados concluídos não podem ser excluídos. Eles fazem parte do histórico da unidade.',
+            ], 422);
+        }
+
         $chamado->delete();
 
         return response()->json(['message' => 'Chamado removido com sucesso.']);
@@ -262,6 +331,9 @@ class ChamadoController extends Controller
     /**
      * Adiciona material consumido ao chamado.
      * POST /api/chamados/{id}/materiais
+     *
+     * Regra de Negócio: estoque é descontado no momento da adição.
+     * Não é possível adicionar mais do que o disponível em estoque.
      */
     public function adicionarMaterial(Request $request, $id)
     {
@@ -279,31 +351,48 @@ class ChamadoController extends Controller
 
         $material = \App\Models\Material::findOrFail($validated['material_id']);
 
+        // ── Regra de Negócio: não tirar mais do que tem no estoque ──
         if ($material->quantidade_atual < $validated['quantidade']) {
-            return response()->json(['message' => 'Quantidade insuficiente em estoque.'], 400);
+            return response()->json([
+                'message' => "Quantidade insuficiente em estoque. Disponível: {$material->quantidade_atual} {$material->unidade}.",
+                'disponivel' => $material->quantidade_atual,
+                'solicitado' => $validated['quantidade'],
+            ], 400);
         }
 
-        // Dá baixa no estoque
-        $material->quantidade_atual -= $validated['quantidade'];
-        $material->save();
+        // Usa transação para garantir integridade (desconto + pivot + custo)
+        DB::transaction(function () use ($chamado, $material, $validated, $user) {
+            // Dá baixa no estoque
+            $material->quantidade_atual -= $validated['quantidade'];
+            $material->save();
 
-        // Calcula subtotal
-        $subtotal = $validated['quantidade'] * $material->valor_unitario;
+            // Calcula subtotal
+            $subtotal = $validated['quantidade'] * $material->valor_unitario;
 
-        // Associa na tabela pivô
-        $chamado->materiais()->attach($material->id, [
-            'quantidade' => $validated['quantidade'],
-            'valor_unitario' => $material->valor_unitario,
-            'subtotal' => $subtotal,
-        ]);
+            // Associa na tabela pivô
+            $chamado->materiais()->attach($material->id, [
+                'quantidade' => $validated['quantidade'],
+                'valor_unitario' => $material->valor_unitario,
+                'subtotal' => $subtotal,
+            ]);
 
-        // Atualiza o custo total de materiais no chamado
-        $chamado->custo_materiais = ($chamado->custo_materiais ?? 0) + $subtotal;
-        $chamado->save();
+            // Atualiza o custo total de materiais no chamado
+            $chamado->custo_materiais = ($chamado->custo_materiais ?? 0) + $subtotal;
+            $chamado->save();
+
+            // ── Notificação: estoque crítico ──
+            $material->refresh();
+            if ($material->quantidade_atual < $material->quantidade_minima) {
+                $admins = User::whereIn('cargo', ['admin', 'responsavel'])->get();
+                foreach ($admins as $admin) {
+                    $admin->notify(new EstoqueCritico($material));
+                }
+            }
+        });
 
         return response()->json([
             'message' => 'Material adicionado com sucesso.',
-            'custo_materiais' => $chamado->custo_materiais
+            'custo_materiais' => $chamado->fresh()->custo_materiais,
         ]);
     }
 
@@ -325,24 +414,33 @@ class ChamadoController extends Controller
         ]);
 
         $oldStatus = $chamado->status;
-        $chamado->status = 'Aguardando Material';
-        $chamado->save();
 
-        // Histórico
-        $chamado->historicos()->create([
-            'status_anterior' => $oldStatus,
-            'status_novo' => 'Aguardando Material',
-            'alterado_por' => $user->id,
-            'observacao' => 'Solicitação de material: ' . $validated['observacao'],
-            'data_alteracao' => now(),
-        ]);
+        DB::transaction(function () use ($chamado, $validated, $oldStatus, $user) {
+            $chamado->status = 'Aguardando Material';
+            $chamado->save();
 
-        // Notifica o Responsável / Admin
-        // Em um sistema real, poderíamos notificar todos os admins/responsaveis.
-        // Por ora, vamos notificar o solicitante tbm
-        if ($chamado->user) {
-            $chamado->user->notify(new ChamadoStatusChanged($chamado, $oldStatus, 'Aguardando Material'));
-        }
+            // Histórico
+            $chamado->historicos()->create([
+                'status_anterior' => $oldStatus,
+                'status_novo' => 'Aguardando Material',
+                'alterado_por' => $user->id,
+                'observacao' => 'Solicitação de material: ' . $validated['observacao'],
+                'data_alteracao' => now(),
+            ]);
+
+            // Notifica o solicitante
+            if ($chamado->user) {
+                $chamado->user->notify(new ChamadoStatusChanged($chamado, $oldStatus, 'Aguardando Material'));
+            }
+
+            // Notifica admins/responsáveis sobre a solicitação
+            $admins = User::whereIn('cargo', ['admin', 'responsavel'])
+                ->where('id', '!=', $user->id)
+                ->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new ChamadoStatusChanged($chamado, $oldStatus, 'Aguardando Material'));
+            }
+        });
 
         return response()->json([
             'message' => 'Material solicitado. Status atualizado.',

@@ -56,6 +56,8 @@ class _OrcamentoViewState extends State<OrcamentoView> {
                     _buildFiltro(viewModel),
                     const SizedBox(height: 16),
                     _buildOrcamentoCard(context, viewModel),
+                    const SizedBox(height: 16),
+                    _buildCategorias(viewModel),
                     const SizedBox(height: 24),
                     const Text('Histórico (Últimos 6 Meses)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey)),
                     const SizedBox(height: 12),
@@ -189,6 +191,71 @@ class _OrcamentoViewState extends State<OrcamentoView> {
     );
   }
 
+  Widget _buildCategorias(OrcamentoViewModel viewModel) {
+    if (viewModel.orcamentoTotal == 0) return const SizedBox.shrink();
+
+    final config = viewModel.config ?? {};
+    final spentByCategory = config['spent_by_category'] as Map<String, dynamic>? ?? {};
+    final allocations = config['allocations'] as Map<String, dynamic>? ?? {};
+
+    final categories = ['Elétrica', 'Hidráulica', 'Infraestrutura', 'Outros'];
+
+    Color _getCategoryColor(String name) {
+      if (name == 'Elétrica') return Colors.yellow.shade700;
+      if (name == 'Hidráulica') return Colors.red.shade500;
+      if (name == 'Infraestrutura') return Colors.green.shade500;
+      return Colors.grey.shade500;
+    }
+
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Gastos por categoria (mês atual)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            ...categories.map((cat) {
+              final percentage = (allocations[cat] as num?)?.toDouble() ?? (1 / categories.length);
+              final limit = viewModel.orcamentoTotal * percentage;
+              final spent = (spentByCategory[cat] as num?)?.toDouble() ?? 0.0;
+              final Color color = _getCategoryColor(cat);
+              final double pct = viewModel.orcamentoTotal > 0 ? (spent / viewModel.orcamentoTotal) : 0.0;
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(cat, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87)),
+                        Text('R\$ ${spent.toStringAsFixed(2)} / R\$ ${viewModel.orcamentoTotal.toStringAsFixed(2)}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    LinearProgressIndicator(
+                      value: pct.clamp(0.0, 1.0),
+                      backgroundColor: Colors.grey.shade200,
+                      valueColor: AlwaysStoppedAnimation<Color>(color),
+                      minHeight: 8,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    const SizedBox(height: 4),
+                    Text('${(pct * 100).toStringAsFixed(1)}% do orçamento total', style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildHistorico(OrcamentoViewModel viewModel) {
     if (viewModel.historico.isEmpty) {
       return const Center(child: Padding(padding: EdgeInsets.all(16.0), child: Text("Sem histórico registrado.")));
@@ -198,28 +265,60 @@ class _OrcamentoViewState extends State<OrcamentoView> {
       children: viewModel.historico.map((h) {
         final orcInicial = (h['orcamento_inicial'] as num?)?.toDouble() ?? 0;
         final totalGasto = (h['total_gasto'] as num?)?.toDouble() ?? 0;
-        final variancia = (h['variancia'] as num?)?.toDouble() ?? 0;
-        final status = h['status']?.toString() ?? '';
-        final mes = h['mes']?.toString() ?? '';
-
+        final variancia = orcInicial - totalGasto;
         final isOk = variancia >= 0;
+        final status = isOk ? 'No limite' : 'Excedeu';
+        final mes = h['mes']?.toString() ?? '';
 
         return Card(
           margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: isOk ? Colors.green.shade100 : Colors.red.shade100,
-              child: Icon(Icons.calendar_month, color: isOk ? Colors.green : Colors.red),
-            ),
-            title: Text(mes, style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text('Gasto: R\$ ${totalGasto.toStringAsFixed(2)} de R\$ ${orcInicial.toStringAsFixed(2)}'),
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: isOk ? Colors.green.shade50 : Colors.red.shade50,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(status, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: isOk ? Colors.green : Colors.red)),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(mes, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: isOk ? Colors.green.shade50 : Colors.red.shade50,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(status.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: isOk ? Colors.green : Colors.red)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Orçamento', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('R\$ ${orcInicial.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Total Gasto', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('R\$ ${totalGasto.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const Text('Variância', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('${variancia >= 0 ? '+' : ''}R\$ ${variancia.abs().toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: isOk ? Colors.green : Colors.red)),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );

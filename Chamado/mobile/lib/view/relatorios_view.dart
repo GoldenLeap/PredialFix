@@ -57,7 +57,7 @@ class _RelatoriosViewState extends State<RelatoriosView> {
           body: Column(
             children: [
               if (_showFilters) _buildFilters(viewModel),
-              if (viewModel.totalizadores.isNotEmpty) _buildTotalizadores(viewModel),
+              if (viewModel.totalizadores.isNotEmpty) _buildStatsGrid(viewModel),
               Expanded(
                 child: viewModel.isLoading && viewModel.items.isEmpty
                   ? const Center(child: CircularProgressIndicator())
@@ -219,22 +219,63 @@ class _RelatoriosViewState extends State<RelatoriosView> {
     );
   }
 
-  Widget _buildTotalizadores(RelatoriosViewModel viewModel) {
+  Widget _buildStatsGrid(RelatoriosViewModel viewModel) {
     final t = viewModel.totalizadores;
+    final total = t['servicos_total'] ?? 0;
+    final abertos = t['abertos'] ?? 0;
+    final emAnalise = t['em_analise'] ?? 0;
+    final emExecucao = t['em_execucao'] ?? 0;
+    final concluidos = t['concluidos'] ?? 0;
+    
     final custoTotal = (t['custo_total'] as num?)?.toDouble() ?? 0.0;
     final custoMaoObra = (t['custo_mao_obra'] as num?)?.toDouble() ?? 0.0;
     final custoMateriais = (t['custo_materiais'] as num?)?.toDouble() ?? 0.0;
 
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildStatCard('Total', total.toString(), Colors.grey.shade800, Colors.grey.shade100),
+                _buildStatCard('Abertos', abertos.toString(), Colors.blue.shade700, Colors.blue.shade50),
+                _buildStatCard('Análise', emAnalise.toString(), Colors.amber.shade700, Colors.amber.shade50),
+                _buildStatCard('Execução', emExecucao.toString(), Colors.red.shade700, Colors.red.shade50),
+                _buildStatCard('Concluídos', concluidos.toString(), Colors.green.shade700, Colors.green.shade50),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.shade200)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildTotalItem('Custo Total', 'R\$ ${custoTotal.toStringAsFixed(2)}'),
+              _buildTotalItem('Mão de Obra', 'R\$ ${custoMaoObra.toStringAsFixed(2)}'),
+              _buildTotalItem('Materiais', 'R\$ ${custoMateriais.toStringAsFixed(2)}'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(String title, String value, Color textColor, Color bgColor) {
     return Container(
-      color: Colors.red.shade50,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      width: 90,
+      margin: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8), border: Border.all(color: textColor.withOpacity(0.2))),
+      child: Column(
         children: [
-          _buildTotalItem('Total', '${t['servicos_total'] ?? 0}'),
-          _buildTotalItem('Custo Total', 'R\$ ${custoTotal.toStringAsFixed(2)}'),
-          _buildTotalItem('Mão de Obra', 'R\$ ${custoMaoObra.toStringAsFixed(2)}'),
-          _buildTotalItem('Materiais', 'R\$ ${custoMateriais.toStringAsFixed(2)}'),
+          Text(title.toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: textColor), maxLines: 1, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 4),
+          Text(value, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
         ],
       ),
     );
@@ -243,8 +284,8 @@ class _RelatoriosViewState extends State<RelatoriosView> {
   Widget _buildTotalItem(String label, String value) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFFFF0000))),
-        Text(label, style: const TextStyle(fontSize: 10, color: Colors.black54)),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87)),
+        Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
       ],
     );
   }

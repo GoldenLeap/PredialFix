@@ -141,11 +141,15 @@ class Historico {
   final String statusAnterior;
   final String statusNovo;
   final String dataAlteracao;
+  final String? observacao;
+  final String? alteradoPor;
 
   Historico({
     required this.statusAnterior,
     required this.statusNovo,
     required this.dataAlteracao,
+    this.observacao,
+    this.alteradoPor,
   });
 
   factory Historico.fromJson(Map<String, dynamic> json) {
@@ -153,6 +157,8 @@ class Historico {
       statusAnterior: json['status_anterior'] ?? '',
       statusNovo: json['status_novo'] ?? '',
       dataAlteracao: json['data_alteracao'] ?? '',
+      observacao: json['observacao']?.toString(),
+      alteradoPor: json['alterado_por']?['name']?.toString() ?? 'Sistema',
     );
   }
 }

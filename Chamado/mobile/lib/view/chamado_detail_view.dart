@@ -120,9 +120,47 @@ class _ChamadoDetailViewState extends State<ChamadoDetailView> {
             _detailRow(Icons.person, 'Usuário ID: ${widget.chamado.usuarioId}'),
             if (widget.chamado.tipoServico.isNotEmpty) _detailRow(Icons.build, 'Tipo: ${widget.chamado.tipoServico}'),
             _detailRow(Icons.calendar_today, 'Aberto em: ${_formatDate(widget.chamado.createdAt)}'),
+            const SizedBox(height: 16),
+            _buildTimeline(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTimeline() {
+    final stages = ['Aberto', 'Em Análise', 'Aguardando Material', 'Em Execução', 'Concluído'];
+    final currentIndex = stages.indexOf(widget.chamado.status);
+    
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: stages.asMap().entries.map((entry) {
+        int idx = entry.key;
+        String stage = entry.value;
+        bool isCompleted = currentIndex >= idx;
+        bool isCurrent = currentIndex == idx;
+        return Expanded(
+          child: Column(
+            children: [
+              Container(
+                width: 24, height: 24,
+                decoration: BoxDecoration(
+                  color: isCompleted ? Colors.red : Colors.grey.shade300,
+                  shape: BoxShape.circle,
+                  border: isCurrent ? Border.all(color: Colors.red.shade900, width: 2) : null,
+                ),
+                child: isCompleted ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                stage, 
+                textAlign: TextAlign.center, 
+                style: TextStyle(fontSize: 9, fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal, color: isCompleted ? Colors.black87 : Colors.grey),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -152,36 +190,116 @@ class _ChamadoDetailViewState extends State<ChamadoDetailView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Execução & Financeiro', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            const Text('Orçamento & Execução', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             _detailRow(Icons.engineering, 'Técnico: ${widget.chamado.tecnicoNome ?? "Não atribuído"}'),
             const Divider(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Mão de Obra:', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                Text('R\$ ${widget.chamado.custoMaoObra.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(8)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Icon(Icons.person, color: Colors.blue, size: 20),
+                            if (widget.chamado.status != 'Concluído')
+                              InkWell(
+                                onTap: () => _showUpdateLaborCostDialog(),
+                                child: const Icon(Icons.edit, color: Colors.blue, size: 16),
+                              )
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        const Text('Mão de Obra', style: TextStyle(fontSize: 12, color: Colors.blue)),
+                        Text('R\$ ${widget.chamado.custoMaoObra.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: Colors.orange.shade50, borderRadius: BorderRadius.circular(8)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.inventory_2, color: Colors.orange, size: 20),
+                        const SizedBox(height: 8),
+                        const Text('Materiais', style: TextStyle(fontSize: 12, color: Colors.orange)),
+                        Text('R\$ ${widget.chamado.custoMateriais.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.orange)),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Materiais:', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                Text('R\$ ${widget.chamado.custoMateriais.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
-            const Divider(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Custo Total:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFFFF0000))),
-                Text('R\$ ${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFFF0000))),
+                const Text('Custo Total:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
+                Text('R\$ ${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFFF0000))),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showUpdateLaborCostDialog() {
+    final viewModel = Provider.of<HomeViewModel>(context, listen: false);
+    final ctrl = TextEditingController(text: widget.chamado.custoMaoObra > 0 ? widget.chamado.custoMaoObra.toString() : '');
+    final form = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Editar Mão de Obra'),
+        content: Form(
+          key: form,
+          child: TextFormField(
+            controller: ctrl,
+            decoration: const InputDecoration(labelText: 'Valor (R\$)', border: OutlineInputBorder()),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            validator: (v) {
+              if (v == null || v.trim().isEmpty) return 'Obrigatório';
+              if (double.tryParse(v) == null) return 'Valor inválido';
+              return null;
+            },
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar', style: TextStyle(color: Colors.grey))),
+          ElevatedButton(
+            onPressed: () async {
+              if (form.currentState!.validate()) {
+                final val = double.parse(ctrl.text);
+                Navigator.pop(ctx);
+                _showLoading();
+                final success = await viewModel.updateLaborCost(widget.chamado.id, widget.chamado.status, val);
+                if (mounted) {
+                  Navigator.pop(context); // close loading
+                  if (success) {
+                    _showSnack('Custo atualizado!');
+                    Navigator.pop(context); // close detail view to refresh
+                  } else {
+                    _showSnack('Erro ao atualizar custo', isError: true);
+                  }
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF0000), foregroundColor: Colors.white),
+            child: const Text('Salvar'),
+          ),
+        ],
+      )
     );
   }
 
@@ -357,16 +475,47 @@ class _ChamadoDetailViewState extends State<ChamadoDetailView> {
         const Text('Histórico de alterações', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         ...widget.chamado.historicos.map((h) => Card(
-          margin: const EdgeInsets.only(bottom: 6),
+          margin: const EdgeInsets.only(bottom: 8),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          child: ListTile(
-            leading: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.swap_horiz, size: 20),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
+                      child: const Icon(Icons.swap_horiz, size: 16),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text('${h.statusAnterior} → ${h.statusNovo}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    ),
+                    Text(_formatDate(h.dataAlteracao), style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                  ],
+                ),
+                if (h.observacao != null && h.observacao!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(color: Colors.yellow.shade50, borderRadius: BorderRadius.circular(6), border: Border.all(color: Colors.yellow.shade200)),
+                    child: Text('"${h.observacao}"', style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 12, color: Colors.black87)),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Icon(Icons.person, size: 12, color: Colors.grey),
+                    const SizedBox(width: 4),
+                    Text('Por: ${h.alteradoPor}', style: const TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ],
             ),
-            title: Text('${h.statusAnterior} → ${h.statusNovo}', style: const TextStyle(fontWeight: FontWeight.w600)),
-            subtitle: Text(_formatDate(h.dataAlteracao)),
           ),
         )),
         const SizedBox(height: 16),
@@ -415,11 +564,23 @@ class _ChamadoDetailViewState extends State<ChamadoDetailView> {
     }
 
     final materiais = materiaisResponse['materiais'] as List;
+    
+    // Grouping logic for the dropdown (not required to physically group in a flat dropdown, but we add category to string)
+    // We will track unit prices
+    final Map<int, double> unitPrices = {
+      for (var m in materiais) 
+        m['id'] as int: (m['valor_unitario'] as num?)?.toDouble() ?? 0.0
+    };
+
     int? selectedMaterialId;
     final qtyCtrl = TextEditingController(text: '1');
     final formKey = GlobalKey<FormState>();
 
     showDialog(context: context, builder: (ctx) => StatefulBuilder(builder: (context, setState) {
+      final double unitPrice = selectedMaterialId != null ? unitPrices[selectedMaterialId] ?? 0.0 : 0.0;
+      final int qty = int.tryParse(qtyCtrl.text) ?? 0;
+      final double subtotal = unitPrice * qty;
+
       return AlertDialog(
         title: const Text('Adicionar Material'),
         content: Form(
@@ -431,10 +592,13 @@ class _ChamadoDetailViewState extends State<ChamadoDetailView> {
                 decoration: const InputDecoration(labelText: 'Material', border: OutlineInputBorder()),
                 value: selectedMaterialId,
                 isExpanded: true,
-                items: materiais.map((m) => DropdownMenuItem<int>(
-                  value: m['id'] as int,
-                  child: Text('[${m['categoria'] ?? 'Outros'}] ${m['nome']} (Estoque: ${m['quantidade_atual']})'),
-                )).toList(),
+                items: materiais.map((m) {
+                  final preco = (m['valor_unitario'] as num?)?.toDouble() ?? 0.0;
+                  return DropdownMenuItem<int>(
+                    value: m['id'] as int,
+                    child: Text('[${m['categoria'] ?? 'Outros'}] ${m['nome']} (Estoque: ${m['quantidade_atual']} | R\$ $preco)'),
+                  );
+                }).toList(),
                 onChanged: (val) => setState(() => selectedMaterialId = val),
                 validator: (val) => val == null ? 'Obrigatório' : null,
               ),
@@ -443,12 +607,25 @@ class _ChamadoDetailViewState extends State<ChamadoDetailView> {
                 controller: qtyCtrl,
                 decoration: const InputDecoration(labelText: 'Quantidade', border: OutlineInputBorder()),
                 keyboardType: TextInputType.number,
+                onChanged: (val) => setState(() {}),
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) return 'Obrigatório';
                   if (int.tryParse(v) == null || int.parse(v) <= 0) return 'Inválido';
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(8)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Subtotal:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                    Text('R\$ ${subtotal.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue)),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -463,8 +640,8 @@ class _ChamadoDetailViewState extends State<ChamadoDetailView> {
                 if (mounted) {
                   Navigator.pop(context);
                   if (success) {
-                    _showSnack('Material adicionado e debitado do estoque!');
-                    Navigator.pop(context); // Pop view to refresh or rely on provider
+                    _showSnack('Material adicionado!');
+                    Navigator.pop(context); // Pop view to refresh
                   } else {
                     _showSnack('Erro ao adicionar material', isError: true);
                   }

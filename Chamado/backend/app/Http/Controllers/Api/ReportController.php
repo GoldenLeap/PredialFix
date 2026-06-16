@@ -64,6 +64,11 @@ class ReportController extends Controller
         $custoTotal      = Chamado::selectRaw('SUM(COALESCE(custo_mao_obra, 0) + COALESCE(custo_materiais, 0)) as total')->value('total') ?? 0;
         $custoMaoObra    = Chamado::selectRaw('SUM(COALESCE(custo_mao_obra, 0)) as total')->value('total') ?? 0;
         $custoMateriais  = Chamado::selectRaw('SUM(COALESCE(custo_materiais, 0)) as total')->value('total') ?? 0;
+        
+        $abertos = Chamado::where('status', 'Aberto')->count();
+        $emAnalise = Chamado::where('status', 'Em Análise')->count();
+        $emExecucao = Chamado::where('status', 'Em Execução')->count();
+        $concluidos = Chamado::where('status', 'Concluído')->count();
 
         // Formata os itens para o formato do relatório
         $chamados->getCollection()->transform(function ($c) {
@@ -89,6 +94,10 @@ class ReportController extends Controller
                 'custo_total'     => (float) $custoTotal,
                 'custo_mao_obra'  => (float) $custoMaoObra,
                 'custo_materiais' => (float) $custoMateriais,
+                'abertos'         => $abertos,
+                'em_analise'      => $emAnalise,
+                'em_execucao'     => $emExecucao,
+                'concluidos'      => $concluidos,
             ],
             'relatorio' => $chamados,
         ]);

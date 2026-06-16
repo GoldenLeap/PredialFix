@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\BudgetController;
 use App\Http\Controllers\Api\ReportController;
 // Rotas api
 // ── Rota pública: login ──────────────────────────────────────────────────
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
 // ROTAS PROTEGIDAS
 Route::middleware('auth:sanctum')->group(function () {

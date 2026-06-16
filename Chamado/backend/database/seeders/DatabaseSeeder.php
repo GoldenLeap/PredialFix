@@ -22,13 +22,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'resp@resp.com',
+            'name' => 'Responsavel',
+            'email' => 'resp@senai.br',
             'password' => Hash::make("senha"),
             'cargo' => 'responsavel']);
         User::factory()->create([
-            "name" => "Macaquilson da Silvon Pererelson Mendelson Souzelson",
-            "email" => 'macaquilson@example.com',
+            "name" => "Solicitante",
+            "email" => 'solici@senai.br',
             "password" => Hash::make("senha"),
             "cargo" => 'solicitante'
         ]);

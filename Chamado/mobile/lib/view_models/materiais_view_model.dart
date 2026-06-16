@@ -14,6 +14,44 @@ class MateriaisViewModel extends ChangeNotifier {
   List<MaterialItem> _materiais = [];
   List<MaterialItem> get materiais => _materiais;
 
+  String _searchQuery = '';
+  String get searchQuery => _searchQuery;
+
+  String _selectedCategory = '';
+  String get selectedCategory => _selectedCategory;
+
+  void setSearchQuery(String val) {
+    _searchQuery = val;
+    notifyListeners();
+  }
+
+  void setSelectedCategory(String val) {
+    _selectedCategory = val;
+    notifyListeners();
+  }
+
+  List<String> get categories {
+    final cats = _materiais.map((m) => m.categoria).toSet().toList();
+    cats.sort();
+    return cats;
+  }
+
+  List<MaterialItem> get filteredMateriais {
+    var result = _materiais;
+    if (_searchQuery.isNotEmpty) {
+      final q = _searchQuery.toLowerCase();
+      result = result.where((m) => 
+        m.nome.toLowerCase().contains(q) || 
+        m.categoria.toLowerCase().contains(q) || 
+        m.localizacao.toLowerCase().contains(q)
+      ).toList();
+    }
+    if (_selectedCategory.isNotEmpty) {
+      result = result.where((m) => m.categoria == _selectedCategory).toList();
+    }
+    return result;
+  }
+
   Future<void> loadMateriais() async {
     _isLoading = true;
     _errorMessage = null;

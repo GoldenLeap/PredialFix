@@ -111,6 +111,17 @@ class MaterialController extends Controller
     public function destroy($id)
     {
         $material = Material::findOrFail($id);
+
+        $hasActiveChamados = $material->chamados()
+            ->where('status', '!=', 'Concluído')
+            ->exists();
+
+        if ($hasActiveChamados) {
+            return response()->json([
+                'message' => 'Não é possível remover este material pois ele está associado a chamados ativos.'
+            ], 422);
+        }
+
         $material->delete();
 
         return response()->json(['message' => 'Material removido com sucesso!']);

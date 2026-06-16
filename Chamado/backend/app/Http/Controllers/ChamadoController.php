@@ -8,7 +8,12 @@ use App\Models\User;
 use App\Http\Requests\StoreChamadoRequest;
 use App\Http\Requests\UpdateChamadoRequest;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 use App\Notifications\ChamadoStatusChanged;
+use App\Notifications\ChamadoCreated;
+use App\Notifications\TecnicoAtribuido;
+use App\Notifications\EstoqueCritico;
+use App\Rules\ValidStatusTransition;
 
 class ChamadoController extends Controller
 {
@@ -46,7 +51,7 @@ class ChamadoController extends Controller
         // Enviar notificação por email para todos os admins e responsaveis
         $admins = User::whereIn('cargo', ['admin', 'responsavel'])->get();
         foreach ($admins as $admin) {
-            $admin->notify(new ChamadoStatusChanged($chamado, 'Novo', 'Aberto'));
+            $admin->notify(new ChamadoCreated($chamado));
         }
 
         return redirect()->route('dashboard')
@@ -79,37 +84,55 @@ class ChamadoController extends Controller
     public function update(UpdateChamadoRequest $request, Chamado $chamado)
     {
         \Illuminate\Support\Facades\Gate::authorize('update', $chamado);
-        $oldStatus = $chamado->status;
-        $chamado->update($request->validated());
-
-        if ($request->has('status') && $request->status !== $oldStatus) {
-            $chamado->historicos()->create([
-                'status_anterior' => $oldStatus,
-                'status_novo' => $request->status,
-                'alterado_por' => $request->user()->id,
-                'observacao' => $request->input('observacao', null),
-                'data_alteracao' => now(),
+        
+        // Custom validation for status transition
+        if ($request->has('status')) {
+            $request->validate([
+                'status' => new ValidStatusTransition($chamado->status),
             ]);
-
-            // Descontar materiais do estoque ao concluir
-            if ($request->status === 'Concluído') {
-                $chamado->load('materiais');
-                foreach ($chamado->materiais as $mat) {
-                    $mat->decrement('quantidade_atual', $mat->pivot->quantidade);
-                }
-            }
-            // Devolver materiais ao estoque se reabrir um chamado concluído
-            if ($oldStatus === 'Concluído') {
-                $chamado->load('materiais');
-                foreach ($chamado->materiais as $mat) {
-                    $mat->increment('quantidade_atual', $mat->pivot->quantidade);
-                }
-            }
-
-            // Enviar notificação por email ao solicitante
-            $chamado->load('user');
-            $chamado->user->notify(new ChamadoStatusChanged($chamado, $oldStatus, $request->status));
         }
+
+        // Regra de Negócio: obrigar técnico antes de "Em Execução"
+        if ($request->input('status') === 'Em Execução') {
+            $tecnicoId = $request->input('tecnico_id') ?? $chamado->tecnico_id;
+            if (empty($tecnicoId)) {
+                return back()->withErrors(['status' => 'É necessário designar um técnico antes de iniciar a execução.']);
+            }
+        }
+
+        $oldStatus = $chamado->status;
+        $oldTecnicoId = $chamado->tecnico_id;
+        $user = $request->user();
+        
+        $validated = $request->validated();
+
+        DB::transaction(function () use ($chamado, $validated, $oldStatus, $oldTecnicoId, $user, $request) {
+            $chamado->update($validated);
+
+            if ($request->has('status') && $request->status !== $oldStatus) {
+                $chamado->historicos()->create([
+                    'status_anterior' => $oldStatus,
+                    'status_novo' => $request->status,
+                    'alterado_por' => $user->id,
+                    'observacao' => $request->input('observacao', null),
+                    'data_alteracao' => now(),
+                ]);
+
+                // Enviar notificação por email ao solicitante
+                if ($chamado->user) {
+                    $chamado->user->notify(new ChamadoStatusChanged($chamado, $oldStatus, $request->status));
+                }
+            }
+
+            // Notificar técnico quando é designado
+            $novoTecnicoId = $validated['tecnico_id'] ?? null;
+            if ($novoTecnicoId && $novoTecnicoId != $oldTecnicoId) {
+                $tecnico = User::find($novoTecnicoId);
+                if ($tecnico) {
+                    $tecnico->notify(new TecnicoAtribuido($chamado));
+                }
+            }
+        });
 
         return redirect()->route('chamados.show', $chamado)
             ->with('success', 'Chamado atualizado com sucesso.');
@@ -118,7 +141,13 @@ class ChamadoController extends Controller
     public function destroy(Chamado $chamado)
     {
         \Illuminate\Support\Facades\Gate::authorize('delete', $chamado);
+        
+        if ($chamado->status === 'Concluído') {
+            return back()->withErrors(['error' => 'Chamados concluídos não podem ser excluídos. Eles fazem parte do histórico da unidade.']);
+        }
+        
         $chamado->delete();
+        
         return redirect()->route('dashboard')
             ->with('success', 'Chamado excluído com sucesso.');
     }
@@ -129,29 +158,49 @@ class ChamadoController extends Controller
 
         $validated = $request->validate([
             'material_id' => 'required|exists:materials,id',
-            'quantidade'  => 'required|integer|min:1',
+            'quantidade'  => 'required|numeric|min:0.01',
         ]);
 
         $material = \App\Models\Material::findOrFail($validated['material_id']);
-        $subtotal = $material->valor_unitario * $validated['quantidade'];
-
-        // Attach or update pivot
-        if ($chamado->materiais()->where('material_id', $material->id)->exists()) {
-            $chamado->materiais()->updateExistingPivot($material->id, [
-                'quantidade'     => \DB::raw('quantidade + ' . $validated['quantidade']),
-                'subtotal'       => \DB::raw('subtotal + ' . $subtotal),
-            ]);
-        } else {
-            $chamado->materiais()->attach($material->id, [
-                'quantidade'    => $validated['quantidade'],
-                'valor_unitario' => $material->valor_unitario,
-                'subtotal'      => $subtotal,
-            ]);
+        
+        if ($material->quantidade_atual < $validated['quantidade']) {
+            return back()->withErrors(['quantidade' => "Quantidade insuficiente em estoque. Disponível: {$material->quantidade_atual} {$material->unidade}."]);
         }
+        
+        DB::transaction(function () use ($chamado, $material, $validated) {
+            $subtotal = $material->valor_unitario * $validated['quantidade'];
+            
+            // Dá baixa no estoque
+            $material->quantidade_atual -= $validated['quantidade'];
+            $material->save();
 
-        // Recalculate custo_materiais
-        $total = $chamado->materiais()->sum('chamado_material.subtotal');
-        $chamado->update(['custo_materiais' => $total]);
+            // Attach or update pivot
+            if ($chamado->materiais()->where('material_id', $material->id)->exists()) {
+                $chamado->materiais()->updateExistingPivot($material->id, [
+                    'quantidade'     => \DB::raw('quantidade + ' . $validated['quantidade']),
+                    'subtotal'       => \DB::raw('subtotal + ' . $subtotal),
+                ]);
+            } else {
+                $chamado->materiais()->attach($material->id, [
+                    'quantidade'    => $validated['quantidade'],
+                    'valor_unitario' => $material->valor_unitario,
+                    'subtotal'      => $subtotal,
+                ]);
+            }
+
+            // Recalculate custo_materiais
+            $total = $chamado->materiais()->sum('chamado_material.subtotal');
+            $chamado->update(['custo_materiais' => $total]);
+
+            // Notificação: estoque crítico
+            $material->refresh();
+            if ($material->quantidade_atual < $material->quantidade_minima) {
+                $admins = User::whereIn('cargo', ['admin', 'responsavel'])->get();
+                foreach ($admins as $admin) {
+                    $admin->notify(new EstoqueCritico($material));
+                }
+            }
+        });
 
         return redirect()->route('chamados.show', $chamado)
             ->with('success', 'Material adicionado ao chamado.');
@@ -161,13 +210,24 @@ class ChamadoController extends Controller
     {
         \Illuminate\Support\Facades\Gate::authorize('update', $chamado);
 
-        $chamado->materiais()->detach($material->id);
+        DB::transaction(function () use ($chamado, $material) {
+            // Get pivot data to restore stock
+            $pivot = $chamado->materiais()->where('material_id', $material->id)->first()?->pivot;
+            
+            if ($pivot) {
+                // Restore stock
+                $material->quantidade_atual += $pivot->quantidade;
+                $material->save();
+            }
 
-        // Recalculate custo_materiais
-        $total = $chamado->materiais()->sum('chamado_material.subtotal');
-        $chamado->update(['custo_materiais' => $total]);
+            $chamado->materiais()->detach($material->id);
+
+            // Recalculate custo_materiais
+            $total = $chamado->materiais()->sum('chamado_material.subtotal');
+            $chamado->update(['custo_materiais' => $total]);
+        });
 
         return redirect()->route('chamados.show', $chamado)
-            ->with('success', 'Material removido do chamado.');
+            ->with('success', 'Material removido do chamado e devolvido ao estoque.');
     }
 }

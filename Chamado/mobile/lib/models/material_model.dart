@@ -6,6 +6,7 @@ class MaterialItem {
   final int quantidadeAtual;
   final int quantidadeMinima;
   final String unidade;
+  final double valorUnitario;
   final String? statusEstoque;
 
   MaterialItem({
@@ -16,6 +17,7 @@ class MaterialItem {
     required this.quantidadeAtual,
     required this.quantidadeMinima,
     required this.unidade,
+    this.valorUnitario = 0.0,
     this.statusEstoque,
   });
 
@@ -28,6 +30,7 @@ class MaterialItem {
       quantidadeAtual: (json['quantidade_atual'] as num?)?.toInt() ?? 0,
       quantidadeMinima: (json['quantidade_minima'] as num?)?.toInt() ?? 0,
       unidade: json['unidade'] ?? 'un',
+      valorUnitario: (json['valor_unitario'] as num?)?.toDouble() ?? 0.0,
       statusEstoque: json['status_estoque'],
     );
   }
@@ -40,6 +43,7 @@ class MaterialItem {
       'quantidade_atual': quantidadeAtual,
       'quantidade_minima': quantidadeMinima,
       'unidade': unidade,
+      'valor_unitario': valorUnitario,
     };
   }
 }
